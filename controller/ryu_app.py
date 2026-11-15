@@ -40,6 +40,8 @@ class PathPilotController(app_manager.RyuApp):
         self.reverse_paths = {}
         self.datapaths = {}
         self.port_rate_tracker = PortRateTracker()
+        self._stats_reply_switches = set()
+        self._logged_live_ready = False
         self.monitor_thread = hub.spawn(self._monitor)
 
     @set_ev_cls(ofp_event.EventOFPStateChange,
@@ -49,10 +51,14 @@ class PathPilotController(app_manager.RyuApp):
         if ev.state == MAIN_DISPATCHER:
             self.datapaths[dp.id] = dp
             self.port_rate_tracker.reset_datapath(dp.id)
+            self._stats_reply_switches.discard(dp.id)
+            self._logged_live_ready = False
             self.logger.info("Switch %s connected; port polling enabled", dp.id)
         elif ev.state == DEAD_DISPATCHER:
             self.datapaths.pop(dp.id, None)
             self.port_rate_tracker.reset_datapath(dp.id)
+            self._stats_reply_switches.discard(dp.id)
+            self._logged_live_ready = False
             self.logger.info("Switch %s disconnected", dp.id)
 
     def _monitor(self):
@@ -79,6 +85,18 @@ class PathPilotController(app_manager.RyuApp):
             self.port_rate_tracker.update_port(
                 dpid, stat.port_no, stat.tx_bytes, now
             )
+        if dpid not in self._stats_reply_switches:
+            self._stats_reply_switches.add(dpid)
+            self.logger.info("Received first port-stats reply from switch %s", dpid)
+        live = self.port_rate_tracker.path_telemetry(now)
+        if live is not None and not self._logged_live_ready:
+            self._logged_live_ready = True
+            self.logger.info(
+                "Live telemetry ready: s1-s2-s4 utilization=%.4f, "
+                "s1-s3-s4 utilization=%.4f",
+                live["s1-s2-s4"].utilization,
+                live["s1-s3-s4"].utilization,
+            )
 
     @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER)
     def switch_features(self, ev):
@@ -97,11 +115,18 @@ class PathPilotController(app_manager.RyuApp):
         # stale-data fallback until both candidate paths have fresh samples.
         live = self.port_rate_tracker.path_telemetry(time.monotonic())
         if live is not None:
+            self.logger.info(
+                "Using LIVE telemetry: s1-s2-s4=%.4f, s1-s3-s4=%.4f",
+                live["s1-s2-s4"].utilization,
+                live["s1-s3-s4"].utilization,
+            )
             return live
 
         try:
             raw = json.loads(self.telemetry_file.read_text())
-            return {key: Telemetry(**value) for key, value in raw.items()}
+            telemetry = {key: Telemetry(**value) for key, value in raw.items()}
+            self.logger.info("Using STATIC telemetry fallback from %s", self.telemetry_file)
+            return telemetry
         except (OSError, ValueError, TypeError) as exc:
             self.logger.warning(
                 "Telemetry unavailable (%s); using conservative fallback", exc
@@ -158,10 +183,15 @@ class PathPilotController(app_manager.RyuApp):
         key = self.flow_key(ip, transport)
         if dp.id == 1:
             if in_port == 1:  # New flow from h1
+                telemetry = self.read_telemetry()
                 path = choose_path(
-                    self.read_telemetry(),
+                    telemetry,
                     self.policy,
                     safe_fallback="s1-s2-s4",
+                )
+                self.logger.info(
+                    "Selected path %s for new flow %s -> %s (policy=%s)",
+                    path, ip.src, ip.dst, self.policy,
                 )
                 self.reverse_paths[self.reverse_key(key)] = path
                 out_port = self.PATH_PORTS[path]
