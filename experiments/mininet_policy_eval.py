@@ -24,9 +24,6 @@ from pathlib import Path
 
 POLICIES = ("static", "least_loaded", "threshold", "uncertainty_aware")
 PATH_TO_SWITCH = {"s1-s2-s4": "s2", "s1-s3-s4": "s3"}
-SELECTION_RE = re.compile(
-    r"Selected path (s1-s2-s4|s1-s3-s4) for new flow .*?\(policy=([a-z_]+)\)"
-)
 BANDWIDTH_RE = re.compile(r"([0-9]+(?:\.[0-9]+)?)\s+([KMG])bits/sec")
 
 
