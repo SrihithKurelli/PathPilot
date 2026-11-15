@@ -1,11 +1,7 @@
-"""Ryu OpenFlow 1.3 controller for the PathPilot two-path teaching topology.
-
-The controller samples OpenFlow port counters, selects a path for each new
-IPv4 flow, and pins the reverse direction to the same path. Existing flows
-are not migrated.
-"""
+"""Ryu OpenFlow 1.3 controller for the PathPilot two-path teaching topology."""
 import json
 import os
+import random
 import time
 from pathlib import Path
 
@@ -36,6 +32,19 @@ class PathPilotController(app_manager.RyuApp):
         self.policy = os.getenv("PATHPILOT_POLICY", "least_loaded")
         self.telemetry_file = Path(
             os.getenv("PATHPILOT_TELEMETRY", "experiments/telemetry.json")
+        )
+        self.telemetry_delay_s = float(
+            os.getenv("PATHPILOT_TELEMETRY_DELAY_S", "0")
+        )
+        self.telemetry_noise_std = float(
+            os.getenv("PATHPILOT_TELEMETRY_NOISE_STD", "0")
+        )
+        if self.telemetry_delay_s < 0:
+            raise ValueError("PATHPILOT_TELEMETRY_DELAY_S must be non-negative")
+        if not 0 <= self.telemetry_noise_std <= 1:
+            raise ValueError("PATHPILOT_TELEMETRY_NOISE_STD must be in [0,1]")
+        self.telemetry_rng = random.Random(
+            int(os.getenv("PATHPILOT_TELEMETRY_SEED", "7"))
         )
         self.reverse_paths = {}
         self.datapaths = {}
@@ -110,15 +119,43 @@ class PathPilotController(app_manager.RyuApp):
             instructions=[p.OFPInstructionActions(o.OFPIT_APPLY_ACTIONS, actions)],
         ))
 
+    def _impair_telemetry(self, telemetry):
+        if self.telemetry_noise_std == 0:
+            return telemetry
+        impaired = {}
+        for path, sample in telemetry.items():
+            noisy_utilization = min(
+                1.0,
+                max(0.0, sample.utilization
+                    + self.telemetry_rng.gauss(0, self.telemetry_noise_std)),
+            )
+            # The configured noise scale is exposed as uncertainty metadata;
+            # the uncertainty-aware policy can then discount noisy samples.
+            impaired[path] = Telemetry(
+                utilization=noisy_utilization,
+                age_s=sample.age_s,
+                variability=max(sample.variability, self.telemetry_noise_std),
+            )
+        return impaired
+
     def read_telemetry(self):
-        # Prefer fresh switch measurements. Static JSON remains a startup and
-        # stale-data fallback until both candidate paths have fresh samples.
-        live = self.port_rate_tracker.path_telemetry(time.monotonic())
+        # Select a genuinely historical OpenFlow sample when delay is enabled.
+        live = self.port_rate_tracker.path_telemetry(
+            time.monotonic(),
+            delay_s=self.telemetry_delay_s,
+            max_age_s=self.port_rate_tracker.max_age_s + self.telemetry_delay_s,
+        )
         if live is not None:
+            live = self._impair_telemetry(live)
             self.logger.info(
-                "Using LIVE telemetry: s1-s2-s4=%.4f, s1-s3-s4=%.4f",
+                "Using LIVE telemetry: s1-s2-s4=%.4f (age %.1fs), "
+                "s1-s3-s4=%.4f (age %.1fs), delay=%.1fs noise_std=%.3f",
                 live["s1-s2-s4"].utilization,
+                live["s1-s2-s4"].age_s,
                 live["s1-s3-s4"].utilization,
+                live["s1-s3-s4"].age_s,
+                self.telemetry_delay_s,
+                self.telemetry_noise_std,
             )
             return live
 
@@ -175,14 +212,13 @@ class PathPilotController(app_manager.RyuApp):
             return
         tcp_pkt, udp_pkt = pkt.get_protocol(tcp.tcp), pkt.get_protocol(udp.udp)
         transport = tcp_pkt or udp_pkt
-        # TCP, UDP, and ICMP are supported in this starter.
         if ip.proto not in (1, 6, 17):
             return
 
         in_port = msg.match["in_port"]
         key = self.flow_key(ip, transport)
         if dp.id == 1:
-            if in_port == 1:  # New flow from h1
+            if in_port == 1:
                 telemetry = self.read_telemetry()
                 path = choose_path(
                     telemetry,
@@ -195,15 +231,14 @@ class PathPilotController(app_manager.RyuApp):
                 )
                 self.reverse_paths[self.reverse_key(key)] = path
                 out_port = self.PATH_PORTS[path]
-            else:  # Return traffic from either middle switch to h1
+            else:
                 out_port = 1
         elif dp.id in (2, 3):
-            # Each middle switch has port 1 toward s1 and port 2 toward s4.
             out_port = 2 if in_port == 1 else 1
         elif dp.id == 4:
-            if in_port in (1, 2):  # Forward traffic toward h2
+            if in_port in (1, 2):
                 out_port = 3
-            elif in_port == 3:  # Reply from h2: pin to the original path
+            elif in_port == 3:
                 path = self.reverse_paths.get(key, "s1-s2-s4")
                 out_port = 1 if path == "s1-s2-s4" else 2
             else:
@@ -218,15 +253,9 @@ class PathPilotController(app_manager.RyuApp):
             "ip_proto": ip.proto,
         }
         if tcp_pkt:
-            fields.update({
-                "tcp_src": tcp_pkt.src_port,
-                "tcp_dst": tcp_pkt.dst_port,
-            })
+            fields.update({"tcp_src": tcp_pkt.src_port, "tcp_dst": tcp_pkt.dst_port})
         elif udp_pkt:
-            fields.update({
-                "udp_src": udp_pkt.src_port,
-                "udp_dst": udp_pkt.dst_port,
-            })
+            fields.update({"udp_src": udp_pkt.src_port, "udp_dst": udp_pkt.dst_port})
         match = p.OFPMatch(**fields)
         self.install(dp, match, out_port)
         data = None if msg.buffer_id != o.OFP_NO_BUFFER else msg.data

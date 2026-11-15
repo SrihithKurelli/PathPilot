@@ -135,3 +135,35 @@ These Mininet results are emulation measurements of TCP goodput and path
 selection only. They do not establish p99 latency, fairness, production
 performance, or statistical significance. The current controller makes a
 decision only for a new flow and does not migrate established flows.
+
+
+### Controlled delayed/noisy telemetry
+
+The Mininet runner can now replay deliberately impaired telemetry while keeping
+the forwarding topology and offered traffic unchanged. Delayed telemetry uses
+historical OpenFlow counter-derived samples (not just an inflated age label).
+The selected sample's real age is passed to the policy. Gaussian noise is
+applied to utilization, and its configured standard deviation is exposed as
+variability/uncertainty metadata to the uncertainty-aware policy.
+
+Example commands (start with a short pilot before increasing trial counts):
+
+```bash
+sudo env PYTHONPATH=/home/pathpilot/PathPilot \
+  /usr/bin/python3 experiments/mininet_policy_eval.py \
+  --trials 3 --telemetry-delay-seconds 2 \
+  --telemetry-noise-std 0.05 --seed 7 \
+  --output results/mininet_delay2_noise005.csv
+python -m experiments.analyze_mininet_results \
+  results/mininet_delay2_noise005.csv \
+  --output results/mininet_delay2_noise005_summary.csv
+```
+
+The delay is in seconds. Noise standard deviation is a fraction of normalized
+link utilization (0.05 means five percentage points of link capacity).
+The runner requires warm-up to be at least the configured delay plus four
+seconds, allowing historical samples to accumulate across OpenFlow polls.
+Use identical impairment parameters and seeds when comparing policies.
+Record the full command, raw CSV, and software revision with reported results.
+The impairment is a controlled emulation model; it is not a claim that this
+captures every real switch/controller telemetry failure mode.

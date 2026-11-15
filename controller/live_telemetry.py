@@ -1,8 +1,7 @@
 """Derive path utilization from OpenFlow port-transmit counters.
 
-The two-path Mininet topology uses 100 Mbps links. We sample only the
-inter-switch egress ports that distinguish the two candidate paths:
-s1:2 + s2:2 for s1-s2-s4, and s1:3 + s3:2 for s1-s3-s4.
+The tracker retains a short timestamped history so experiments can request a
+measurement as it would have appeared after a controlled telemetry delay.
 """
 from collections import deque
 from statistics import pstdev
@@ -10,13 +9,13 @@ from statistics import pstdev
 from controller.policies import Telemetry
 
 
-# (datapath ID, egress port) pairs for the internal links on each path.
 PATH_EGRESS_PORTS = {
     "s1-s2-s4": ((1, 2), (2, 2)),
     "s1-s3-s4": ((1, 3), (3, 2)),
 }
 LINK_CAPACITY_BPS = 100_000_000
 SAMPLES_PER_PORT = 5
+HISTORY_SAMPLES_PER_PORT = 64
 DEFAULT_MAX_AGE_S = 6.0
 
 
@@ -35,6 +34,7 @@ class PortRateTracker:
         self._utilization = {}
         self._updated_at = {}
         self._history = {}
+        self._samples = {}
 
     @staticmethod
     def _is_tracked(dpid, port_no):
@@ -57,11 +57,11 @@ class PortRateTracker:
         previous_bytes, previous_time = previous
         elapsed = now - previous_time
         delta_bytes = tx_bytes - previous_bytes
-        # A non-positive interval or reset counter cannot yield a valid rate.
         if elapsed <= 0 or delta_bytes < 0:
             self._utilization.pop(key, None)
             self._updated_at.pop(key, None)
             self._history.pop(key, None)
+            self._samples.pop(key, None)
             return
 
         rate_bps = (delta_bytes * 8.0) / elapsed
@@ -70,6 +70,10 @@ class PortRateTracker:
             key, deque(maxlen=SAMPLES_PER_PORT)
         )
         history.append(utilization)
+        samples = self._samples.setdefault(
+            key, deque(maxlen=HISTORY_SAMPLES_PER_PORT)
+        )
+        samples.append((now, utilization))
         self._utilization[key] = utilization
         self._updated_at[key] = now
 
@@ -81,30 +85,45 @@ class PortRateTracker:
             self._utilization.pop(key, None)
             self._updated_at.pop(key, None)
             self._history.pop(key, None)
+            self._samples.pop(key, None)
 
-    def path_telemetry(self, now):
-        """Return live telemetry for both paths, or None if either is stale.
+    def _sample_at_or_before(self, key, cutoff):
+        samples = self._samples.get(key, ())
+        eligible = [(timestamp, value) for timestamp, value in samples
+                    if timestamp <= cutoff]
+        if not eligible:
+            return None
+        timestamp, value = eligible[-1]
+        recent = [sample for sample_time, sample in eligible
+                  if sample_time <= timestamp][-SAMPLES_PER_PORT:]
+        variability = pstdev(recent) if len(recent) > 1 else 0.0
+        return timestamp, value, variability
 
-        Path utilization is the maximum utilization of its two internal links,
-        so a single congested hop is not hidden by averaging it with a lightly
-        loaded hop. Variability is the largest population standard deviation
-        across the recent per-link samples.
+    def path_telemetry(self, now, *, delay_s=0.0, max_age_s=None):
+        """Return both paths using samples no newer than now-delay_s.
+
+        age_s records the actual age of each selected sample. A caller may
+        extend max_age_s by the configured delay so delayed-but-intentionally
+        retained samples remain available to the uncertainty-aware policy.
         """
+        if delay_s < 0:
+            raise ValueError("delay_s must be non-negative")
+        age_limit = self.max_age_s if max_age_s is None else float(max_age_s)
+        if age_limit <= 0:
+            raise ValueError("max_age_s must be positive")
+        cutoff = now - delay_s
         result = {}
         for path, ports in PATH_EGRESS_PORTS.items():
-            if any(port not in self._utilization for port in ports):
+            selected = [self._sample_at_or_before(port, cutoff)
+                        for port in ports]
+            if any(sample is None for sample in selected):
                 return None
-            ages = [now - self._updated_at[port] for port in ports]
-            if any(age < 0 or age > self.max_age_s for age in ages):
+            ages = [now - sample[0] for sample in selected]
+            if any(age < 0 or age > age_limit for age in ages):
                 return None
-            variations = [
-                pstdev(self._history[port])
-                if len(self._history[port]) > 1 else 0.0
-                for port in ports
-            ]
             result[path] = Telemetry(
-                utilization=max(self._utilization[port] for port in ports),
+                utilization=max(sample[1] for sample in selected),
                 age_s=max(ages),
-                variability=max(variations),
+                variability=max(sample[2] for sample in selected),
             )
         return result
