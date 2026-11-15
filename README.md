@@ -31,7 +31,7 @@ Use Ubuntu 22.04 with Mininet, Open vSwitch, Python 3.10, and Ryu 4.34. Ryu/even
 
 ```bash
 sudo apt update
-sudo apt install -y mininet openvswitch-switch iperf3 python3.10 python3.10-venv
+sudo apt install -y mininet openvswitch-switch iperf python3.10 python3.10-venv
 python3.10 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
@@ -78,7 +78,6 @@ Compare policies under identical traffic and telemetry conditions. Report p99 la
 - Reverse-path state is in memory and is lost on controller restart.
 - ARP remains statically populated by the Mininet topology; general ARP forwarding is not implemented.
 
-
 ## Policy evaluation
 
 The repository includes a deterministic **synthetic telemetry replay** to compare
@@ -102,10 +101,37 @@ summaries to `results/policy_summary.csv`. Change `--seed`, `--trials`, and
 `--steps` to test repeatability and increase the number of simulated decisions.
 Keep the seed and parameters with any reported result.
 
-For the network-level evaluation, use the Mininet/Ryu topology separately:
-measure each path under the same link capacity, delay, and offered load, repeat
-each trial, and record iperf3 goodput plus ping RTT/loss. Do not label synthetic
-replay outputs as throughput, latency, or packet-loss measurements. The current
-controller selects a path only when a new flow arrives and does not migrate
-established flows, so each policy/trial must start with cleared flow state and a
-fresh controller process for a fair comparison.
+### Repeated Mininet comparison
+
+For a network-level comparison, the new runner starts a fresh Ryu controller and
+Mininet topology for every trial. It checks connectivity, starts a first TCP
+flow, reads the actual path selected by the controller, applies the bottleneck
+to that path's second internal link, waits for multiple telemetry polling
+intervals, and then measures a second TCP flow. Applying the bottleneck to the
+path actually selected is important: the initial path is not guaranteed to be
+the same for every policy.
+
+Run this from the repository root on the Ubuntu VM (the command runs Mininet
+with root privileges and launches Ryu from the project `.venv`):
+
+```bash
+sudo env PYTHONPATH=/home/pathpilot/PathPilot \
+  /usr/bin/python3 experiments/mininet_policy_eval.py \
+  --trials 3 --output results/mininet_policy_results.csv
+python -m experiments.analyze_mininet_results \
+  results/mininet_policy_results.csv
+```
+
+The runner defaults to three trials per policy, a 10 Mbps bottleneck, a
+25-second first flow, a 6-second telemetry warm-up, and an 8-second second
+flow. It writes raw trial data, including both selected paths, the bottleneck
+interface, and second-flow goodput. Increase `--trials` for a more stable
+comparison. The summary reports means, standard deviations, ranges, an
+approximate normal 95% interval, and the rate at which the second flow avoided
+the bottleneck. The interval is only an approximation and should not be
+over-interpreted with small trial counts.
+
+These Mininet results are emulation measurements of TCP goodput and path
+selection only. They do not establish p99 latency, fairness, production
+performance, or statistical significance. The current controller makes a
+decision only for a new flow and does not migrate established flows.
