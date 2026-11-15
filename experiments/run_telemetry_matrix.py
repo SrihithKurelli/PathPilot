@@ -30,7 +30,7 @@ RAW_FIELDS = (
     "bottleneck_path", "bottleneck_interface", "bottleneck_rate",
     "second_flow_path", "avoided_bottleneck", "second_flow_mbps",
     "first_flow_mbps", "warmup_seconds", "first_selection_log",
-    "second_selection_log",
+    "second_selection_log", "first_telemetry_log", "second_telemetry_log",
 )
 
 
