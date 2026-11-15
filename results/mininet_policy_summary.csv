@@ -1,0 +1,5 @@
+policy,trials,mean_second_flow_mbps,std_second_flow_mbps,min_second_flow_mbps,max_second_flow_mbps,approx_ci95_low_mbps,approx_ci95_high_mbps,bottleneck_avoidance_rate
+least_loaded,10,84.66,1.1587,82.0,85.4,83.9418,85.3782,1
+static,10,0.8816,0.0605,0.779,0.972,0.8441,0.9191,0
+threshold,10,85.28,0.0919,85.2,85.5,85.223,85.337,1
+uncertainty_aware,10,85.26,0.3098,84.4,85.5,85.068,85.452,1
