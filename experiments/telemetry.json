@@ -1,4 +1,12 @@
 {
-  "s1-s2-s4": {"utilization": 0.25, "age_s": 0.1, "variability": 0.02},
-  "s1-s3-s4": {"utilization": 0.55, "age_s": 0.1, "variability": 0.02}
+  "s1-s2-s4": {
+    "utilization": 0.50,
+    "age_s": 0.1,
+    "variability": 0.02
+  },
+  "s1-s3-s4": {
+    "utilization": 0.50,
+    "age_s": 0.1,
+    "variability": 0.02
+  }
 }

@@ -1,0 +1,12 @@
+{
+  "s1-s2-s4": {
+    "utilization": 0.20,
+    "age_s": 0.1,
+    "variability": 0.02
+  },
+  "s1-s3-s4": {
+    "utilization": 0.90,
+    "age_s": 0.1,
+    "variability": 0.02
+  }
+}
