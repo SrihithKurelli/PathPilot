@@ -1,0 +1,1 @@
+{"seed":7,"trials":5,"scenarios":[{"name":"steady_low","offered_load_mbps":10,"duration_s":30},{"name":"steady_high","offered_load_mbps":80,"duration_s":30},{"name":"burst","offered_load_mbps":[10,80,10,80],"interval_s":10},{"name":"telemetry_stale","age_s":2.0},{"name":"telemetry_noisy","variability":0.5},{"name":"link_degradation","path":"s1-s2-s4","delay_ms":100}]}
