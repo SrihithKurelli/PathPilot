@@ -32,6 +32,7 @@ def choose_path(
     *,
     threshold=0.75,
     min_confidence=0.5,
+    safe_fallback=None,
 ):
     if not telemetry:
         raise ValueError("at least one candidate path is required")
