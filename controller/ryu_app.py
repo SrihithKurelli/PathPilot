@@ -220,11 +220,7 @@ class PathPilotController(app_manager.RyuApp):
         if dp.id == 1:
             if in_port == 1:
                 telemetry = self.read_telemetry()
-                path = choose_path(
-                    telemetry,
-                    self.policy,
-                    safe_fallback="s1-s2-s4",
-                )
+                path = choose_path(telemetry, self.policy)
                 self.logger.info(
                     "Selected path %s for new flow %s -> %s (policy=%s)",
                     path, ip.src, ip.dst, self.policy,
