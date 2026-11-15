@@ -30,6 +30,12 @@ class PathPilotController(app_manager.RyuApp):
     OFP_VERSIONS = [ofproto_v1_3.OFP_VERSION]
     PATH_PORTS = {"s1-s2-s4": 2, "s1-s3-s4": 3}
     STATS_INTERVAL_S = 2.0
+    DEBUG_PORTS = {
+        (1, 2): "s1-eth2 (Path 1)",
+        (2, 2): "s2-eth2 (Path 1)",
+        (1, 3): "s1-eth3 (Path 2)",
+        (3, 2): "s3-eth2 (Path 2)",
+    }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -81,22 +87,61 @@ class PathPilotController(app_manager.RyuApp):
     def port_stats_reply(self, ev):
         now = time.monotonic()
         dpid = ev.msg.datapath.id
+
         for stat in ev.msg.body:
+            key = (dpid, stat.port_no)
+            previous = self.port_rate_tracker._previous.get(key)
             self.port_rate_tracker.update_port(
                 dpid, stat.port_no, stat.tx_bytes, now
             )
+
+            label = self.DEBUG_PORTS.get(key)
+            if label is not None:
+                if previous is None:
+                    self.logger.info(
+                        "[PORT-DEBUG] %s: baseline tx_bytes=%s",
+                        label, stat.tx_bytes,
+                    )
+                else:
+                    previous_bytes, previous_time = previous
+                    elapsed = now - previous_time
+                    delta_bytes = stat.tx_bytes - previous_bytes
+                    if elapsed > 0 and delta_bytes >= 0:
+                        rate_mbps = delta_bytes * 8.0 / elapsed / 1_000_000
+                        utilization = rate_mbps / 100.0
+                    else:
+                        rate_mbps = -1.0
+                        utilization = -1.0
+
+                    self.logger.info(
+                        "[PORT-DEBUG] %s: previous=%s current=%s "
+                        "delta=%s elapsed=%.3fs rate=%.3f Mbps "
+                        "utilization=%.4f",
+                        label, previous_bytes, stat.tx_bytes, delta_bytes,
+                        elapsed, rate_mbps, utilization,
+                    )
+
         if dpid not in self._stats_reply_switches:
             self._stats_reply_switches.add(dpid)
-            self.logger.info("Received first port-stats reply from switch %s", dpid)
-        live = self.port_rate_tracker.path_telemetry(now)
-        if live is not None and not self._logged_live_ready:
-            self._logged_live_ready = True
             self.logger.info(
-                "Live telemetry ready: s1-s2-s4 utilization=%.4f, "
-                "s1-s3-s4 utilization=%.4f",
+                "Received first port-stats reply from switch %s", dpid
+            )
+
+        live = self.port_rate_tracker.path_telemetry(now)
+        if live is not None:
+            self.logger.debug(
+                "[PATH-DEBUG] Path 1=%.4f Path 2=%.4f",
                 live["s1-s2-s4"].utilization,
                 live["s1-s3-s4"].utilization,
             )
+            if not self._logged_live_ready:
+                self._logged_live_ready = True
+                self.logger.info(
+                    "Live telemetry ready: s1-s2-s4 utilization=%.4f, "
+                    "s1-s3-s4 utilization=%.4f",
+                    live["s1-s2-s4"].utilization,
+                    live["s1-s3-s4"].utilization,
+                )
 
     @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER)
     def switch_features(self, ev):
