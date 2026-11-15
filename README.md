@@ -77,3 +77,35 @@ Compare policies under identical traffic and telemetry conditions. Report p99 la
 - The controller does not migrate established flows after a path decision.
 - Reverse-path state is in memory and is lost on controller restart.
 - ARP remains statically populated by the Mininet topology; general ARP forwarding is not implemented.
+
+
+## Policy evaluation
+
+The repository includes a deterministic **synthetic telemetry replay** to compare
+policy decisions independently of Mininet timing and traffic-generation noise. It
+covers balanced load, either path being hot, changing load, noisy measurements,
+and stale measurements. The replay reports selected-path utilization, regret
+relative to an oracle that knows the simulated true utilization, oracle-choice
+rate, and selected-sample confidence. These are simulation results, not measured
+network performance.
+
+Run from the repository root with the project virtual environment active:
+
+```bash
+python -m pytest -q
+python -m experiments.policy_replay --seed 7 --trials 10 --steps 100
+python -m experiments.analyze_results results/policy_replay.csv
+```
+
+The replay writes raw decisions to `results/policy_replay.csv` and grouped
+summaries to `results/policy_summary.csv`. Change `--seed`, `--trials`, and
+`--steps` to test repeatability and increase the number of simulated decisions.
+Keep the seed and parameters with any reported result.
+
+For the network-level evaluation, use the Mininet/Ryu topology separately:
+measure each path under the same link capacity, delay, and offered load, repeat
+each trial, and record iperf3 goodput plus ping RTT/loss. Do not label synthetic
+replay outputs as throughput, latency, or packet-loss measurements. The current
+controller selects a path only when a new flow arrives and does not migrate
+established flows, so each policy/trial must start with cleared flow state and a
+fresh controller process for a fair comparison.

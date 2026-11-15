@@ -16,6 +16,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: python -m pip install --upgrade pip pytest
       - name: Compile Python source
-        run: python -m compileall -q controller topology tests
+        run: python -m compileall -q controller topology tests experiments
       - name: Run policy and telemetry unit tests
         run: python -m pytest -q
