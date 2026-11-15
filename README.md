@@ -167,3 +167,43 @@ Use identical impairment parameters and seeds when comparing policies.
 Record the full command, raw CSV, and software revision with reported results.
 The impairment is a controlled emulation model; it is not a claim that this
 captures every real switch/controller telemetry failure mode.
+
+
+### Automated telemetry experiment matrix
+
+To run the repeated Mininet experiments as one batch, use
+`experiments/run_telemetry_matrix.py`. By default it evaluates five conditions
+(baseline, 2-second delay, 0.05 noise, combined 2-second/0.05 impairment, and a
+4-second/0.10 stress condition) across all four routing policies with 10 trials
+per policy and condition: 200 Mininet trials in total.
+
+Run a dry-run first to inspect the planned commands without starting Mininet:
+
+```bash
+sudo env PYTHONPATH=/home/pathpilot/PathPilot \
+  /usr/bin/python3 experiments/run_telemetry_matrix.py --dry-run
+```
+
+Run the complete matrix:
+
+```bash
+sudo env PYTHONPATH=/home/pathpilot/PathPilot \
+  /usr/bin/python3 experiments/run_telemetry_matrix.py
+```
+
+The script launches a fresh Ryu controller and Mininet topology for each trial
+through the existing single-trial runner. It automatically increases telemetry
+warm-up for the 4-second delay condition. Completed conditions are saved
+immediately, so their CSVs remain available if a later condition fails.
+
+Outputs are written to `results/telemetry_matrix/`:
+- One raw CSV per condition
+- `all_conditions_raw.csv`: combined raw trial data
+- `summary.csv`: per-condition, per-policy throughput and avoidance summary
+- `REPORT.md`: generated results table and interpretation limitations
+
+For a shorter pilot, pass `--trials 1`. To run only selected conditions, pass
+for example `--conditions baseline delayed combined`. The output is an
+emulation study of TCP goodput and path selection, not a production-network
+benchmark. The stress condition may trigger safe fallback behavior; failures
+must be reported rather than discarded.
