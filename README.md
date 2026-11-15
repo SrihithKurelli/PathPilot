@@ -93,8 +93,8 @@ Run from the repository root with the project virtual environment active:
 
 ```bash
 python -m pytest -q
-python experiments/policy_replay.py --seed 7 --trials 10 --steps 100
-python experiments/analyze_results.py results/policy_replay.csv
+python -m experiments.policy_replay --seed 7 --trials 10 --steps 100
+python -m experiments.analyze_results results/policy_replay.csv
 ```
 
 The replay writes raw decisions to `results/policy_replay.csv` and grouped
