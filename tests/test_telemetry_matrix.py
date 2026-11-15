@@ -73,3 +73,8 @@ def test_report_includes_scope_and_limitations(tmp_path):
     report = output.read_text()
     assert "Mininet emulation results" in report
     assert "does not measure p99 latency" in report
+
+def test_aggregate_csv_preserves_telemetry_evidence():
+    assert "first_telemetry_log" in matrix.RAW_FIELDS
+    assert "second_telemetry_log" in matrix.RAW_FIELDS
+
