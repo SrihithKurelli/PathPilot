@@ -31,7 +31,7 @@ Use Ubuntu 22.04 with Mininet, Open vSwitch, Python 3.10, and Ryu 4.34. Ryu/even
 
 ```bash
 sudo apt update
-sudo apt install -y mininet openvswitch-switch iperf3 python3.10 python3.10-venv
+sudo apt install -y mininet openvswitch-switch iperf python3.10 python3.10-venv
 python3.10 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
