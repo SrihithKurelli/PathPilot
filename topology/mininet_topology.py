@@ -10,10 +10,10 @@ def build_network(controller_ip="127.0.0.1", controller_port=6653):
     net = Mininet(controller=None, switch=OVSSwitch, link=TCLink, build=False, autoSetMacs=True)
     h1 = net.addHost("h1", ip="10.0.0.1/24")
     h2 = net.addHost("h2", ip="10.0.0.2/24")
-    s1 = net.addSwitch("s1", protocols="OpenFlow13")
-    s2 = net.addSwitch("s2", protocols="OpenFlow13")
-    s3 = net.addSwitch("s3", protocols="OpenFlow13")
-    s4 = net.addSwitch("s4", protocols="OpenFlow13")
+    s1 = net.addSwitch("s1", dpid="0000000000000001", protocols="OpenFlow13")
+    s2 = net.addSwitch("s2", dpid="0000000000000002", protocols="OpenFlow13")
+    s3 = net.addSwitch("s3", dpid="0000000000000003", protocols="OpenFlow13")
+    s4 = net.addSwitch("s4", dpid="0000000000000004", protocols="OpenFlow13")
 
     # Port map: s1(h1=1,s2=2,s3=3); s2(s1=1,s4=2);
     # s3(s1=1,s4=2); s4(s2=1,s3=2,h2=3).

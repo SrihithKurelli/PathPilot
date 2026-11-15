@@ -2,19 +2,27 @@
 
 SDN routing under uncertain telemetry — a Computer Networks group project.
 
-## Project status: early prototype
+## Current implementation
 
-This repository currently contains a policy-selection core, a starter Ryu OpenFlow 1.3 application, a two-path Mininet topology, sample telemetry/scenario JSON, and unit tests.
+PathPilot has a two-path Mininet topology and a Ryu OpenFlow 1.3 controller. For each new IPv4 TCP, UDP, or ICMP flow entering at s1, the controller selects one path and installs forwarding rules along it. The reverse direction is pinned to the selected path. Existing flows are not migrated.
 
-**Not yet complete:** live switch/queue telemetry collection, delay/noise injection, robust bidirectional forwarding and ARP/ICMP handling, experiment automation, metric extraction, and end-to-end Mininet validation. The current telemetry JSON is a static snapshot; it is not collected from switches yet.
+The controller now polls OpenFlow port statistics every 2 seconds and derives utilization for the two internal links on each candidate path:
+
+- `s1-s2-s4`: s1 port 2 and s2 port 2
+- `s1-s3-s4`: s1 port 3 and s3 port 2
+
+Utilization is calculated from transmit-byte counter deltas against the topology's configured 100 Mbps link capacity. A path's utilization is the maximum utilization of its two internal links, so a single heavily loaded hop is not hidden by averaging. Variability is the population standard deviation of up to five recent utilization samples per link.
+
+The Mininet topology assigns stable OpenFlow DPIDs 1–4 to s1–s4 so the controller's port map is deterministic. Live telemetry is used only when both paths have fresh samples (no older than 6 seconds). Until then, or if measurements become stale, the controller falls back to `experiments/telemetry.json`. This keeps the prototype usable during controller startup and temporary statistics gaps.
 
 ## Layout
 
 - `controller/policies.py`: pure routing-policy functions and confidence score
-- `controller/ryu_app.py`: starter Ryu controller for new IPv4 TCP/UDP flows
+- `controller/live_telemetry.py`: OpenFlow counter-to-utilization calculations
+- `controller/ryu_app.py`: Ryu controller, port-stat polling, path selection and flow installation
 - `topology/mininet_topology.py`: two parallel Mininet paths
-- `experiments/`: sample telemetry and proposed scenarios
-- `tests/`: policy unit tests
+- `experiments/`: static fallback telemetry and proposed scenarios
+- `tests/`: policy and live-telemetry unit tests
 - `.github/workflows/tests.yml`: CI unit-test workflow
 
 ## Environment
@@ -33,17 +41,19 @@ pip install -r requirements.txt
 ## Run
 
 Terminal 1:
+
 ```bash
 source .venv/bin/activate
-ryu-manager controller/ryu_app.py
+EVENTLET_NO_GREENDNS=yes ryu-manager controller/ryu_app.py
 ```
 
 Terminal 2:
+
 ```bash
 sudo python3 topology/mininet_topology.py --controller 127.0.0.1
 ```
 
-The controller reads `experiments/telemetry.json` (override with `PATHPILOT_TELEMETRY`) and selects a policy using `PATHPILOT_POLICY`:
+The controller reads the static fallback from `experiments/telemetry.json` (override with `PATHPILOT_TELEMETRY`) and selects a policy using `PATHPILOT_POLICY`:
 `static`, `least_loaded`, `threshold`, or `uncertainty_aware`.
 
 ## Unit tests
@@ -53,8 +63,17 @@ python -m pip install pytest
 python -m pytest -q
 ```
 
-These tests exercise only the pure policy logic. They do not validate Ryu, OpenFlow rules, Mininet, OVS, traffic forwarding, or performance.
+These tests validate policy selection and the pure port-counter calculations. They do not replace end-to-end validation of Ryu event handling, OpenFlow statistics delivery, Mininet forwarding, or throughput under load.
 
 ## Research evaluation target
 
 Compare policies under identical traffic and telemetry conditions. Report p99 latency, goodput, packet loss, Jain fairness (when applicable), path changes, controller CPU, rule updates, and telemetry volume. Use repeated trials and fixed seeds. Treat Mininet results as emulation measurements, not production-network measurements.
+
+## Current limitations
+
+- Port utilization assumes the configured 100 Mbps capacity and the documented Mininet port map.
+- Live utilization is based on inter-switch transmit counters; it does not directly measure queue occupancy or delay.
+- The static JSON is a fallback, not the primary source once live statistics are fresh.
+- The controller does not migrate established flows after a path decision.
+- Reverse-path state is in memory and is lost on controller restart.
+- ARP remains statically populated by the Mininet topology; general ARP forwarding is not implemented.
