@@ -50,7 +50,12 @@ class PathPilotController(app_manager.RyuApp):
         self.experiment_initial_path = os.getenv("PATHPILOT_EXPERIMENT_INITIAL_PATH")
         self.experiment_first_flow_port = int(
             os.getenv("PATHPILOT_EXPERIMENT_FIRST_FLOW_PORT", "5001")
-        )\n        # The optional pin is restricted to the designated first-flow TCP port.\n        pinned_experiment_path(\n            self.experiment_initial_path, self.experiment_first_flow_port,\n            self.experiment_first_flow_port,\n        )\n        self.reverse_paths = {}
+        )
+        # The optional pin is restricted to the designated first-flow TCP port.
+        pinned_experiment_path(
+            self.experiment_initial_path, self.experiment_first_flow_port,
+            self.experiment_first_flow_port,
+        )\n        self.reverse_paths = {}
         self.last_selected_path = None
         self.datapaths = {}
         self.port_rate_tracker = PortRateTracker()
