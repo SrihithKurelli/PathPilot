@@ -55,7 +55,8 @@ class PathPilotController(app_manager.RyuApp):
         pinned_experiment_path(
             self.experiment_initial_path, self.experiment_first_flow_port,
             self.experiment_first_flow_port,
-        )\n        self.reverse_paths = {}
+        )
+        self.reverse_paths = {}
         self.last_selected_path = None
         self.datapaths = {}
         self.port_rate_tracker = PortRateTracker()
