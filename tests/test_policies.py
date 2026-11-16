@@ -107,3 +107,36 @@ def test_invalid_measurement():
 def test_unknown_policy(samples):
     with pytest.raises(ValueError):
         choose_path(samples, "magic")
+
+
+def test_stability_aware_retains_previous_path_for_small_improvement():
+    data = {
+        "path-a": Telemetry(.40, .1, .01),
+        "path-b": Telemetry(.35, .1, .01),
+    }
+    assert choose_path(
+        data, "stability_aware", previous_path="path-a", switch_margin=.10
+    ) == "path-a"
+
+
+def test_stability_aware_switches_for_material_improvement():
+    data = {
+        "path-a": Telemetry(.55, .1, .01),
+        "path-b": Telemetry(.30, .1, .01),
+    }
+    assert choose_path(
+        data, "stability_aware", previous_path="path-a", switch_margin=.10
+    ) == "path-b"
+
+
+def test_stability_aware_uses_least_loaded_without_previous_path():
+    data = {
+        "path-a": Telemetry(.55, .1, .01),
+        "path-b": Telemetry(.30, .1, .01),
+    }
+    assert choose_path(data, "stability_aware") == "path-b"
+
+
+def test_non_finite_telemetry_is_rejected():
+    with pytest.raises(ValueError):
+        choose_path({"bad": Telemetry(float("nan"), 0, 0)})
