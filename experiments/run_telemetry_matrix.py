@@ -171,6 +171,8 @@ def main():
                         help="default: max(6, delay + 4) for each condition")
     parser.add_argument("--dry-run", action="store_true",
                         help="print the planned commands without starting Mininet")
+    parser.add_argument("--aggregate-only", action="store_true",
+                        help="rebuild aggregate CSV and report from existing per-condition CSVs")
     args = parser.parse_args()
 
     if args.trials < 1:
@@ -182,6 +184,19 @@ def main():
     runner = repo / "experiments" / "mininet_policy_eval.py"
     if not runner.is_file():
         parser.error(f"run from repository root; missing {runner}")
+
+    if args.aggregate_only:
+        all_rows = load_completed_conditions(args.output_dir)
+        if not all_rows:
+            parser.error(f"no per-condition CSV files found in {args.output_dir}")
+        write_csv(args.output_dir / "all_conditions_raw.csv", all_rows, RAW_FIELDS)
+        summary = summarize(all_rows)
+        write_csv(args.output_dir / "summary.csv", summary, list(summary[0]))
+        write_report(args.output_dir / "REPORT.md", summary)
+        completed = len({row["condition"] for row in all_rows})
+        print(f"Rebuilt aggregates from {completed} conditions "
+              f"({len(all_rows)} trials) in {args.output_dir}")
+        return
 
     for condition in args.conditions:
         delay, noise = CONDITIONS[condition]
