@@ -29,7 +29,7 @@ jobs:
       - name: Set up Python 3.10 and install controller
         run: |
           python3.10 -m venv .venv
-          .venv/bin/python -m pip install --upgrade pip
+          .venv/bin/python -m pip install "pip<24"
           # Ryu 4.34's setup.py depends on the legacy easy_install API.
           # Install a compatible build toolchain and disable isolated builds.
           .venv/bin/python -m pip install "setuptools<58" wheel
