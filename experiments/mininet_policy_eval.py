@@ -23,6 +23,8 @@ from pathlib import Path
 POLICIES = ("static", "least_loaded", "threshold", "stability_aware", "uncertainty_aware")
 PATH_TO_SWITCH = {"s1-s2-s4": "s2", "s1-s3-s4": "s3"}
 BANDWIDTH_RE = re.compile(r"([0-9]+(?:\.[0-9]+)?)\s+([KMG])bits/sec")
+PING_RTT_RE = re.compile(r"time[=<]([0-9]+(?:\\.[0-9]+)?)\\s*ms")
+PING_LOSS_RE = re.compile(r"([0-9]+(?:\\.[0-9]+)?)% packet loss")
 
 
 class ControllerLog:
