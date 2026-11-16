@@ -52,7 +52,8 @@ def summarize(rows):
         values = sorted(float(item["second_flow_mbps"]) for item in items)
         avoidance = [int(item["avoided_bottleneck"]) for item in items]
         losses = [float(item["connectivity_loss_pct"]) for item in items]
-        icmp_losses = [float(item["icmp_probe_packet_loss_pct"]) for item in items]
+        icmp_losses = [float(item["icmp_probe_packet_loss_pct"]) for item in items
+                       if item.get("icmp_probe_packet_loss_pct") not in ("", None)]
         icmp_p99 = [float(item["icmp_probe_rtt_p99_ms"]) for item in items
                     if item["icmp_probe_rtt_p99_ms"] not in ("", None)]
         n = len(values)
@@ -76,7 +77,8 @@ def summarize(rows):
             "max_second_flow_mbps": round(values[-1], 4),
             "bottleneck_avoidance_rate": round(statistics.mean(avoidance), 4),
             "mean_connectivity_loss_pct": round(statistics.mean(losses), 4),
-            "mean_icmp_probe_packet_loss_pct": round(statistics.mean(icmp_losses), 4),
+            "mean_icmp_probe_packet_loss_pct": round(statistics.mean(icmp_losses), 4)
+                if icmp_losses else "",
             "mean_icmp_probe_rtt_p99_ms": round(statistics.mean(icmp_p99), 4)
                 if icmp_p99 else "",
         })
