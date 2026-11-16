@@ -47,7 +47,10 @@ class PathPilotController(app_manager.RyuApp):
         self.telemetry_rng = random.Random(
             int(os.getenv("PATHPILOT_TELEMETRY_SEED", "7"))
         )
-        self.experiment_initial_path = os.getenv(\"PATHPILOT_EXPERIMENT_INITIAL_PATH\")\n        self.experiment_first_flow_port = int(\n            os.getenv(\"PATHPILOT_EXPERIMENT_FIRST_FLOW_PORT\", \"5001\")\n        )\n        # The optional pin is restricted to the designated first-flow TCP port.\n        pinned_experiment_path(\n            self.experiment_initial_path, self.experiment_first_flow_port,\n            self.experiment_first_flow_port,\n        )\n        self.reverse_paths = {}
+        self.experiment_initial_path = os.getenv("PATHPILOT_EXPERIMENT_INITIAL_PATH")
+        self.experiment_first_flow_port = int(
+            os.getenv("PATHPILOT_EXPERIMENT_FIRST_FLOW_PORT", "5001")
+        )\n        # The optional pin is restricted to the designated first-flow TCP port.\n        pinned_experiment_path(\n            self.experiment_initial_path, self.experiment_first_flow_port,\n            self.experiment_first_flow_port,\n        )\n        self.reverse_paths = {}
         self.last_selected_path = None
         self.datapaths = {}
         self.port_rate_tracker = PortRateTracker()
