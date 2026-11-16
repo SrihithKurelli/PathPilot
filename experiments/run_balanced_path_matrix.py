@@ -15,7 +15,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-POLICIES = ("static", "least_loaded", "threshold", "uncertainty_aware")
+POLICIES = ("static", "least_loaded", "threshold", "stability_aware", "uncertainty_aware")
 PATHS = {"path1": "s1-s2-s4", "path2": "s1-s3-s4"}
 CONDITIONS = {
     "baseline": (0.0, 0.0),
