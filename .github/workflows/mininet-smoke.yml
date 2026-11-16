@@ -35,6 +35,8 @@ jobs:
           .venv/bin/python -m pip install "setuptools<58" wheel
           .venv/bin/python -m pip install "eventlet==0.33.3" pytest
           .venv/bin/python -m pip install --no-build-isolation "ryu==4.34"
+          # Ryu 4.34 imports a sentinel removed from newer Eventlet releases.
+          echo 'ALREADY_HANDLED = object()' >> .venv/lib/python3.10/site-packages/eventlet/wsgi.py
 
       - name: Compile and run unit tests
         run: |
