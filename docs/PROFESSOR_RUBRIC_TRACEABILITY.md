@@ -26,7 +26,7 @@ This document maps the professor's Project Orientation and the revised PathPilot
 | End-to-end latency | No latency distribution collector in current Mininet runner | Missing |
 | Sampling delay and noise | Ryu environment controls and historical telemetry | Implemented |
 | Static, least-loaded, threshold baselines | `controller/policies.py` | Implemented |
-| Stability-aware baseline | Not currently present | Missing |
+| Stability-aware baseline | `controller/policies.py` (`stability_aware`) and policy tests | Implemented as a fixed 0.10 absolute-utilization hysteresis comparator; not a novel contribution |
 | Confidence-aware new-flow placement | `uncertainty_aware` policy | Implemented as a heuristic; not a proven research contribution |
 | Existing flows remain on selected paths | Installed per-flow OpenFlow rules; no migration logic | Implemented for prototype |
 | Reproducible experiment runner | Balanced Mininet matrix, seeds, raw CSV and controller logs | Implemented for existing goodput/path-choice experiments |
@@ -43,13 +43,11 @@ This document maps the professor's Project Orientation and the revised PathPilot
 
 ## Work required before claiming rubric completion
 
-1. Add a documented stability-aware baseline with a fixed, predeclared rule.
-2. Add deterministic traffic scenarios: steady low/high, burst/alternating burst, mixed short/long flows, degradation and recovery.
-3. Extend the experiment harness to collect latency distributions (including p99), packet loss, per-flow goodput/fairness, path changes/reversals, controller CPU, rule updates and telemetry volume.
-4. Add configurable link impairment/failure controls and verify recovery behavior.
-5. Add unit tests, integration checks and a reproducible demo script.
-6. Run the new scenarios on the Ubuntu Mininet VM; code inspection and CI alone cannot establish live deployment success.
-7. Produce the final report, plots, run manifest, demo recording/screenshots and full references.
+1. Add deterministic traffic scenarios: steady low/high, burst/alternating burst, mixed short/long flows, degradation and recovery.
+2. Extend the experiment harness to collect latency distributions (including p99), packet loss, per-flow goodput/fairness, path changes/reversals, controller CPU, rule updates and telemetry volume.
+3. Add configurable link impairment/failure controls and verify recovery behavior.
+4. Run the new scenarios on the Ubuntu Mininet VM; code inspection and CI alone cannot establish live deployment success.
+5. Produce the final report, plots, run manifest, demo recording/screenshots and full references.
 
 ## Claim discipline
 
