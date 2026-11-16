@@ -5,8 +5,10 @@ Each trial starts a fresh Ryu controller and Mininet topology. The first TCP
 flow selects a path; the harness bottlenecks that actual path, waits for the
 configured telemetry delay plus warm-up, then measures a second flow.
 
-This is an emulation experiment. It records iperf goodput and controller
-decisions; it does not measure p99 latency, fairness, or production behavior.
+This is an emulation experiment. It records TCP goodput/path decisions and a
+concurrent ICMP probe's RTT percentiles and packet loss. The ICMP probe is a
+separate flow and is not a per-TCP-flow latency measurement. Fairness and
+controller overhead are not measured.
 Run as root from the repository root on the configured Ubuntu/Mininet host.
 """
 from __future__ import annotations
