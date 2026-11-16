@@ -34,8 +34,8 @@ This document maps the professor's Project Orientation and the revised PathPilot
 | Mixed short/long flows | Synthetic aggregate-load proxy in `experiments/policy_replay.py` | Partial: not a packet-level mixed-flow experiment |
 | Telemetry impairment | 5 conditions in 400-trial matrix | Implemented |
 | Path degradation/link loss and recovery | Bottleneck experiment only | Partial |
-| Primary p99 end-to-end latency | Not measured in current 400-trial matrix | Missing |
-| Goodput and packet loss | TCP goodput; connectivity ping loss only | Partial |
+| Primary p99 end-to-end latency | Mininet runner now records concurrent ICMP probe RTT p50/p95/p99 | Partial: ICMP probe is a separate flow; TCP-flow latency distributions are not measured |
+| Goodput and packet loss | TCP goodput plus concurrent ICMP probe packet loss; initial connectivity ping loss | Partial: ICMP loss is not TCP data-plane packet loss |
 | Jain fairness | Not measured | Missing |
 | Path changes/minute and reversals | Temporal replay emits changes/minute and reversal counts; `experiments/analyze_results.py` summarizes them | Partial: synthetic replay metrics only; Mininet/controller runtime metrics remain unmeasured |
 | Adaptation time and overhead | Not measured systematically | Missing |
