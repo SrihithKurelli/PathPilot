@@ -10,7 +10,7 @@ This document maps the professor's Project Orientation and the revised PathPilot
 | Motivation and appreciation of prior work | Project proposal and literature discussion | Needs a final, cited related-work section and verified bibliography |
 | System design | Controller, topology, telemetry, policies and experiment runner | Implemented; add final architecture and sequence diagrams to report |
 | Module implementation | Controller, topology, telemetry, policy and experiment modules | Core modules implemented; missing evaluation modules remain |
-| End-to-end integration | Mininet + OVS + Ryu experiment runner | Previously exercised; rerun a clean end-to-end demo before final submission |
+| End-to-end integration | `.github/workflows/mininet-smoke.yml` runs Ryu + OVS + Mininet, checks connectivity, runs a TCP bottleneck trial and validates ICMP RTT/loss output | Automated Ubuntu CI smoke test passes; repeat the guided demo on the project Ubuntu VM for submission evidence |
 | Performance evaluation | 400-trial counterbalanced Mininet matrix and synthetic replay | Partial: goodput/path avoidance measured; proposal's full metrics/scenarios not covered |
 | Near-real-world deployment / demo | Mininet + OVS + Ryu | Suitable emulated deployment; prepare a one-command guided demo and evidence bundle |
 | References | README/proposal literature notes | Final report must include complete references and careful novelty claims |
