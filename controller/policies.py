@@ -11,18 +11,18 @@ class Telemetry:
     variability: float
 
     def validate(self):
-        if not 0 <= self.utilization <= 1:
-            raise ValueError("utilization must be in [0,1]")
+        if not math.isfinite(self.utilization) or not 0 <= self.utilization <= 1:
+            raise ValueError("utilization must be finite and in [0,1]")
         if self.age_s < 0 or not math.isfinite(self.age_s):
             raise ValueError("age_s must be finite and >= 0")
-        if not 0 <= self.variability <= 1:
-            raise ValueError("variability must be in [0,1]")
+        if not math.isfinite(self.variability) or not 0 <= self.variability <= 1:
+            raise ValueError("variability must be finite and in [0,1]")
 
 
 def confidence(sample: Telemetry, alpha=0.5, beta=2.0):
     sample.validate()
-    if alpha < 0 or beta < 0:
-        raise ValueError("alpha and beta must be non-negative")
+    if alpha < 0 or beta < 0 or not math.isfinite(alpha + beta):
+        raise ValueError("alpha and beta must be finite and non-negative")
     return math.exp(-alpha * sample.age_s - beta * sample.variability)
 
 
@@ -35,11 +35,18 @@ def choose_path(
     safe_fallback=None,
     previous_path=None,
     noise_margin_sigma=1.0,
+    switch_margin=0.10,
 ):
     if not telemetry:
         raise ValueError("at least one candidate path is required")
     if noise_margin_sigma < 0 or not math.isfinite(noise_margin_sigma):
         raise ValueError("noise_margin_sigma must be finite and non-negative")
+    if not 0 <= threshold <= 1:
+        raise ValueError("threshold must be in [0,1]")
+    if not 0 <= min_confidence <= 1:
+        raise ValueError("min_confidence must be in [0,1]")
+    if switch_margin < 0 or not math.isfinite(switch_margin):
+        raise ValueError("switch_margin must be finite and non-negative")
     names = sorted(telemetry)
     for sample in telemetry.values():
         sample.validate()
@@ -51,16 +58,24 @@ def choose_path(
     if policy == "threshold":
         eligible = [n for n in names if telemetry[n].utilization <= threshold]
         return min(eligible or names, key=lambda n: (telemetry[n].utilization, n))
+    if policy == "stability_aware":
+        best = min(names, key=lambda n: (telemetry[n].utilization, n))
+        # Baseline rule: retain the previous path unless another path improves
+        # measured utilization by at least switch_margin (absolute fraction).
+        # This is a comparator, not PathPilot's proposed confidence mechanism.
+        if previous_path in telemetry and previous_path != best:
+            improvement = (
+                telemetry[previous_path].utilization - telemetry[best].utilization
+            )
+            if improvement < switch_margin:
+                return previous_path
+        return best
     if policy == "uncertainty_aware":
         eligible = [
             n for n in names
             if confidence(telemetry[n]) >= min_confidence
         ]
         candidates = eligible or names
-
-        # Even a fresh sample can contain substantial measurement noise.
-        # Compare the two best candidates against the uncertainty of their
-        # difference before trusting a small utilization ranking.
         if len(candidates) > 1:
             ranked = sorted(candidates, key=lambda n: telemetry[n].utilization)
             best, second = ranked[0], ranked[1]
@@ -70,12 +85,9 @@ def choose_path(
             )
             margin = noise_margin_sigma * combined_uncertainty
             if telemetry[second].utilization - telemetry[best].utilization <= margin:
-                # If the measurements cannot distinguish the paths, avoid
-                # repeatedly sending new flows down the previous path.
                 alternatives = [n for n in candidates if n != previous_path]
                 if previous_path in candidates and alternatives:
                     return alternatives[0]
-
         return min(
             candidates,
             key=lambda n: (
