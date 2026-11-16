@@ -122,6 +122,20 @@ def parse_ping_metrics(output):
     }
 
 
+def repository_revision(repo_root):
+    """Return the checked-out Git revision and whether tracked files are dirty."""
+    try:
+        revision = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=repo_root, text=True
+        ).strip()
+        dirty = subprocess.call(
+            ["git", "diff", "--quiet"], cwd=repo_root
+        ) != 0
+        return revision, int(dirty)
+    except (OSError, subprocess.CalledProcessError):
+        return "unknown", -1
+
+
 def _run_client(host, destination, port, duration):
     return host.popen(
         ["iperf", "-c", destination, "-p", str(port), "-t", str(duration)],
