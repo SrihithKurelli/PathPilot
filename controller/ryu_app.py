@@ -20,6 +20,7 @@ from ryu.ofproto import ofproto_v1_3
 
 from controller.live_telemetry import PortRateTracker
 from controller.policies import Telemetry, choose_path
+from experiments.path_pinning import pinned_experiment_path
 
 
 class PathPilotController(app_manager.RyuApp):
@@ -46,7 +47,7 @@ class PathPilotController(app_manager.RyuApp):
         self.telemetry_rng = random.Random(
             int(os.getenv("PATHPILOT_TELEMETRY_SEED", "7"))
         )
-        self.reverse_paths = {}
+        self.experiment_initial_path = os.getenv(\"PATHPILOT_EXPERIMENT_INITIAL_PATH\")\n        self.experiment_first_flow_port = int(\n            os.getenv(\"PATHPILOT_EXPERIMENT_FIRST_FLOW_PORT\", \"5001\")\n        )\n        # The optional pin is restricted to the designated first-flow TCP port.\n        pinned_experiment_path(\n            self.experiment_initial_path, self.experiment_first_flow_port,\n            self.experiment_first_flow_port,\n        )\n        self.reverse_paths = {}
         self.last_selected_path = None
         self.datapaths = {}
         self.port_rate_tracker = PortRateTracker()
@@ -220,11 +221,25 @@ class PathPilotController(app_manager.RyuApp):
         key = self.flow_key(ip, transport)
         if dp.id == 1:
             if in_port == 1:
-                telemetry = self.read_telemetry()
-                path = choose_path(
-                    telemetry, self.policy, previous_path=self.last_selected_path
+                pinned_path = pinned_experiment_path(
+                    self.experiment_initial_path,
+                    tcp_pkt.dst_port if tcp_pkt else None,
+                    self.experiment_first_flow_port,
                 )
-                self.last_selected_path = path
+                if pinned_path is not None:
+                    # Do not update last_selected_path: the experimental
+                    # priming flow must not bias the policy's second decision.
+                    path = pinned_path
+                    self.logger.info(
+                        "Experiment path pin applied to TCP destination port %s: %s",
+                        tcp_pkt.dst_port, path,
+                    )
+                else:
+                    telemetry = self.read_telemetry()
+                    path = choose_path(
+                        telemetry, self.policy, previous_path=self.last_selected_path
+                    )
+                    self.last_selected_path = path
                 self.logger.info(
                     "Selected path %s for new flow %s -> %s (policy=%s)",
                     path, ip.src, ip.dst, self.policy,
