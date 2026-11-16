@@ -173,7 +173,6 @@ def main():
                         default=list(CONDITIONS))
     parser.add_argument("--initial-paths", nargs="+", choices=tuple(PATHS),
                         default=list(PATHS))
-    parser.add_argument("--policies", nargs="+", choices=POLICIES, default=list(POLICIES))
     parser.add_argument("--seed", type=int, default=7)
     parser.add_argument("--output-dir", type=Path,
                         default=Path("results/balanced_telemetry_matrix"))
@@ -192,8 +191,8 @@ def main():
 
     if args.trials < 1:
         parser.error("--trials must be positive")
-    if not args.conditions or not args.initial_paths or not args.policies:
-        parser.error("select at least one condition, initial path, and policy")
+    if not args.conditions or not args.initial_paths:
+        parser.error("select at least one condition and initial path")
 
     repo = Path.cwd().resolve()
     runner = repo / "experiments" / "mininet_policy_eval.py"
@@ -223,9 +222,9 @@ def main():
                     parser.error(f"{output} already exists; choose another output directory or use --resume")
                 with output.open(newline="") as handle:
                     existing = list(csv.DictReader(handle))
-                expected = len(args.policies) * args.trials
+                expected = len(POLICIES) * args.trials
                 counts = {policy: sum(row.get("policy") == policy for row in existing)
-                          for policy in args.policies}
+                          for policy in POLICIES}
                 if len(existing) != expected or any(count != args.trials for count in counts.values()):
                     parser.error(f"{output} exists but is not a complete matching cell: {counts}")
                 if any(row.get("first_flow_path") != initial_path for row in existing):
@@ -235,7 +234,7 @@ def main():
 
             command = [
                 sys.executable, str(runner),
-                "--policies", *args.policies,
+                "--policies", *POLICIES,
                 "--trials", str(args.trials),
                 "--initial-path", initial_path,
                 "--telemetry-delay-seconds", str(delay),
@@ -258,7 +257,7 @@ def main():
             subprocess.run(command, cwd=repo, check=True)
             with output.open(newline="") as handle:
                 cell_rows = list(csv.DictReader(handle))
-            expected = len(args.policies) * args.trials
+            expected = len(POLICIES) * args.trials
             if len(cell_rows) != expected:
                 raise RuntimeError(f"{output}: expected {expected} rows, found {len(cell_rows)}")
             if any(row["first_flow_path"] != initial_path for row in cell_rows):
