@@ -1,3 +1,4 @@
+import csv
 import importlib.util
 from pathlib import Path
 
@@ -56,7 +57,7 @@ def test_summary_groups_by_condition_and_policy():
     assert delayed["mean_second_flow_mbps"] == 8
 
 
-def test_report_includes_scope_and_limitations(tmp_path):
+def test_report_counts_only_conditions_and_trials_present(tmp_path):
     row = {
         "condition": "baseline",
         "telemetry_delay_seconds": 0.0,
@@ -69,12 +70,36 @@ def test_report_includes_scope_and_limitations(tmp_path):
         "mean_connectivity_loss_pct": 0.0,
     }
     output = tmp_path / "REPORT.md"
-    matrix.write_report(output, [row], 1)
+    matrix.write_report(output, [row])
     report = output.read_text()
+    assert "Conditions included: 1 (baseline)" in report
+    assert "Total Mininet trials represented: 1" in report
     assert "Mininet emulation results" in report
     assert "does not measure p99 latency" in report
+
+
+def test_aggregate_load_includes_previous_condition_csvs(tmp_path):
+    fields = ["policy", "trial", "second_flow_mbps",
+              "avoided_bottleneck", "connectivity_loss_pct"]
+    for condition in ("baseline", "combined"):
+        with (tmp_path / f"{condition}_raw.csv").open("w", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=fields)
+            writer.writeheader()
+            for policy in matrix.POLICIES:
+                writer.writerow({
+                    "policy": policy,
+                    "trial": 1,
+                    "second_flow_mbps": 85,
+                    "avoided_bottleneck": 1,
+                    "connectivity_loss_pct": 0,
+                })
+
+    rows = matrix.load_completed_conditions(tmp_path)
+    assert len(rows) == 2 * len(matrix.POLICIES)
+    assert {row["condition"] for row in rows} == {"baseline", "combined"}
+    assert len(matrix.summarize(rows)) == 2 * len(matrix.POLICIES)
+
 
 def test_aggregate_csv_preserves_telemetry_evidence():
     assert "first_telemetry_log" in matrix.RAW_FIELDS
     assert "second_telemetry_log" in matrix.RAW_FIELDS
-
