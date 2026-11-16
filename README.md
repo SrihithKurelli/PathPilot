@@ -160,10 +160,60 @@ python -m experiments.analyze_mininet_results \
 ```
 
 The delay is in seconds. Noise standard deviation is a fraction of normalized
-link utilization (0.05 means five percentage points of link capacity).
+link utilization (0.05 means five percentage points of link capacity). The
+uncertainty-aware policy combines sample age and variability in its confidence
+score. It compares the utilization gap between its leading candidates with a
+noise margin equal to the configured multiplier (default 1.0) times the
+combined standard deviation of the two measurements. When the measured gap is
+inside that margin, it alternates away from the previously selected path rather
+than trusting a potentially noise-driven ranking. If the gap is larger, it
+selects the lower-utilization candidate; when no candidates meet the confidence
+threshold, all paths remain eligible for this fallback comparison. This is a
+simple exploration fallback, not a guarantee that the alternate path is
+uncongested; report its behavior over repeated trials.
 The runner requires warm-up to be at least the configured delay plus four
 seconds, allowing historical samples to accumulate across OpenFlow polls.
 Use identical impairment parameters and seeds when comparing policies.
 Record the full command, raw CSV, and software revision with reported results.
 The impairment is a controlled emulation model; it is not a claim that this
 captures every real switch/controller telemetry failure mode.
+
+
+### Automated telemetry experiment matrix
+
+To run the repeated Mininet experiments as one batch, use
+`experiments/run_telemetry_matrix.py`. By default it evaluates five conditions
+(baseline, 2-second delay, 0.05 noise, combined 2-second/0.05 impairment, and a
+4-second/0.10 stress condition) across all four routing policies with 10 trials
+per policy and condition: 200 Mininet trials in total.
+
+Run a dry-run first to inspect the planned commands without starting Mininet:
+
+```bash
+sudo env PYTHONPATH=/home/pathpilot/PathPilot \
+  /usr/bin/python3 experiments/run_telemetry_matrix.py --dry-run
+```
+
+Run the complete matrix:
+
+```bash
+sudo env PYTHONPATH=/home/pathpilot/PathPilot \
+  /usr/bin/python3 experiments/run_telemetry_matrix.py
+```
+
+The script launches a fresh Ryu controller and Mininet topology for each trial
+through the existing single-trial runner. It automatically increases telemetry
+warm-up for the 4-second delay condition. Completed conditions are saved
+immediately, so their CSVs remain available if a later condition fails.
+
+Outputs are written to `results/telemetry_matrix/`:
+- One raw CSV per condition
+- `all_conditions_raw.csv`: combined raw trial data
+- `summary.csv`: per-condition, per-policy throughput and avoidance summary
+- `REPORT.md`: generated results table and interpretation limitations
+
+For a shorter pilot, pass `--trials 1`. To run only selected conditions, pass
+for example `--conditions baseline delayed combined`. The output is an
+emulation study of TCP goodput and path selection, not a production-network
+benchmark. The stress condition may trigger safe fallback behavior; failures
+must be reported rather than discarded.

@@ -64,6 +64,24 @@ class ControllerLog:
         with self.condition:
             return "\n".join(self.lines)
 
+    def telemetry_before(self, start, selection_line):
+        """Return the latest telemetry-source log immediately before a decision."""
+        telemetry_pattern = re.compile(
+            r"Using LIVE telemetry:|Using STATIC telemetry fallback|"
+            r"Telemetry unavailable"
+        )
+        with self.condition:
+            decision_lines = self.lines[start:]
+            try:
+                decision_index = decision_lines.index(selection_line)
+            except ValueError:
+                return "TELEMETRY_LOG_NOT_FOUND"
+            candidates = [
+                line for line in decision_lines[:decision_index]
+                if telemetry_pattern.search(line)
+            ]
+            return candidates[-1] if candidates else "TELEMETRY_LOG_NOT_FOUND"
+
 
 def parse_iperf_mbps(output: str) -> float:
     matches = BANDWIDTH_RE.findall(output)
@@ -147,6 +165,7 @@ def run_trial(policy, trial, args, repo_root):
             + re.escape(f"(policy={policy})"), start=first_mark, timeout=20,
         )
         first_path = first_match.group(1)
+        first_telemetry_log = log.telemetry_before(first_mark, first_line)
         qdisc_switch = PATH_TO_SWITCH[first_path]
         interface = f"{qdisc_switch}-eth2"
         qdisc_result = net.get(qdisc_switch).cmd(
@@ -165,6 +184,7 @@ def run_trial(policy, trial, args, repo_root):
             + re.escape(f"(policy={policy})"), start=second_mark, timeout=20,
         )
         second_path = second_match.group(1)
+        second_telemetry_log = log.telemetry_before(second_mark, second_line)
         second_output, _ = second_client.communicate(timeout=args.second_flow_seconds + 20)
         second_client = None
         first_output, _ = first_client.communicate(
@@ -185,6 +205,8 @@ def run_trial(policy, trial, args, repo_root):
             "first_flow_mbps": round(parse_iperf_mbps(first_output), 4),
             "warmup_seconds": args.warmup_seconds,
             "first_selection_log": first_line, "second_selection_log": second_line,
+            "first_telemetry_log": first_telemetry_log,
+            "second_telemetry_log": second_telemetry_log,
         }
     finally:
         if second_client is not None:
