@@ -55,7 +55,7 @@ def summarize(rows):
         icmp_losses = [float(item["icmp_probe_packet_loss_pct"]) for item in items
                        if item.get("icmp_probe_packet_loss_pct") not in ("", None)]
         icmp_p99 = [float(item["icmp_probe_rtt_p99_ms"]) for item in items
-                    if item["icmp_probe_rtt_p99_ms"] not in ("", None)]
+                    if item.get("icmp_probe_rtt_p99_ms") not in ("", None)]
         n = len(values)
         q1, _, q3 = statistics.quantiles(values, n=4, method="inclusive") if n > 1 else (
             values[0], values[0], values[0]
