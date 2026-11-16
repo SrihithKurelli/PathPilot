@@ -252,7 +252,7 @@ normal controller runs are unchanged when the setting is absent. The pinned
 priming flow also clears prior-path state so connectivity-check traffic cannot
 bias the second-flow decision.
 
-Start with a small pilot (eight trials: four policies × two initial paths):
+Start with a small pilot (ten trials: five policies × two initial paths):
 
 ```bash
 sudo env PYTHONPATH=/home/pathpilot/PathPilot \
@@ -261,8 +261,8 @@ sudo env PYTHONPATH=/home/pathpilot/PathPilot \
 ```
 
 Remove `--dry-run` to execute the pilot. After checking it, run the full
-counterbalanced matrix (default: 400 trials = 5 conditions × 2 initial paths
-× 4 policies × 10 repetitions):
+counterbalanced matrix (current default: 500 trials = 5 conditions × 2 initial
+paths × 5 policies × 10 repetitions):
 
 ```bash
 sudo env PYTHONPATH=/home/pathpilot/PathPilot \
@@ -287,7 +287,7 @@ See [the 400-trial analysis](results/balanced_full/ANALYSIS.md). The raw data an
 
 ### Balanced 400-trial results (completed)
 
-The completed counterbalanced experiment is archived in `results/balanced_full/`. This is a **completed dataset**, not a command to rerun the experiment.
+The historical 400-trial counterbalanced experiment is archived in `results/balanced_full/`. It covers the four policies used at that time and is a **completed dataset**, not a command to rerun the experiment. The current runner additionally includes `stability_aware`; its default new matrix would contain 500 trials.
 
 Start here:
 - [Results guide and navigation](results/balanced_full/README.md)
