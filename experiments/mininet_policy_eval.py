@@ -198,11 +198,13 @@ def run_trial(policy, trial, args, repo_root):
         second_path = second_match.group(1)
         second_telemetry_log = log.telemetry_before(second_mark, second_line)
         second_output, _ = second_client.communicate(timeout=args.second_flow_seconds + 20)
+        second_returncode = second_client.returncode
         second_client = None
         first_output, _ = first_client.communicate(
             timeout=max(5, args.first_flow_seconds - args.warmup_seconds
                        - args.second_flow_seconds + 25)
         )
+        first_returncode = first_client.returncode
         first_client = None
         return {
             "policy": policy, "trial": trial, "seed": args.seed + trial,
@@ -216,6 +218,12 @@ def run_trial(policy, trial, args, repo_root):
             "avoided_bottleneck": int(second_path != first_path),
             "second_flow_mbps": round(parse_iperf_mbps(second_output), 4),
             "first_flow_mbps": round(parse_iperf_mbps(first_output), 4),
+            # Preserve complete client output and exit status for post-run diagnosis.
+            # CSV quoting safely handles the embedded newlines in iperf output.
+            "first_flow_client_returncode": first_returncode,
+            "second_flow_client_returncode": second_returncode,
+            "first_flow_iperf_output": first_output.strip(),
+            "second_flow_iperf_output": second_output.strip(),
             "warmup_seconds": args.warmup_seconds,
             "first_selection_log": first_line, "second_selection_log": second_line,
             "first_telemetry_log": first_telemetry_log,

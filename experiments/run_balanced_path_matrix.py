@@ -30,6 +30,8 @@ RAW_FIELDS = (
     "connectivity_loss_pct", "first_flow_path", "bottleneck_path",
     "bottleneck_interface", "bottleneck_rate", "second_flow_path",
     "avoided_bottleneck", "second_flow_mbps", "first_flow_mbps",
+    "first_flow_client_returncode", "second_flow_client_returncode",
+    "first_flow_iperf_output", "second_flow_iperf_output",
     "warmup_seconds", "first_selection_log", "second_selection_log",
     "first_telemetry_log", "second_telemetry_log",
 )
@@ -148,6 +150,7 @@ def write_report(path, summaries):
         "- These are Mininet/OVS emulation results, not physical-network or production measurements.",
         "- The experiment measures TCP goodput and path choice; it does not measure p99 latency, fairness, or controller CPU.",
         "- The first pinned flow does not consume a telemetry sample or update the policy's previous-path state; first-flow telemetry fields explicitly record that pin.",
+        "- Complete iperf client output and client exit codes are retained for both flows in the raw CSVs, enabling inspection of interval and sender/receiver summaries.",
         "- All raw trial rows and controller log evidence are retained in the cell CSVs and combined CSV.",
         "",
     ])
