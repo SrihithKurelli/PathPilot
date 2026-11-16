@@ -45,6 +45,39 @@ def test_uncertainty_aware_uses_least_loaded_when_all_samples_are_uncertain():
     assert choose_path(data, "uncertainty_aware") == "path-b"
 
 
+
+def test_uncertainty_aware_alternates_when_noisy_measurements_are_indistinguishable():
+    data = {
+        "path-a": Telemetry(.1215, 2.6, .05),
+        "path-b": Telemetry(.1267, 2.6, .05),
+    }
+    # The 0.0052 gap is smaller than sqrt(.05^2 + .05^2).
+    assert choose_path(
+        data, "uncertainty_aware", previous_path="path-a"
+    ) == "path-b"
+    assert choose_path(
+        data, "uncertainty_aware", previous_path="path-b"
+    ) == "path-a"
+
+
+def test_uncertainty_aware_trusts_a_difference_outside_noise_margin():
+    data = {
+        "path-a": Telemetry(.10, 2.6, .05),
+        "path-b": Telemetry(.30, 2.6, .05),
+    }
+    assert choose_path(
+        data, "uncertainty_aware", previous_path="path-a"
+    ) == "path-a"
+
+
+def test_uncertainty_aware_uses_least_loaded_without_previous_path():
+    data = {
+        "path-a": Telemetry(.1215, 2.6, .05),
+        "path-b": Telemetry(.1267, 2.6, .05),
+    }
+    assert choose_path(data, "uncertainty_aware") == "path-a"
+
+
 def test_uncertainty_aware_uses_confident_candidates_when_available():
     data = {
         "uncertain_low_load": Telemetry(.05, 2.6, 0),
