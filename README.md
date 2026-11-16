@@ -92,7 +92,7 @@ Run from the repository root with the project virtual environment active:
 
 ```bash
 python -m pytest -q
-python -m experiments.policy_replay --seed 7 --trials 10 --steps 100
+python -m experiments.policy_replay --seed 7 --trials 10 --steps 100 --step-interval-seconds 2
 python -m experiments.analyze_results results/policy_replay.csv
 ```
 
