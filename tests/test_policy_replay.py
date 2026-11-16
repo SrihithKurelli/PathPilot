@@ -8,7 +8,7 @@ def test_replay_is_deterministic_and_has_complete_policy_matrix():
     assert first == second
     assert len(first) == 6 * 2 * 3 * 5
     assert {row["policy"] for row in first} == {
-        "static", "least_loaded", "threshold", "uncertainty_aware"
+        "static", "least_loaded", "threshold", "stability_aware", "uncertainty_aware"
     }
 
 
