@@ -31,6 +31,18 @@ def summarize(rows):
         oracle = [float(x["oracle_choice"]) for x in items]
         confidence = [float(x["selected_confidence"]) for x in items
                       if x.get("selected_confidence") not in (None, "")]
+        # Temporal replay fields are optional so older result CSVs remain readable.
+        by_trial = defaultdict(list)
+        for item in items:
+            by_trial[item.get("trial", "1")].append(item)
+        changes_per_minute = []
+        reversal_counts = []
+        for trial_items in by_trial.values():
+            last = max(trial_items, key=lambda item: int(item.get("step", 0)))
+            if last.get("path_changes_per_minute") not in (None, ""):
+                changes_per_minute.append(float(last["path_changes_per_minute"]))
+            if last.get("reversals_so_far") not in (None, ""):
+                reversal_counts.append(float(last["reversals_so_far"]))
         output.append({
             "scenario": scenario,
             "policy": policy,
@@ -41,6 +53,10 @@ def summarize(rows):
             "oracle_choice_rate": round(statistics.mean(oracle), 6),
             "mean_selected_confidence": round(statistics.mean(confidence), 6)
                 if confidence else "",
+            "mean_path_changes_per_minute": round(statistics.mean(changes_per_minute), 6)
+                if changes_per_minute else "",
+            "mean_reversals_per_trial": round(statistics.mean(reversal_counts), 6)
+                if reversal_counts else "",
         })
     return output
 
