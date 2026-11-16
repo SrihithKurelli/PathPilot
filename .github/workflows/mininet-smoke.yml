@@ -30,9 +30,11 @@ jobs:
         run: |
           python3.10 -m venv .venv
           .venv/bin/python -m pip install --upgrade pip
-          # Ryu 4.34 imports eventlet.wsgi.ALREADY_HANDLED; pin a compatible
-          # Eventlet release rather than allowing an incompatible latest release.
-          .venv/bin/python -m pip install "eventlet==0.33.3" "ryu==4.34" pytest
+          # Ryu 4.34's setup.py depends on the legacy easy_install API.
+          # Install a compatible build toolchain and disable isolated builds.
+          .venv/bin/python -m pip install "setuptools<58" wheel
+          .venv/bin/python -m pip install "eventlet==0.33.3" pytest
+          .venv/bin/python -m pip install --no-build-isolation "ryu==4.34"
 
       - name: Compile and run unit tests
         run: |
