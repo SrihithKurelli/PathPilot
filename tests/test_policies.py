@@ -60,6 +60,19 @@ def test_uncertainty_aware_alternates_when_noisy_measurements_are_indistinguisha
     ) == "path-a"
 
 
+
+def test_uncertainty_aware_applies_noise_margin_to_fresh_samples_too():
+    data = {
+        "path-a": Telemetry(.1215, .1, .05),
+        "path-b": Telemetry(.1267, .1, .05),
+    }
+    # Both samples meet the confidence threshold, but their utilization
+    # difference is still smaller than the combined noise margin.
+    assert choose_path(
+        data, "uncertainty_aware", previous_path="path-a"
+    ) == "path-b"
+
+
 def test_uncertainty_aware_trusts_a_difference_outside_noise_margin():
     data = {
         "path-a": Telemetry(.10, 2.6, .05),
