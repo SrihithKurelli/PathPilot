@@ -62,6 +62,8 @@ def run_replay(seed: int, trials: int, steps: int):
     for scenario_index, scenario in enumerate(scenarios):
         for trial in range(trials):
             rng = random.Random(seed + scenario_index * 100_003 + trial)
+            previous_by_policy = {policy: None for policy in POLICIES}
+            recent_paths = {policy: [] for policy in POLICIES}
             for step in range(steps):
                 truth, noise, age, variability = scenario_state(scenario, step, rng)
                 observed = {}
@@ -75,10 +77,23 @@ def run_replay(seed: int, trials: int, steps: int):
                 oracle_path = min(PATHS, key=lambda p: truth[PATHS.index(p)])
                 oracle_util = min(truth)
                 for policy in POLICIES:
+                    previous_path = previous_by_policy[policy]
                     selected = choose_path(
                         observed, policy, threshold=0.75,
                         min_confidence=0.5, safe_fallback=PATHS[0],
+                        previous_path=previous_path,
                     )
+                    path_history = recent_paths[policy]
+                    route_changed = int(
+                        previous_path is not None and selected != previous_path
+                    )
+                    reversed_recently = int(
+                        len(path_history) >= 2
+                        and selected == path_history[-2]
+                        and selected != path_history[-1]
+                    )
+                    path_history.append(selected)
+                    previous_by_policy[policy] = selected
                     idx = PATHS.index(selected)
                     sample = observed[selected]
                     rows.append({
@@ -94,6 +109,8 @@ def run_replay(seed: int, trials: int, steps: int):
                         "regret": round(truth[idx] - oracle_util, 6),
                         "selected_confidence": round(confidence(sample), 6),
                         "oracle_choice": int(selected == oracle_path),
+                        "route_changed": route_changed,
+                        "reversal_to_previous_path": reversed_recently,
                     })
     return rows
 
