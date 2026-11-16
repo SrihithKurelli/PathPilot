@@ -47,6 +47,7 @@ class PathPilotController(app_manager.RyuApp):
             int(os.getenv("PATHPILOT_TELEMETRY_SEED", "7"))
         )
         self.reverse_paths = {}
+        self.last_selected_path = None
         self.datapaths = {}
         self.port_rate_tracker = PortRateTracker()
         self._stats_reply_switches = set()
@@ -220,7 +221,10 @@ class PathPilotController(app_manager.RyuApp):
         if dp.id == 1:
             if in_port == 1:
                 telemetry = self.read_telemetry()
-                path = choose_path(telemetry, self.policy)
+                path = choose_path(
+                    telemetry, self.policy, previous_path=self.last_selected_path
+                )
+                self.last_selected_path = path
                 self.logger.info(
                     "Selected path %s for new flow %s -> %s (policy=%s)",
                     path, ip.src, ip.dst, self.policy,
