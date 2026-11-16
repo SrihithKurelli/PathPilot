@@ -30,6 +30,10 @@ RAW_FIELDS = (
     "connectivity_loss_pct", "first_flow_path", "bottleneck_path",
     "bottleneck_interface", "bottleneck_rate", "second_flow_path",
     "avoided_bottleneck", "second_flow_mbps", "first_flow_mbps",
+    "git_revision", "working_tree_dirty", "icmp_probe_packets",
+    "icmp_probe_packet_loss_pct", "icmp_probe_rtt_p50_ms",
+    "icmp_probe_rtt_p95_ms", "icmp_probe_rtt_p99_ms",
+    "icmp_probe_rtt_samples", "icmp_probe_returncode",
     "first_flow_client_returncode", "second_flow_client_returncode",
     "first_flow_iperf_output", "second_flow_iperf_output",
     "warmup_seconds", "first_selection_log", "second_selection_log",
@@ -48,6 +52,9 @@ def summarize(rows):
         values = sorted(float(item["second_flow_mbps"]) for item in items)
         avoidance = [int(item["avoided_bottleneck"]) for item in items]
         losses = [float(item["connectivity_loss_pct"]) for item in items]
+        icmp_losses = [float(item["icmp_probe_packet_loss_pct"]) for item in items]
+        icmp_p99 = [float(item["icmp_probe_rtt_p99_ms"]) for item in items
+                    if item["icmp_probe_rtt_p99_ms"] not in ("", None)]
         n = len(values)
         q1, _, q3 = statistics.quantiles(values, n=4, method="inclusive") if n > 1 else (
             values[0], values[0], values[0]
@@ -69,6 +76,9 @@ def summarize(rows):
             "max_second_flow_mbps": round(values[-1], 4),
             "bottleneck_avoidance_rate": round(statistics.mean(avoidance), 4),
             "mean_connectivity_loss_pct": round(statistics.mean(losses), 4),
+            "mean_icmp_probe_packet_loss_pct": round(statistics.mean(icmp_losses), 4),
+            "mean_icmp_probe_rtt_p99_ms": round(statistics.mean(icmp_p99), 4)
+                if icmp_p99 else "",
         })
     return summaries
 
@@ -127,8 +137,8 @@ def write_report(path, summaries):
         "- Primary metric: second-flow TCP goodput (Mbps)",
         "- Dispersion: median and inclusive interquartile range (Q1–Q3)",
         "",
-        "| Condition | Initial/bottleneck path | Policy | n | Mean Mbps | Median Mbps | Q1–Q3 Mbps | Avoidance |",
-        "|---|---|---|---:|---:|---:|---:|---:|",
+        "| Condition | Initial/bottleneck path | Policy | n | Mean Mbps | Median Mbps | Q1–Q3 Mbps | Avoidance | ICMP p99 ms | ICMP loss |",
+        "|---|---|---|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for row in summaries:
         lines.append(
@@ -136,7 +146,9 @@ def write_report(path, summaries):
             f"| {row['trials']} | {row['mean_second_flow_mbps']:.2f} "
             f"| {row['median_second_flow_mbps']:.2f} "
             f"| {row['q1_second_flow_mbps']:.2f}–{row['q3_second_flow_mbps']:.2f} "
-            f"| {row['bottleneck_avoidance_rate']:.0%} |"
+            f"| {row['bottleneck_avoidance_rate']:.0%} "
+            f"| {row['mean_icmp_probe_rtt_p99_ms']} "
+            f"| {row['mean_icmp_probe_packet_loss_pct']:.2f}% |"
         )
     lines.extend([
         "",
@@ -148,7 +160,8 @@ def write_report(path, summaries):
         "- Avoidance means the second flow used a path other than the independently pinned, bottlenecked initial path.",
         "- Both initial paths are represented separately so path-order effects remain visible.",
         "- These are Mininet/OVS emulation results, not physical-network or production measurements.",
-        "- The experiment measures TCP goodput and path choice; it does not measure p99 latency, fairness, or controller CPU.",
+        "- ICMP p99 is a separate-flow RTT probe under concurrent TCP load, not a TCP-flow latency percentile.",
+        "- The experiment does not measure Jain fairness or controller CPU/flow-rule overhead.",
         "- The first pinned flow does not consume a telemetry sample or update the policy's previous-path state; first-flow telemetry fields explicitly record that pin.",
         "- Complete iperf client output and client exit codes are retained for both flows in the raw CSVs, enabling inspection of interval and sender/receiver summaries.",
         "- All raw trial rows and controller log evidence are retained in the cell CSVs and combined CSV.",
