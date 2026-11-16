@@ -170,7 +170,7 @@ def run_trial(policy, trial, args, repo_root):
     log = ControllerLog(controller.stdout)
     net = None
     servers = []
-    first_client = second_client = None
+    first_client = second_client = ping_client = None
     qdisc_switch = None
     try:
         time.sleep(1.5)
@@ -222,6 +222,12 @@ def run_trial(policy, trial, args, repo_root):
         time.sleep(args.warmup_seconds)
         second_mark = log.mark()
         second_client = _run_client(h1, h2.IP(), 5002, args.second_flow_seconds)
+        # Concurrent ICMP probes measure RTT/loss under the second-flow load.
+        # ICMP is a separate flow and may be assigned to a different path.
+        ping_client = h1.popen(
+            ["ping", "-n", "-i", "0.05", "-c", str(args.ping_count), h2.IP()],
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
+        )
         second_match, second_line = log.wait_for(
             r"Selected path (s1-s2-s4|s1-s3-s4) for new flow .*"
             + re.escape(f"(policy={policy})"), start=second_mark, timeout=20,
@@ -231,6 +237,10 @@ def run_trial(policy, trial, args, repo_root):
         second_output, _ = second_client.communicate(timeout=args.second_flow_seconds + 20)
         second_returncode = second_client.returncode
         second_client = None
+        ping_output, _ = ping_client.communicate(timeout=args.second_flow_seconds + 20)
+        ping_returncode = ping_client.returncode
+        ping_client = None
+        ping_metrics = parse_ping_metrics(ping_output)
         first_output, _ = first_client.communicate(
             timeout=max(5, args.first_flow_seconds - args.warmup_seconds
                        - args.second_flow_seconds + 25)
@@ -248,6 +258,8 @@ def run_trial(policy, trial, args, repo_root):
             "second_flow_path": second_path,
             "avoided_bottleneck": int(second_path != first_path),
             "second_flow_mbps": round(parse_iperf_mbps(second_output), 4),
+            **ping_metrics,
+            "icmp_probe_returncode": ping_returncode,
             "first_flow_mbps": round(parse_iperf_mbps(first_output), 4),
             # Preserve complete client output and exit status for post-run diagnosis.
             # CSV quoting safely handles the embedded newlines in iperf output.
@@ -261,6 +273,8 @@ def run_trial(policy, trial, args, repo_root):
             "second_telemetry_log": second_telemetry_log,
         }
     finally:
+        if ping_client is not None:
+            _stop_process(ping_client)
         if second_client is not None:
             _stop_process(second_client)
         if first_client is not None:
@@ -287,6 +301,8 @@ def main():
     parser.add_argument("--first-flow-seconds", type=int, default=25)
     parser.add_argument("--warmup-seconds", type=float, default=6.0)
     parser.add_argument("--second-flow-seconds", type=int, default=8)
+    parser.add_argument("--ping-count", type=int, default=100,
+                        help="number of concurrent ICMP RTT/loss probes")
     parser.add_argument("--bottleneck-rate", default="10mbit")
     parser.add_argument("--telemetry-delay-seconds", type=float, default=0.0)
     parser.add_argument("--telemetry-noise-std", type=float, default=0.0,
@@ -298,6 +314,8 @@ def main():
     parser.add_argument("--output", type=Path, default=Path("results/mininet_policy_results.csv"))
     args = parser.parse_args()
 
+    if args.ping_count < 1:
+        parser.error("--ping-count must be positive")
     if args.trials < 1:
         parser.error("--trials must be positive")
     if not 1 <= args.first_flow_port <= 65535:
