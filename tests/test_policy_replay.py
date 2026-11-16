@@ -6,7 +6,7 @@ def test_replay_is_deterministic_and_has_complete_policy_matrix():
     first = run_replay(seed=11, trials=2, steps=3)
     second = run_replay(seed=11, trials=2, steps=3)
     assert first == second
-    assert len(first) == 6 * 2 * 3 * 4
+    assert len(first) == 6 * 2 * 3 * 5
     assert {row["policy"] for row in first} == {
         "static", "least_loaded", "threshold", "uncertainty_aware"
     }
