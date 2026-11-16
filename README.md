@@ -128,7 +128,8 @@ flow. During the second flow it also runs concurrent ICMP probes and records
 RTT p50/p95/p99 and packet loss. These are end-to-end ICMP probe measurements;
 the ICMP probe is a separate flow and may use a different selected path from
 the TCP flow. It writes raw trial data, including both selected paths, the
-bottleneck interface, second-flow goodput, and ICMP probe metrics. Increase `--trials` for a more stable
+bottleneck interface, second-flow goodput, ICMP probe metrics, Git revision,
+and tracked-working-tree status. Increase `--trials` for a more stable
 comparison. The summary reports means, standard deviations, ranges, an
 approximate normal 95% interval, and the rate at which the second flow avoided
 the bottleneck. The interval is only an approximation and should not be
