@@ -278,3 +278,24 @@ includes median and inclusive IQR as well as mean and standard deviation.
 The completed counterbalanced Mininet experiment contains 400 trials across five telemetry conditions, two initial bottleneck placements, four policies, and ten repetitions per cell. The analysis documents the throughput and bottleneck-avoidance findings, telemetry-age observations, anomalous trials, and limitations.
 
 See [the 400-trial analysis](results/balanced_full/ANALYSIS.md). The raw data and generated CSV summaries are intended to live in `results/balanced_full/` alongside the analysis. The original experiment has already been run; do not rerun it just to publish the results.
+
+
+### Balanced 400-trial results (completed)
+
+The completed counterbalanced experiment is archived in `results/balanced_full/`. This is a **completed dataset**, not a command to rerun the experiment.
+
+Start here:
+- [Results guide and navigation](results/balanced_full/README.md)
+- [Detailed analysis and interpretation](results/balanced_full/ANALYSIS.md)
+- [Generated numerical report](results/balanced_full/BALANCED_REPORT.md)
+- [Combined raw data (400 trials)](results/balanced_full/all_balanced_raw.csv)
+- [Recomputed summary CSV](results/balanced_full/balanced_summary.csv)
+
+The directory also contains ten per-condition/per-initial-path CSV files. Each cell contains ten trials. The experiment spans five telemetry conditions, two independently pinned bottleneck placements, and four policies. The 24-trial iperf diagnostic follow-up is separate and is not mixed into the 400-trial dataset.
+
+Key interpretation points:
+- Compare policies within the same telemetry condition and bottleneck placement. Static routing always chooses Path 1, so reversing the bottleneck placement changes the meaning of its result.
+- With Path 1 bottlenecked, adaptive-policy avoidance is 100% for baseline, delayed, and noisy conditions; 90% for combined impairment; and 30% for severe combined impairment.
+- The severe-combined cells contain highly dispersed outcomes. Read medians and quartiles alongside means.
+- Connectivity loss was 0% in the recorded trials. A few severe-combined Path 2-placement trials have unexpectedly low throughput despite selecting the alternate path; their cause is not established.
+- These are Mininet/OVS emulation results, not physical-network or production guarantees. They do not measure tail latency, fairness, or controller CPU overhead.
