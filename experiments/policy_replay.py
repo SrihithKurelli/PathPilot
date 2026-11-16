@@ -15,7 +15,7 @@ from pathlib import Path
 from controller.policies import Telemetry, choose_path, confidence
 
 PATHS = ("s1-s2-s4", "s1-s3-s4")
-POLICIES = ("static", "least_loaded", "threshold", "uncertainty_aware")
+POLICIES = ("static", "least_loaded", "threshold", "stability_aware", "uncertainty_aware")
 
 
 def clamp(value: float, low: float = 0.0, high: float = 1.0) -> float:
