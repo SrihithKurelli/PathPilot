@@ -1,0 +1,87 @@
+name: Mininet end-to-end smoke test
+
+on:
+  push:
+    branches: ["rubric/end-to-end-evaluation-demo"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  mininet-smoke:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Mininet, Open vSwitch, and iperf
+        run: |
+          sudo apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+            mininet openvswitch-switch iperf iproute2 python3.10-venv
+
+      - name: Start Open vSwitch
+        run: |
+          sudo service openvswitch-switch start
+          sudo ovs-vsctl show
+
+      - name: Set up Python 3.10 and install controller
+        run: |
+          python3.10 -m venv .venv
+          .venv/bin/python -m pip install --upgrade pip
+          # Ryu 4.34 imports eventlet.wsgi.ALREADY_HANDLED; pin a compatible
+          # Eventlet release rather than allowing an incompatible latest release.
+          .venv/bin/python -m pip install "eventlet==0.33.3" "ryu==4.34" pytest
+
+      - name: Compile and run unit tests
+        run: |
+          .venv/bin/python -m compileall -q controller topology tests experiments
+          .venv/bin/python -m pytest -q
+
+      - name: Run a real Mininet and Ryu smoke experiment
+        run: |
+          mkdir -p results/ci_smoke
+          sudo env PYTHONPATH="$PWD" /usr/bin/python3 \
+            experiments/mininet_policy_eval.py \
+            --policies least_loaded \
+            --trials 1 \
+            --initial-path s1-s2-s4 \
+            --first-flow-seconds 15 \
+            --warmup-seconds 6 \
+            --second-flow-seconds 5 \
+            --venv "$PWD/.venv" \
+            --output results/ci_smoke/mininet_smoke.csv
+          test -s results/ci_smoke/mininet_smoke.csv
+          python3 - <<'PY'
+          import csv
+          from pathlib import Path
+          path = Path("results/ci_smoke/mininet_smoke.csv")
+          with path.open(newline="") as f:
+              rows = list(csv.DictReader(f))
+          assert len(rows) == 1, f"Expected one trial, got {len(rows)}"
+          row = rows[0]
+          assert row["connectivity_loss_pct"] == "0.0", row
+          assert row["first_flow_path"] == "s1-s2-s4", row
+          assert row["second_flow_path"] in {"s1-s2-s4", "s1-s3-s4"}, row
+          assert float(row["second_flow_mbps"]) > 0, row
+          print("Mininet/Ryu smoke test passed:", row["second_flow_path"],
+                "second-flow Mbps:", row["second_flow_mbps"])
+          PY
+
+      - name: Upload smoke-test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pathpilot-mininet-smoke-results
+          path: results/ci_smoke/
+          if-no-files-found: warn
+
+      - name: Clean up Mininet and Open vSwitch
+        if: always()
+        run: |
+          sudo mn -c || true
+          sudo ovs-vsctl --if-exists del-br s1 || true
+          sudo ovs-vsctl --if-exists del-br s2 || true
+          sudo ovs-vsctl --if-exists del-br s3 || true
+          sudo ovs-vsctl --if-exists del-br s4 || true
