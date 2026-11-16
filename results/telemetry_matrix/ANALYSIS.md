@@ -147,3 +147,41 @@ The run writes the per-condition CSV files and regenerates the aggregate report.
 - Original generated results table: [`REPORT.md`](REPORT.md)
 - Runner: [`../../experiments/run_telemetry_matrix.py`](../../experiments/run_telemetry_matrix.py)
 
+
+
+## 9. Initial-path balance check
+
+A further check of `all_conditions_raw.csv` shows that the initial path—and therefore the path receiving the bottleneck—was not evenly distributed across policies. The runner deliberately applies the bottleneck to the path selected by the first flow. The following counts are out of five trials in each cell; P1 is `s1-s2-s4`, P2 is `s1-s3-s4`.
+
+| Condition | Policy | Bottleneck on P1 | Bottleneck on P2 |
+|---|---|---:|---:|
+| baseline | static | 5 | 0 |
+| baseline | least_loaded | 2 | 3 |
+| baseline | threshold | 5 | 0 |
+| baseline | uncertainty_aware | 3 | 2 |
+| delayed | static | 5 | 0 |
+| delayed | least_loaded | 5 | 0 |
+| delayed | threshold | 5 | 0 |
+| delayed | uncertainty_aware | 0 | 5 |
+| noisy | static | 5 | 0 |
+| noisy | least_loaded | 4 | 1 |
+| noisy | threshold | 4 | 1 |
+| noisy | uncertainty_aware | 1 | 4 |
+| combined | static | 5 | 0 |
+| combined | least_loaded | 5 | 0 |
+| combined | threshold | 5 | 0 |
+| combined | uncertainty_aware | 0 | 5 |
+| severe_combined | static | 5 | 0 |
+| severe_combined | least_loaded | 5 | 0 |
+| severe_combined | threshold | 5 | 0 |
+| severe_combined | uncertainty_aware | 0 | 5 |
+
+This reveals an important experimental-design limitation: **the bottleneck location is coupled to the policy's first-flow decision**, rather than being independently randomized or balanced. In delayed, combined, and severe_combined conditions, for example, uncertainty-aware starts on P2 in all five trials, while static, least-loaded, and threshold start on P1 in all five trials. Therefore, the aggregate policy comparison is not a fully counterbalanced comparison under the same initial path/bottleneck placement.
+
+The avoidance metric remains correctly computed relative to each trial's actual bottlenecked path, and the raw records are valid for describing what happened in this adaptive setup. However, the 25/25 uncertainty-aware avoidance result should be interpreted as performance when the policy itself determines the initially loaded path—not as proof that it performs equally well for both fixed bottleneck locations.
+
+### Required control for the next evaluation
+
+The next experiment should independently control the first-flow path and balance both initial paths for every policy and impairment condition. A test-only first-flow path override can pin the first flow to P1 or P2, while leaving the second-flow decision to the selected routing policy. Run equal repetitions for both pinned paths, use matched seeds across policies, and report results separately by initial/bottleneck path as well as in aggregate.
+
+This control is more important than simply increasing the current matrix from five to 20–30 repetitions: more trials would reduce sampling noise, but would not remove the path-placement confound.
