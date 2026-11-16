@@ -30,14 +30,14 @@ This document maps the professor's Project Orientation and the revised PathPilot
 | Confidence-aware new-flow placement | `uncertainty_aware` policy | Implemented as a heuristic; not a proven research contribution |
 | Existing flows remain on selected paths | Installed per-flow OpenFlow rules; no migration logic | Implemented for prototype |
 | Reproducible experiment runner | Balanced Mininet matrix, seeds, raw CSV and controller logs | Implemented for existing goodput/path-choice experiments |
-| Steady low/high, burst and alternating-burst workloads | Synthetic replay has changing-load scenario; no complete Mininet workload suite | Partial |
-| Mixed short/long flows | No dedicated workload profile/evaluation | Missing |
+| Steady low/high, burst and alternating-burst workloads | `experiments/policy_replay.py` deterministic synthetic scenarios | Partial: policy-level simulation exists; corresponding traffic workloads still need Mininet execution |
+| Mixed short/long flows | Synthetic aggregate-load proxy in `experiments/policy_replay.py` | Partial: not a packet-level mixed-flow experiment |
 | Telemetry impairment | 5 conditions in 400-trial matrix | Implemented |
 | Path degradation/link loss and recovery | Bottleneck experiment only | Partial |
 | Primary p99 end-to-end latency | Not measured in current 400-trial matrix | Missing |
 | Goodput and packet loss | TCP goodput; connectivity ping loss only | Partial |
 | Jain fairness | Not measured | Missing |
-| Path changes/minute and reversals | Controller logs contain selections, but no formal metric/report | Missing |
+| Path changes/minute and reversals | Temporal replay emits changes/minute and reversal counts; `experiments/analyze_results.py` summarizes them | Partial: synthetic replay metrics only; Mininet/controller runtime metrics remain unmeasured |
 | Adaptation time and overhead | Not measured systematically | Missing |
 | Fixed seeds, repeated trials and raw data | 400-trial matrix and raw CSV archive | Implemented for existing conditions |
 
