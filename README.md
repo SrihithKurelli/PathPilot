@@ -160,7 +160,16 @@ python -m experiments.analyze_mininet_results \
 ```
 
 The delay is in seconds. Noise standard deviation is a fraction of normalized
-link utilization (0.05 means five percentage points of link capacity).
+link utilization (0.05 means five percentage points of link capacity). The
+uncertainty-aware policy combines sample age and variability in its confidence
+score. If all candidates fall below the confidence threshold, it compares the
+utilization gap with a noise margin equal to the configured multiplier
+(default 1.0) times the combined standard deviation of the two measurements.
+When the measured gap is inside that margin, it alternates away from the
+previously selected path rather than trusting a potentially noise-driven
+ranking. If the gap is larger, it selects the lower-utilization candidate.
+This is a simple exploration fallback, not a guarantee that the alternate path
+is uncongested; report its behavior over repeated trials.
 The runner requires warm-up to be at least the configured delay plus four
 seconds, allowing historical samples to accumulate across OpenFlow polls.
 Use identical impairment parameters and seeds when comparing policies.
