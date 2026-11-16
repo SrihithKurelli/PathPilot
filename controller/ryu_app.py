@@ -230,8 +230,9 @@ class PathPilotController(app_manager.RyuApp):
                     self.experiment_first_flow_port,
                 )
                 if pinned_path is not None:
-                    # Do not update last_selected_path: the experimental
+                    # Reset any path state created by the connectivity ping; the
                     # priming flow must not bias the policy's second decision.
+                    self.last_selected_path = None
                     path = pinned_path
                     self.logger.info(
                         "Experiment path pin applied to TCP destination port %s: %s",
