@@ -112,6 +112,7 @@ def parse_ping_metrics(output):
         raise ValueError(f"Could not parse packet loss from ping output:\\n{output}")
     return {
         "icmp_probe_packets": int(re.search(r"(\d+) packets transmitted", output).group(1)),
+        "icmp_probe_packet_loss_pct": float(loss_match.group(1)),
         "icmp_probe_rtt_p50_ms": round(percentile(rtts, 0.50), 4) if rtts else "",
         "icmp_probe_rtt_p95_ms": round(percentile(rtts, 0.95), 4) if rtts else "",
         "icmp_probe_rtt_p99_ms": round(percentile(rtts, 0.99), 4) if rtts else "",
