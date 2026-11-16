@@ -33,9 +33,13 @@ def choose_path(
     threshold=0.75,
     min_confidence=0.5,
     safe_fallback=None,
+    previous_path=None,
+    noise_margin_sigma=1.0,
 ):
     if not telemetry:
         raise ValueError("at least one candidate path is required")
+    if noise_margin_sigma < 0 or not math.isfinite(noise_margin_sigma):
+        raise ValueError("noise_margin_sigma must be finite and non-negative")
     names = sorted(telemetry)
     for sample in telemetry.values():
         sample.validate()
@@ -52,16 +56,32 @@ def choose_path(
             n for n in names
             if confidence(telemetry[n]) >= min_confidence
         ]
-        # If every sample is below the confidence threshold, avoid a fixed
-        # path choice: use the least-loaded estimate as the best available
-        # fallback while retaining uncertainty-aware filtering when possible.
-        candidates = eligible or names
-        return min(
-            candidates,
-            key=lambda n: (
-                telemetry[n].utilization,
-                -confidence(telemetry[n]),
-                n,
-            ),
-        )
+        if eligible:
+            return min(
+                eligible,
+                key=lambda n: (
+                    telemetry[n].utilization,
+                    -confidence(telemetry[n]),
+                    n,
+                ),
+            )
+
+        # When every sample is uncertain, do not treat a tiny noisy
+        # utilization difference as a reliable ranking. The difference of
+        # two independent measurement errors has std sqrt(sigma_a^2+sigma_b^2).
+        if len(names) > 1:
+            ranked = sorted(names, key=lambda n: telemetry[n].utilization)
+            best, second = ranked[0], ranked[1]
+            combined_uncertainty = math.hypot(
+                telemetry[best].variability,
+                telemetry[second].variability,
+            )
+            margin = noise_margin_sigma * combined_uncertainty
+            if telemetry[second].utilization - telemetry[best].utilization <= margin:
+                # If the measurements cannot distinguish the paths, avoid
+                # repeatedly sending new flows down the previous path.
+                alternatives = [n for n in names if n != previous_path]
+                if previous_path in names and alternatives:
+                    return alternatives[0]
+        return min(names, key=lambda n: (telemetry[n].utilization, n))
     raise ValueError(f"unknown policy: {policy}")
