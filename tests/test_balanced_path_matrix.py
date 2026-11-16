@@ -80,3 +80,11 @@ def test_cell_loader_rejects_wrong_pinned_path(tmp_path):
     import pytest
     with pytest.raises(RuntimeError, match="expected pinned first path"):
         balanced.load_completed_cells(tmp_path)
+
+
+
+def test_raw_fields_retain_iperf_diagnostics():
+    assert "first_flow_client_returncode" in balanced.RAW_FIELDS
+    assert "second_flow_client_returncode" in balanced.RAW_FIELDS
+    assert "first_flow_iperf_output" in balanced.RAW_FIELDS
+    assert "second_flow_iperf_output" in balanced.RAW_FIELDS
