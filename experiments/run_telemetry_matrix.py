@@ -4,7 +4,8 @@
 Run as root from the repository root on the Ubuntu/Mininet host. Each condition
 runs all four policies for the requested number of trials. Raw CSV files are
 written per condition so completed conditions remain available if a later
-condition fails.
+condition fails. Aggregate outputs include every completed condition CSV in
+the output directory, including conditions completed by earlier invocations.
 """
 from __future__ import annotations
 
@@ -74,14 +75,49 @@ def write_csv(path, rows, fields):
         writer.writerows(rows)
 
 
-def write_report(path, summaries, trials):
+def load_completed_conditions(output_dir):
+    """Load and validate all per-condition CSVs already present in output_dir."""
+    rows = []
+    for condition in CONDITIONS:
+        raw_path = output_dir / f"{condition}_raw.csv"
+        if not raw_path.is_file():
+            continue
+        with raw_path.open(newline="") as handle:
+            condition_rows = list(csv.DictReader(handle))
+        counts = {policy: 0 for policy in POLICIES}
+        for row in condition_rows:
+            policy = row.get("policy")
+            if policy not in counts:
+                raise RuntimeError(f"{raw_path}: unexpected policy {policy!r}")
+            counts[policy] += 1
+            row["condition"] = condition
+        if not condition_rows or len(set(counts.values())) != 1 or any(
+            count == 0 for count in counts.values()
+        ):
+            raise RuntimeError(
+                f"{raw_path}: expected a non-empty, balanced set of policies; "
+                f"found {counts}"
+            )
+        rows.extend(condition_rows)
+    return rows
+
+
+def write_report(path, summaries, trials=None):
+    conditions_present = sorted({row["condition"] for row in summaries})
+    trial_counts = {row["trials"] for row in summaries}
+    total_trials = sum(row["trials"] for row in summaries)
+    if len(trial_counts) == 1:
+        trial_description = str(next(iter(trial_counts)))
+    else:
+        trial_description = "varies by condition/policy"
+
     lines = [
         "# Controlled Telemetry-Impairment Mininet Results",
         "",
-        f"- Trials per policy per condition: {trials}",
+        f"- Trials per policy per condition: {trial_description}",
         f"- Policies: {', '.join(POLICIES)}",
-        f"- Conditions: {len(CONDITIONS)}",
-        f"- Total Mininet trials: {trials * len(POLICIES) * len(CONDITIONS)}",
+        f"- Conditions included: {len(conditions_present)} ({', '.join(conditions_present)})",
+        f"- Total Mininet trials represented: {total_trials}",
         "- Metric: second-flow TCP goodput (Mbps)",
         "- Confidence intervals: approximate normal 95% intervals",
         "",
@@ -147,7 +183,6 @@ def main():
     if not runner.is_file():
         parser.error(f"run from repository root; missing {runner}")
 
-    all_rows = []
     for condition in args.conditions:
         delay, noise = CONDITIONS[condition]
         warmup = args.warmup_seconds
@@ -192,15 +227,16 @@ def main():
                 f"{condition}: expected {len(POLICIES) * args.trials} rows, "
                 f"found {len(condition_rows)} in {raw_path}"
             )
-        for row in condition_rows:
-            row["condition"] = condition
-        all_rows.extend(condition_rows)
-        # Persist the aggregate after every completed condition.
+
+        # Rebuild aggregates from every completed per-condition file. This
+        # preserves conditions produced by earlier --conditions invocations.
+        all_rows = load_completed_conditions(args.output_dir)
         write_csv(args.output_dir / "all_conditions_raw.csv", all_rows, RAW_FIELDS)
         summary = summarize(all_rows)
         write_csv(args.output_dir / "summary.csv", summary, list(summary[0]))
-        write_report(args.output_dir / "REPORT.md", summary, args.trials)
-        print(f"Completed {condition}; aggregate rows saved.", flush=True)
+        write_report(args.output_dir / "REPORT.md", summary)
+        print(f"Completed {condition}; aggregate includes "
+              f"{len({row['condition'] for row in all_rows})} completed conditions.", flush=True)
 
     if args.dry_run:
         print("\nDry run complete; no controller or Mininet processes were started.")
