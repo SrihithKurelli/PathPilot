@@ -54,7 +54,7 @@ sudo python3 topology/mininet_topology.py --controller 127.0.0.1
 ```
 
 The controller reads the static fallback from `experiments/telemetry.json` (override with `PATHPILOT_TELEMETRY`) and selects a policy using `PATHPILOT_POLICY`:
-`static`, `least_loaded`, `threshold`, or `uncertainty_aware`.
+`static`, `least_loaded`, `threshold`, `stability_aware`, or `uncertainty_aware`.
 
 ## Unit tests
 
@@ -299,3 +299,8 @@ Key interpretation points:
 - The severe-combined cells contain highly dispersed outcomes. Read medians and quartiles alongside means.
 - Connectivity loss was 0% in the recorded trials. A few severe-combined Path 2-placement trials have unexpectedly low throughput despite selecting the alternate path; their cause is not established.
 - These are Mininet/OVS emulation results, not physical-network or production guarantees. They do not measure tail latency, fairness, or controller CPU overhead.
+
+
+## Stability-aware baseline
+
+The `stability_aware` comparator retains the previously selected path unless another candidate improves measured utilization by at least an absolute 0.10 (10 percentage points). This is a deliberately simple, documented baseline for comparison, not PathPilot's proposed telemetry-confidence mechanism and not a novelty claim. The synthetic replay carries each policy's previous choice across time steps and records path changes and immediate reversals. The two-flow Mininet bottleneck harness starts a fresh controller for each trial, so its first policy decision has no prior policy-selected path; use the replay for controlled temporal comparison and a multi-flow Mininet workload for deployment-level stability measurements.
