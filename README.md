@@ -271,3 +271,10 @@ rebuild the combined CSV and report from saved cells. Outputs include
 `all_balanced_raw.csv`, `balanced_summary.csv`, and
 `BALANCED_REPORT.md`. The report separates results by initial path and
 includes median and inclusive IQR as well as mean and standard deviation.
+
+
+### Balanced 400-trial results
+
+The completed counterbalanced Mininet experiment contains 400 trials across five telemetry conditions, two initial bottleneck placements, four policies, and ten repetitions per cell. The analysis documents the throughput and bottleneck-avoidance findings, telemetry-age observations, anomalous trials, and limitations.
+
+See [the 400-trial analysis](results/balanced_full/ANALYSIS.md). The raw data and generated CSV summaries are intended to live in `results/balanced_full/` alongside the analysis. The original experiment has already been run; do not rerun it just to publish the results.
