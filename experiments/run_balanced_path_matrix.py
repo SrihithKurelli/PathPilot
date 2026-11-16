@@ -25,7 +25,7 @@ CONDITIONS = {
     "severe_combined": (4.0, 0.10),
 }
 RAW_FIELDS = (
-    "condition", "initial_path", "policy", "trial", "seed",
+    "condition", "initial_path", "policy", "trial", "seed", "requested_initial_path",
     "telemetry_delay_seconds", "telemetry_noise_std",
     "connectivity_loss_pct", "first_flow_path", "bottleneck_path",
     "bottleneck_interface", "bottleneck_rate", "second_flow_path",
