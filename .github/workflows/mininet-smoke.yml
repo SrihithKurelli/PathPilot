@@ -69,8 +69,12 @@ jobs:
           assert row["first_flow_path"] == "s1-s2-s4", row
           assert row["second_flow_path"] in {"s1-s2-s4", "s1-s3-s4"}, row
           assert float(row["second_flow_mbps"]) > 0, row
+          assert int(row["icmp_probe_rtt_samples"]) > 0, row
+          assert float(row["icmp_probe_rtt_p99_ms"]) > 0, row
+          assert float(row["icmp_probe_packet_loss_pct"]) == 0.0, row
           print("Mininet/Ryu smoke test passed:", row["second_flow_path"],
-                "second-flow Mbps:", row["second_flow_mbps"])
+                "second-flow Mbps:", row["second_flow_mbps"],
+                "ICMP p99 ms:", row["icmp_probe_rtt_p99_ms"])
           PY
 
       - name: Upload smoke-test evidence
