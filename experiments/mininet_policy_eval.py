@@ -23,8 +23,8 @@ from pathlib import Path
 POLICIES = ("static", "least_loaded", "threshold", "stability_aware", "uncertainty_aware")
 PATH_TO_SWITCH = {"s1-s2-s4": "s2", "s1-s3-s4": "s3"}
 BANDWIDTH_RE = re.compile(r"([0-9]+(?:\.[0-9]+)?)\s+([KMG])bits/sec")
-PING_RTT_RE = re.compile(r"time[=<]([0-9]+(?:\\.[0-9]+)?)\\s*ms")
-PING_LOSS_RE = re.compile(r"([0-9]+(?:\\.[0-9]+)?)% packet loss")
+PING_RTT_RE = re.compile(r"time[=<]([0-9]+(?:\.[0-9]+)?)\s*ms")
+PING_LOSS_RE = re.compile(r"([0-9]+(?:\.[0-9]+)?)% packet loss")
 
 
 class ControllerLog:
@@ -111,10 +111,7 @@ def parse_ping_metrics(output):
     if loss_match is None:
         raise ValueError(f"Could not parse packet loss from ping output:\\n{output}")
     return {
-        "icmp_probe_packets": len(rtts) + int(
-            re.search(r"(\\d+) packets transmitted", output).group(1)
-        ) - len(rtts) if re.search(r"(\\d+) packets transmitted", output) else len(rtts),
-        "icmp_probe_packet_loss_pct": float(loss_match.group(1)),
+        "icmp_probe_packets": int(re.search(r"(\d+) packets transmitted", output).group(1)),
         "icmp_probe_rtt_p50_ms": round(percentile(rtts, 0.50), 4) if rtts else "",
         "icmp_probe_rtt_p95_ms": round(percentile(rtts, 0.95), 4) if rtts else "",
         "icmp_probe_rtt_p99_ms": round(percentile(rtts, 0.99), 4) if rtts else "",
