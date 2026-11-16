@@ -233,3 +233,41 @@ per-condition results, interpretation, telemetry-log checks, limitations, and
 recommended follow-up experiments. The generated numerical summary remains in
 [REPORT.md](results/telemetry_matrix/REPORT.md), with raw records in
 [all_conditions_raw.csv](results/telemetry_matrix/all_conditions_raw.csv).
+
+
+### Counterbalanced initial-path experiment
+
+The original telemetry matrix places the bottleneck on whichever path the
+first flow selects. To control for this policy-dependent placement, use
+`experiments/run_balanced_path_matrix.py`. This runner pins the first TCP flow
+to Path 1 and Path 2 in separate, equally represented cells, while the second
+flow is still selected by the routing policy. The pin is an opt-in experiment
+setting and only applies to the designated first-flow TCP destination port;
+normal controller runs are unchanged when the setting is absent. The pinned
+priming flow also clears prior-path state so connectivity-check traffic cannot
+bias the second-flow decision.
+
+Start with a small pilot (eight trials: four policies × two initial paths):
+
+```bash
+sudo env PYTHONPATH=/home/pathpilot/PathPilot \
+  /usr/bin/python3 experiments/run_balanced_path_matrix.py \
+  --trials 1 --conditions baseline --output-dir results/balanced_pilot --dry-run
+```
+
+Remove `--dry-run` to execute the pilot. After checking it, run the full
+counterbalanced matrix (default: 400 trials = 5 conditions × 2 initial paths
+× 4 policies × 10 repetitions):
+
+```bash
+sudo env PYTHONPATH=/home/pathpilot/PathPilot \
+  /usr/bin/python3 experiments/run_balanced_path_matrix.py --trials 10
+```
+
+Each condition/path cell is saved independently in
+`results/balanced_telemetry_matrix/`. If a run stops, use `--resume` with
+the same trial count to skip completed cells. Use `--aggregate-only` to
+rebuild the combined CSV and report from saved cells. Outputs include
+`all_balanced_raw.csv`, `balanced_summary.csv`, and
+`BALANCED_REPORT.md`. The report separates results by initial path and
+includes median and inclusive IQR as well as mean and standard deviation.

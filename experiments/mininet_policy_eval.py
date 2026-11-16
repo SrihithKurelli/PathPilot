@@ -129,6 +129,9 @@ def run_trial(policy, trial, args, repo_root):
         # the same deterministic noise stream for a given trial number.
         "PATHPILOT_TELEMETRY_SEED": str(args.seed + trial),
     })
+    if args.initial_path is not None:
+        env["PATHPILOT_EXPERIMENT_INITIAL_PATH"] = args.initial_path
+        env["PATHPILOT_EXPERIMENT_FIRST_FLOW_PORT"] = str(args.first_flow_port)
     controller = subprocess.Popen(
         [str(ryu_manager), "controller/ryu_app.py"], cwd=repo_root, env=env,
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1,
@@ -165,7 +168,16 @@ def run_trial(policy, trial, args, repo_root):
             + re.escape(f"(policy={policy})"), start=first_mark, timeout=20,
         )
         first_path = first_match.group(1)
-        first_telemetry_log = log.telemetry_before(first_mark, first_line)
+        if args.initial_path is not None and first_path != args.initial_path:
+            raise RuntimeError(
+                f"Controller selected {first_path} despite requested initial path "
+                f"{args.initial_path}"
+            )
+        first_telemetry_log = (
+            "EXPERIMENT_PATH_PIN_NO_TELEMETRY_READ"
+            if args.initial_path is not None
+            else log.telemetry_before(first_mark, first_line)
+        )
         qdisc_switch = PATH_TO_SWITCH[first_path]
         interface = f"{qdisc_switch}-eth2"
         qdisc_result = net.get(qdisc_switch).cmd(
@@ -194,6 +206,7 @@ def run_trial(policy, trial, args, repo_root):
         first_client = None
         return {
             "policy": policy, "trial": trial, "seed": args.seed + trial,
+            "requested_initial_path": args.initial_path or "policy_selected",
             "telemetry_delay_seconds": args.telemetry_delay_seconds,
             "telemetry_noise_std": args.telemetry_noise_std,
             "connectivity_loss_pct": loss,
@@ -227,6 +240,10 @@ def run_trial(policy, trial, args, repo_root):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--policies", nargs="+", choices=POLICIES, default=list(POLICIES))
+    parser.add_argument("--initial-path", choices=("s1-s2-s4", "s1-s3-s4"),
+                        default=None,
+                        help="pin only the first flow to this path; the second flow uses the policy")
+    parser.add_argument("--first-flow-port", type=int, default=5001)
     parser.add_argument("--trials", type=int, default=3)
     parser.add_argument("--first-flow-seconds", type=int, default=25)
     parser.add_argument("--warmup-seconds", type=float, default=6.0)
@@ -244,6 +261,8 @@ def main():
 
     if args.trials < 1:
         parser.error("--trials must be positive")
+    if not 1 <= args.first_flow_port <= 65535:
+        parser.error("--first-flow-port must be in [1,65535]")
     if args.first_flow_seconds <= args.warmup_seconds + args.second_flow_seconds:
         parser.error("--first-flow-seconds must exceed warmup + second-flow duration")
     if args.telemetry_delay_seconds < 0:
