@@ -56,21 +56,13 @@ def choose_path(
             n for n in names
             if confidence(telemetry[n]) >= min_confidence
         ]
-        if eligible:
-            return min(
-                eligible,
-                key=lambda n: (
-                    telemetry[n].utilization,
-                    -confidence(telemetry[n]),
-                    n,
-                ),
-            )
+        candidates = eligible or names
 
-        # When every sample is uncertain, do not treat a tiny noisy
-        # utilization difference as a reliable ranking. The difference of
-        # two independent measurement errors has std sqrt(sigma_a^2+sigma_b^2).
-        if len(names) > 1:
-            ranked = sorted(names, key=lambda n: telemetry[n].utilization)
+        # Even a fresh sample can contain substantial measurement noise.
+        # Compare the two best candidates against the uncertainty of their
+        # difference before trusting a small utilization ranking.
+        if len(candidates) > 1:
+            ranked = sorted(candidates, key=lambda n: telemetry[n].utilization)
             best, second = ranked[0], ranked[1]
             combined_uncertainty = math.hypot(
                 telemetry[best].variability,
@@ -80,8 +72,16 @@ def choose_path(
             if telemetry[second].utilization - telemetry[best].utilization <= margin:
                 # If the measurements cannot distinguish the paths, avoid
                 # repeatedly sending new flows down the previous path.
-                alternatives = [n for n in names if n != previous_path]
-                if previous_path in names and alternatives:
+                alternatives = [n for n in candidates if n != previous_path]
+                if previous_path in candidates and alternatives:
                     return alternatives[0]
-        return min(names, key=lambda n: (telemetry[n].utilization, n))
+
+        return min(
+            candidates,
+            key=lambda n: (
+                telemetry[n].utilization,
+                -confidence(telemetry[n]),
+                n,
+            ),
+        )
     raise ValueError(f"unknown policy: {policy}")
