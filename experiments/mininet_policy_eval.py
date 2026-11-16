@@ -91,6 +91,35 @@ def parse_iperf_mbps(output: str) -> float:
     return float(value) * {"K": 0.001, "M": 1.0, "G": 1000.0}[unit]
 
 
+def percentile(values, fraction):
+    ordered = sorted(values)
+    if not ordered:
+        return 0.0
+    position = (len(ordered) - 1) * fraction
+    lower = int(position)
+    upper = min(lower + 1, len(ordered) - 1)
+    weight = position - lower
+    return ordered[lower] * (1 - weight) + ordered[upper] * weight
+
+
+def parse_ping_metrics(output):
+    """Parse ICMP probe RTT percentiles and packet loss from iputils ping."""
+    rtts = [float(value) for value in PING_RTT_RE.findall(output)]
+    loss_match = PING_LOSS_RE.search(output)
+    if loss_match is None:
+        raise ValueError(f"Could not parse packet loss from ping output:\\n{output}")
+    return {
+        "icmp_probe_packets": len(rtts) + int(
+            re.search(r"(\\d+) packets transmitted", output).group(1)
+        ) - len(rtts) if re.search(r"(\\d+) packets transmitted", output) else len(rtts),
+        "icmp_probe_packet_loss_pct": float(loss_match.group(1)),
+        "icmp_probe_rtt_p50_ms": round(percentile(rtts, 0.50), 4) if rtts else "",
+        "icmp_probe_rtt_p95_ms": round(percentile(rtts, 0.95), 4) if rtts else "",
+        "icmp_probe_rtt_p99_ms": round(percentile(rtts, 0.99), 4) if rtts else "",
+        "icmp_probe_rtt_samples": len(rtts),
+    }
+
+
 def _run_client(host, destination, port, duration):
     return host.popen(
         ["iperf", "-c", destination, "-p", str(port), "-t", str(duration)],
