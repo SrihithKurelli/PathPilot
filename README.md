@@ -124,16 +124,21 @@ python -m experiments.analyze_mininet_results \
 
 The runner defaults to three trials per policy, a 10 Mbps bottleneck, a
 25-second first flow, a 6-second telemetry warm-up, and an 8-second second
-flow. It writes raw trial data, including both selected paths, the bottleneck
-interface, and second-flow goodput. Increase `--trials` for a more stable
+flow. During the second flow it also runs concurrent ICMP probes and records
+RTT p50/p95/p99 and packet loss. These are end-to-end ICMP probe measurements;
+the ICMP probe is a separate flow and may use a different selected path from
+the TCP flow. It writes raw trial data, including both selected paths, the
+bottleneck interface, second-flow goodput, and ICMP probe metrics. Increase `--trials` for a more stable
 comparison. The summary reports means, standard deviations, ranges, an
 approximate normal 95% interval, and the rate at which the second flow avoided
 the bottleneck. The interval is only an approximation and should not be
 over-interpreted with small trial counts.
 
-These Mininet results are emulation measurements of TCP goodput and path
-selection only. They do not establish p99 latency, fairness, production
-performance, or statistical significance. The current controller makes a
+These Mininet results are emulation measurements. The new ICMP p99 is a probe
+RTT percentile under concurrent load, not a TCP-flow latency percentile. The
+runner still does not measure Jain fairness, controller CPU, flow-rule update
+overhead, or production performance. Do not infer those metrics from goodput
+or ICMP probes. The current controller makes a
 decision only for a new flow and does not migrate established flows.
 
 
