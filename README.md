@@ -217,3 +217,19 @@ for example `--conditions baseline delayed combined`. The output is an
 emulation study of TCP goodput and path selection, not a production-network
 benchmark. The stress condition may trigger safe fallback behavior; failures
 must be reported rather than discarded.
+
+
+### Telemetry experiment analysis
+
+The committed five-condition Mininet matrix contains 100 trials (five trials per
+policy and condition). In this run, uncertainty-aware routing avoided the
+induced bottleneck in all 25 trials, while least-loaded and threshold degraded
+under combined delay/noise and static routing never avoided the bottleneck.
+These findings are specific to this two-path emulation setup and the small
+sample size; they are not production-network guarantees.
+
+See [the detailed analysis](results/telemetry_matrix/ANALYSIS.md) for the
+per-condition results, interpretation, telemetry-log checks, limitations, and
+recommended follow-up experiments. The generated numerical summary remains in
+[REPORT.md](results/telemetry_matrix/REPORT.md), with raw records in
+[all_conditions_raw.csv](results/telemetry_matrix/all_conditions_raw.csv).
