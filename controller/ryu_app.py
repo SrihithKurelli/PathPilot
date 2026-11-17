@@ -62,7 +62,8 @@ class PathPilotController(app_manager.RyuApp):
         self.last_selected_path = None
         self.last_uncertain_fallback_path = None
         self.datapaths = {}
-        self.port_rate_tracker = PortRateTracker()
+        link_capacity_bps = float(os.getenv("PATHPILOT_LINK_CAPACITY_BPS", "100000000"))
+        self.port_rate_tracker = PortRateTracker(capacity_bps=link_capacity_bps)
         self._stats_reply_switches = set()
         self._logged_live_ready = False
         self.monitor_thread = hub.spawn(self._monitor)
