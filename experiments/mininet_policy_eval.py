@@ -249,6 +249,7 @@ def run_trial(policy, trial, args, repo_root):
         for flow_index, port in enumerate(fallback_ports):
             flow_mark = log.mark()
             client = _run_client(h1, h2.IP(), port, args.second_flow_seconds)
+            second_client = client
             match, selection_line = log.wait_for(
                 r"Selected path (s1-s2-s4|s1-s3-s4) for new flow .*"
                 + re.escape(f"(policy={policy})"), start=flow_mark, timeout=20,
