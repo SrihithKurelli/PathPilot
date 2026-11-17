@@ -95,10 +95,12 @@ def summarize_mininet(rows):
             "bottleneck_rate": bottleneck_rate,
             "trials": n,
             "mean_first_policy_flow_goodput_mbps": round(mean, 4),
+            "mean_second_flow_mbps": round(mean, 4),  # backward-compatible alias
             "std_first_policy_flow_goodput_mbps": round(sd, 4),
             "approx_ci95_low_first_flow_mbps": round(max(0.0, mean - margin), 4),
             "approx_ci95_high_first_flow_mbps": round(mean + margin, 4),
             "first_policy_flow_avoidance_rate": round(_mean(first_avoided), 4),
+            "bottleneck_avoidance_rate": round(_mean(first_avoided), 4),  # legacy alias
             "successive_flow_trials": len(per_trial_flow_goodputs),
             "successive_flow_count": total_successive_flows,
             "successive_flow_avoidance_rate": (
