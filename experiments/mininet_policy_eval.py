@@ -7,8 +7,9 @@ configured telemetry delay plus warm-up, then measures one or more successive ne
 
 This is an emulation experiment. It records TCP goodput/path decisions and a
 concurrent ICMP probe's RTT percentiles and packet loss. The ICMP probe is a
-separate flow and is not a per-TCP-flow latency measurement. Fairness and
-controller overhead are not measured.
+separate flow and is not a per-TCP-flow latency measurement. The harness also
+samples Ryu-process CPU time and peak RSS; it does not measure Jain fairness,
+OVS/host-wide overhead, or flow-rule installation latency.
 Run as root from the repository root on the configured Ubuntu/Mininet host.
 """
 from __future__ import annotations
