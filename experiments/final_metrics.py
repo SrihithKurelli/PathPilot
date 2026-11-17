@@ -83,29 +83,29 @@ def parse_iperf3_json(payload):
       "udp_jitter_ms":udp.get("jitter_ms","") if protocol=="UDP" else ""}
 
 def parse_ss_tcp_rtt(text):
-    return [float(x) for x in re.findall(r"\\brtt:([0-9]+(?:\\.[0-9]+)?)/",text)]
+    return [float(x) for x in re.findall(r"\brtt:([0-9]+(?:\.[0-9]+)?)/",text)]
 
 def parse_tc_qdisc_stats(text):
     def val(pattern):
         m=re.search(pattern,text); return int(m.group(1)) if m else ""
-    return {"qdisc_packets":val(r" Sent \\d+ bytes (\\d+) pkt"),
-      "qdisc_drops":val(r" dropped (\\d+)"),"qdisc_overlimits":val(r" overlimits (\\d+)"),
-      "qdisc_backlog_bytes":val(r" backlog (\\d+)b"),"qdisc_backlog_packets":val(r" backlog \\d+b (\\d+)p")}
+    return {"qdisc_packets":val(r" Sent \d+ bytes (\d+) pkt"),
+      "qdisc_drops":val(r" dropped (\d+)"),"qdisc_overlimits":val(r" overlimits (\d+)"),
+      "qdisc_backlog_bytes":val(r" backlog (\d+)b"),"qdisc_backlog_packets":val(r" backlog \d+b (\d+)p")}
 
 def parse_ovs_port_stats(text):
+    """Parse ovs-ofctl dump-ports counters; absent counters remain absent."""
     rows=[]; current=None
     for line in text.splitlines():
-        m=re.search(r"port (\\d+):",line)
-        if m:
+        header=re.search(r"port (\d+):",line)
+        if header:
             if current: rows.append(current)
-            current={"port":int(m.group(1))}
+            current={"port":int(header.group(1))}
         if current:
-            for key,pattern in (("rx_packets",r"rx pkts=(\\d+)"),("tx_packets",r"tx pkts=(\\d+)"),
-              ("rx_bytes",r"rx bytes=(\\d+)"),("tx_bytes",r"tx bytes=(\\d+)"),
-              ("rx_dropped",r"rx dropped=(\\d+)"),("tx_dropped",r"tx dropped=(\\d+)"),
-              ("rx_errors",r"rx errs=(\\d+)"),("tx_errors",r"tx errs=(\\d+)")):
-                m=re.search(pattern,line)
-                if m: current[key]=int(m.group(1))
+            direction=re.search(r"\b(rx|tx) pkts=(\d+), bytes=(\d+), drop(?:ped)?=(\d+), errs=(\d+)",line)
+            if direction:
+                prefix=direction.group(1)
+                for suffix,value in zip(("packets","bytes","dropped","errors"),direction.groups()[1:]):
+                    current[f"{prefix}_{suffix}"]=int(value)
     if current: rows.append(current)
     return rows
 
