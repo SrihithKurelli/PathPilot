@@ -31,7 +31,7 @@ class NetworkStatsSampler:
                 counters=qdisc, source="tc -s qdisc",
             )
             result = self.command_runner(
-                ["ovs-ofctl", "dump-ports", switch],
+                ["ovs-ofctl", "-O", "OpenFlow13", "dump-ports", switch],
                 capture_output=True, text=True, check=False,
             )
             if result.returncode == 0:
