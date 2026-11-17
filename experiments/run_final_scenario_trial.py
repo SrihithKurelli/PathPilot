@@ -14,7 +14,7 @@ from experiments.mininet_policy_eval import ControllerLog
 from experiments.network_sampling import NetworkStatsSampler
 from experiments.runtime_metrics import ProcessMetricsSampler
 from experiments.scenario_traffic import run_scenario
-from experiments.scenarios import SCENARIO_NAMES, build_scenario
+from experiments.scenarios import SCENARIO_NAMES, build_scenario, scenario_digest
 from experiments.final_metrics import path_stability, settling_time
 
 
@@ -99,6 +99,7 @@ def run_trial(policy, scenario_name, condition, initial_path, repetition,
         result = {
             "policy": policy,
             "scenario": scenario_name,
+            "scenario_sha256": scenario_digest(scenario),
             "telemetry_delay_seconds": delay,
             "telemetry_noise_std": noise,
             "initial_bottleneck_path": initial_path,
@@ -115,10 +116,15 @@ def run_trial(policy, scenario_name, condition, initial_path, repetition,
                 ["git", "rev-parse", "HEAD"], capture_output=True, text=True,
                 check=False,
             ).stdout.strip(),
+            "working_tree_dirty": int(bool(subprocess.run(
+                ["git", "status", "--porcelain"], capture_output=True, text=True,
+                check=False,
+            ).stdout.strip())),
         }
     finally:
         if sampler is not None:
             sampler.stop()
+        cpu.stop()
         if net is not None:
             net.stop()
         if controller.poll() is None:
