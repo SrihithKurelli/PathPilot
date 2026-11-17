@@ -37,8 +37,8 @@ This document maps the professor's Project Orientation and the revised PathPilot
 | Primary p99 end-to-end latency | Mininet runner now records concurrent ICMP probe RTT p50/p95/p99 | Partial: ICMP probe is a separate flow; TCP-flow latency distributions are not measured |
 | Goodput and packet loss | TCP goodput plus concurrent ICMP probe packet loss; initial connectivity ping loss | Partial: ICMP loss is not TCP data-plane packet loss |
 | Jain fairness | Not measured | Missing |
-| Path changes/minute and reversals | Temporal replay emits changes/minute and reversal counts; `experiments/analyze_results.py` summarizes them | Partial: synthetic replay metrics only; Mininet/controller runtime metrics remain unmeasured |
-| Adaptation time and overhead | Not measured systematically | Missing |
+| Path changes/minute and reversals | Temporal replay plus Mininet selected-path decision logs | Partial: one-trial baseline pilots now validate decision counts, changes and immediate reversals for new-flow decisions; no continuous established-flow churn or changes/minute workload yet |
+| Adaptation time and overhead | Ryu-process CPU time, mean CPU percentage and peak RSS are sampled by the Mininet runner | Partial: one-trial pilots completed on both initial paths; no repeated workload study, OVS/host overhead, rule-update latency/counts, telemetry volume or settling-time measurement |
 | Fixed seeds, repeated trials and raw data | 400-trial matrix and raw CSV archive | Implemented for existing conditions |
 
 ## Work required before claiming rubric completion
@@ -65,4 +65,4 @@ These are process-level measurements for the controller process only; they do no
 
 The helper module also provides a Jain fairness calculation and percentile utility, but the present sequential-flow experiment does not create simultaneous competing TCP flows. Therefore Jain fairness is still **not measured** and no fairness result is emitted. Per-TCP-flow latency distributions and TCP data-plane packet loss also remain unmeasured. The existing ICMP probe remains a separate-flow measurement.
 
-The new runtime instrumentation and tests are code additions only until the user runs the test suite and Mininet smoke/pilot on the Ubuntu VM. Do not treat the metrics as validated measurements before that run.
+Validation update: the user ran the updated test suite successfully (81 passed) and completed one-trial baseline Mininet pilots for both pinned initial paths (five policies per path, 10 trials total). All topology connectivity checks reported 0% loss and each requested initial path was respected. These pilots validate that the instrumentation runs end-to-end; one repetition per policy/path is not enough for quantitative policy comparisons or overhead conclusions. Audit the generated raw CPU/RSS/path-transition fields and run repeated trials before reporting those metrics.
