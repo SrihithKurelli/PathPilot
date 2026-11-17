@@ -42,14 +42,15 @@ def bootstrap_mean_ci(values,confidence=.95,resamples=4000,seed=7):
     return {"mean":statistics.mean(xs),"ci_low":percentile(means,tail),
             "ci_high":percentile(means,1-tail),"n":len(xs)}
 
-def path_stability(decisions,window_seconds):
+def path_stability(decisions,window_seconds,observation_duration_s=None):
     rows=sorted(decisions,key=lambda x:float(x["monotonic_time"]))
     if window_seconds<0: raise ValueError("window_seconds must be non-negative")
     changes=sum(a["path"]!=b["path"] for a,b in zip(rows,rows[1:]))
     reversals=sum(rows[i-2]["path"]==rows[i]["path"]!=rows[i-1]["path"]
       and float(rows[i]["monotonic_time"])-float(rows[i-2]["monotonic_time"])<=window_seconds
       for i in range(2,len(rows)))
-    elapsed=float(rows[-1]["monotonic_time"])-float(rows[0]["monotonic_time"]) if len(rows)>1 else 0
+    elapsed=(float(observation_duration_s) if observation_duration_s is not None else
+             (float(rows[-1]["monotonic_time"])-float(rows[0]["monotonic_time"]) if len(rows)>1 else 0))
     return {"path_decisions":len(rows),"path_changes":changes,"path_reversals":reversals,
       "path_changes_per_minute":changes*60/elapsed if elapsed>0 else "",
       "reversal_window_seconds":window_seconds}
