@@ -18,10 +18,10 @@ def execute(manifest_path, output_root, *, dry_run=False, resume=False, limit=No
             venv=".venv", controller_ip="127.0.0.1", controller_port=6653):
     manifest_path = Path(manifest_path).resolve()
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    if manifest.get("split") == "development":
-        raise ValueError("development manifest cannot be used as a final test campaign")
     if not manifest.get("trials"):
         raise ValueError("manifest contains no trials")
+    if any(row.get("split") != "final_test" for row in manifest["trials"]):
+        raise ValueError("development manifest cannot be used as a final test campaign")
     rows = manifest["trials"][:limit] if limit else manifest["trials"]
     root = Path(output_root).resolve()
     runner = Path(__file__).with_name("run_final_scenario_trial.py")
