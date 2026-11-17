@@ -58,3 +58,28 @@ rtt min/avg/max/mdev = 1.000/2.000/9.000/2.000 ms
 def test_parse_ping_metrics_rejects_missing_packet_loss():
     with pytest.raises(ValueError, match="Could not parse packet loss"):
         parse_ping_metrics("ping output without summary")
+
+
+
+def test_repository_revision_records_tracked_and_untracked_changes(tmp_path):
+    import subprocess
+
+    from experiments.mininet_policy_eval import repository_revision
+
+    subprocess.run(["git", "init", "-q"], cwd=tmp_path, check=True)
+    subprocess.run(["git", "config", "user.email", "pathpilot-test@example.com"],
+                   cwd=tmp_path, check=True)
+    subprocess.run(["git", "config", "user.name", "PathPilot Test"],
+                   cwd=tmp_path, check=True)
+    tracked = tmp_path / "tracked.txt"
+    tracked.write_text("initial")
+    subprocess.run(["git", "add", "tracked.txt"], cwd=tmp_path, check=True)
+    subprocess.run(["git", "commit", "-qm", "initial"], cwd=tmp_path, check=True)
+
+    revision, dirty = repository_revision(tmp_path)
+    assert len(revision) == 40
+    assert dirty == 0
+
+    (tmp_path / "untracked.txt").write_text("new")
+    _, dirty = repository_revision(tmp_path)
+    assert dirty == 1
