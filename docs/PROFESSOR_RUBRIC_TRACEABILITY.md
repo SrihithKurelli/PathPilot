@@ -66,3 +66,29 @@ These are process-level measurements for the controller process only; they do no
 The helper module also provides a Jain fairness calculation and percentile utility, but the present sequential-flow experiment does not create simultaneous competing TCP flows. Therefore Jain fairness is still **not measured** and no fairness result is emitted. Per-TCP-flow latency distributions and TCP data-plane packet loss also remain unmeasured. The existing ICMP probe remains a separate-flow measurement.
 
 Validation update: the user ran the updated test suite successfully (81 passed) and completed one-trial baseline Mininet pilots for both pinned initial paths (five policies per path, 10 trials total). All topology connectivity checks reported 0% loss and each requested initial path was respected. These pilots validate that the instrumentation runs end-to-end; one repetition per policy/path is not enough for quantitative policy comparisons or overhead conclusions. Audit the generated raw CPU/RSS/path-transition fields and run repeated trials before reporting those metrics.
+
+
+## Proposal-aligned final harness implementation status (in progress)
+
+The complete implementation contract is recorded in
+`docs/FINAL_EVALUATION_IMPLEMENTATION_PLAN.md`. New code now provides:
+- deterministic, seed-specific workload definitions for all proposal scenario families;
+- TCP application request/echo RTT sampling, separately labelled from ICMP;
+- iperf3 TCP/UDP result and interval parsing, with concurrent-window Jain fairness;
+- qdisc backlog/drop and OVS port counter sampling;
+- structured controller path-decision, FlowMod, and OpenFlow telemetry request/reply event records;
+- scheduled path degradation, delay, loss, link-down and recovery command support;
+- a per-scenario Mininet trial runner, campaign manifest planner, resumable campaign driver and strict artifact auditor.
+
+This is not yet a completed or validated end-to-end evaluation. The following gates remain before the final campaign:
+1. Run the full Python test suite on Python 3.10 and 3.11 and resolve every failure.
+2. Validate iperf3 availability and behavior on the Ubuntu VM and inside Mininet hosts.
+3. Run a single steady-low rehearsal and inspect TCP application RTT samples, concurrent fairness windows, UDP loss, qdisc/OVS counters, FlowMod counts and telemetry byte estimates.
+4. Run burst, mixed-flow, degradation and link-loss recovery smoke tests; verify that impairment commands restore the intended baseline state and cleanup is reliable on failures.
+5. Validate adaptation/settling definitions against event and telemetry traces. A utilization threshold is an operational proxy and must be labelled as such; it is not automatically an end-to-end latency recovery result.
+6. Add final condition-stratified analysis and plots, verify campaign manifest/result matching, and run the complete integrity auditor.
+7. Freeze policy parameters on development workloads before creating the final-test manifest.
+
+The current proposed full-factorial manifest has 2,800 trials and emits a lower-bound runtime estimate. Its feasibility must be reviewed after rehearsal; any reduced/fractional design must preserve all required proposal workload families and telemetry impairment questions and be documented before test execution.
+
+The event log estimates OpenFlow message bytes when the parsed Ryu message does not retain a serialized wire buffer. These estimates must be reported as estimates, not packet-capture byte counts. Controller CPU/RSS remain process-level and exclude OVS/host-wide overhead. Mininet results remain emulation results.
