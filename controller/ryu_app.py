@@ -318,6 +318,8 @@ class PathPilotController(app_manager.RyuApp):
                 self.event_ledger.record(
                     "path_decision", datapath_id=dp.id, path=path, policy=self.policy,
                     src=ip.src, dst=ip.dst,
+                    src_port=(transport.src_port if transport else 0),
+                    dst_port=(transport.dst_port if transport else 0),
                     confidence=(confidence(telemetry[path]) if "telemetry" in locals() and path in telemetry else ""),
                     telemetry_age_s=(telemetry[path].age_s if "telemetry" in locals() and path in telemetry else ""),
                     telemetry_variability=(telemetry[path].variability if "telemetry" in locals() and path in telemetry else ""),
