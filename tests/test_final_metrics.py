@@ -116,4 +116,4 @@ def test_settling_time_rejects_gaps_in_telemetry_coverage():
         {"monotonic_time": 20, "utilization": .1},
         {"monotonic_time": 22, "utilization": .1},
     ]
-    assert settling_time([10], samples, .2, 4, max_sample_gap_s=3) == 10
+    assert settling_time([10], samples, .2, 4, max_sample_gap_s=3) == ""
