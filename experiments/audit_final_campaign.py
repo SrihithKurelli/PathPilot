@@ -70,8 +70,9 @@ def audit(manifest_path, output_root):
             failures.append(f"no traffic flow results: {folder}")
         if any(flow.get("client_returncode") != 0 for flow in flows):
             failures.append(f"failed iperf3 client: {folder}")
-        if any(flow.get("goodput_mbps") in ("", None) for flow in flows):
-            failures.append(f"missing per-flow goodput: {folder}")
+        if any(flow.get("goodput_mbps") in ("", None)
+               or flow.get("bytes_received") in ("", None) for flow in flows):
+            failures.append(f"missing per-flow goodput/delivered-byte evidence: {folder}")
         if any(flow.get("protocol") == "TCP" and flow.get("tcp_retransmits") in ("", None)
                for flow in flows):
             failures.append(f"missing TCP retransmission evidence: {folder}")
