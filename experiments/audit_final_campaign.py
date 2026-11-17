@@ -108,10 +108,20 @@ def audit(manifest_path, output_root):
         if not events:
             failures.append(f"empty controller event log: {folder}")
         event_types = {event.get("event") for event in events}
-        if "qdisc_sample" not in event_types:
-            failures.append(f"missing qdisc counter samples: {folder}")
-        if "ovs_port_sample" not in event_types:
-            failures.append(f"missing OVS port counter samples: {folder}")
+        qdisc_events = [event for event in events if event.get("event") == "qdisc_sample"]
+        ovs_events = [event for event in events if event.get("event") == "ovs_port_sample"]
+        if not qdisc_events or not any(
+            sample.get("counters", {}).get("qdisc_drops") not in ("", None)
+            and sample.get("counters", {}).get("qdisc_packets") not in ("", None)
+            for sample in qdisc_events
+        ):
+            failures.append(f"missing qdisc packet/drop counters: {folder}")
+        if not ovs_events or not any(
+            port.get("rx_dropped") not in ("", None)
+            and port.get("tx_dropped") not in ("", None)
+            for event in ovs_events for port in event.get("counters", [])
+        ):
+            failures.append(f"missing OVS port drop counters: {folder}")
         if "flow_mod" not in event_types:
             failures.append(f"missing FlowMod evidence: {folder}")
         audited.append({
