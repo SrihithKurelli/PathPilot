@@ -47,12 +47,7 @@ def run_scenario(net, scenario, output_dir, ledger, *, base_port=5300,
 
     impairment_runner = MininetImpairments(net, ledger).start(scenario.impairments)
     rtt_output = output_dir / "tcp_application_rtt.json"
-    rtt_client = h1.popen([
-        "python3", str(echo_script), "client", "--host", destination,
-        "--port", str(echo_port), "--duration", str(scenario.duration_s),
-        "--rate-hz", str(echo_rate_hz), "--output", str(rtt_output),
-    ])
-
+    rtt_client = None
     origin = time.monotonic()
 
     def launch_flow(index, flow):
@@ -74,6 +69,14 @@ def run_scenario(net, scenario, output_dir, ledger, *, base_port=5300,
     ]
     for thread in launch_threads:
         thread.start()
+    # Let the designated pinned priming flow reach the controller before the
+    # separate RTT probe creates its own policy decision.
+    time.sleep(.2)
+    rtt_client = h1.popen([
+        "python3", str(echo_script), "client", "--host", destination,
+        "--port", str(echo_port), "--duration", str(scenario.duration_s),
+        "--rate-hz", str(echo_rate_hz), "--output", str(rtt_output),
+    ])
     for thread in launch_threads:
         thread.join()
 
