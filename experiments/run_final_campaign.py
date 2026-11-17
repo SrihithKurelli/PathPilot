@@ -117,6 +117,9 @@ def main():
         from experiments.audit_final_campaign import audit
         report = audit(args.manifest, args.output_root)
         print(f"Final integrity audit passed: {report['audited_trial_count']} trials")
+        from experiments.analyze_final_campaign import analyze
+        analysis = analyze(args.manifest, args.output_root)
+        print(f"Generated final analysis: {analysis}")
 
 
 if __name__ == "__main__":
