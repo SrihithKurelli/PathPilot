@@ -51,6 +51,11 @@ def load_trial(root, row):
         for item in result.get("adaptation", [])
         if item.get("telemetry_recovery_detection_delay_s") not in ("", None)
     ]
+    outage_durations = [
+        float(item["scheduled_outage_duration_s"])
+        for item in result.get("link_outages", [])
+        if item.get("scheduled_outage_duration_s") not in ("", None)
+    ]
     return {
         "scenario": row["scenario"],
         "condition": row["telemetry_condition"],
@@ -78,6 +83,9 @@ def load_trial(root, row):
         "telemetry_recovery_detection_delay_s": (
             statistics.mean(recovery_detection) if recovery_detection else ""
         ),
+        "link_outage_duration_s": (
+            statistics.mean(outage_durations) if outage_durations else ""
+        ),
     }
 
 
@@ -104,7 +112,7 @@ def analyze(manifest_path, output_root):
         "flow_mod_count", "telemetry_estimated_bytes", "qdisc_drops_counter_peak",
         "qdisc_backlog_bytes_peak", "ovs_port_drops_counter_peak", "controller_cpu_seconds",
         "controller_rss_peak_mb", "utilization_settling_time_s",
-        "telemetry_recovery_detection_delay_s",
+        "telemetry_recovery_detection_delay_s", "link_outage_duration_s",
     )
     groups = {}
     for row in rows:
