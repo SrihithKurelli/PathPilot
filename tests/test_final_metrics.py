@@ -117,3 +117,17 @@ def test_settling_time_rejects_gaps_in_telemetry_coverage():
         {"monotonic_time": 22, "utilization": .1},
     ]
     assert settling_time([10], samples, .2, 4, max_sample_gap_s=3) == ""
+
+
+def test_parse_ovs_openflow13_named_port_header():
+    rows = parse_ovs_port_stats(
+        "OFPST_PORT reply (OF1.3) (xid=0x2):\\n"
+        " 2(s2-eth2): rx pkts=10, bytes=1000, drop=2, errs=0\\n"
+        "     tx pkts=9, bytes=900, drop=1, errs=0"
+    )
+    assert rows == [{
+        "port": 2, "rx_packets": 10, "rx_bytes": 1000,
+        "rx_dropped": 2, "rx_errors": 0,
+        "tx_packets": 9, "tx_bytes": 900,
+        "tx_dropped": 1, "tx_errors": 0,
+    }]
