@@ -17,6 +17,18 @@ TELEMETRY_CONDITIONS = {
     "combined": {"delay_s": 2.0, "noise_std": 0.05},
 }
 INITIAL_PATHS = ("s1-s2-s4", "s1-s3-s4")
+# Fractional but balanced design: full telemetry factorial for burst workloads;
+# baseline+combined for ordinary, mixed-flow, degradation and recovery profiles.
+SCENARIO_CONDITIONS = {
+    "steady_low": ("baseline", "combined"),
+    "steady_high": ("baseline", "combined"),
+    "sudden_burst": ("baseline", "delayed", "noisy", "combined"),
+    "alternating_bursts": ("baseline", "delayed", "noisy", "combined"),
+    "mixed_short_long": ("baseline", "combined"),
+    "degrade_recover": ("baseline", "combined"),
+    "link_loss_recovery": ("baseline", "combined"),
+    "loss_recovery": ("baseline", "combined"),
+}
 
 
 def build_manifest(*, repetitions=10, seed=2027, scenarios=None,
@@ -41,26 +53,39 @@ def build_manifest(*, repetitions=10, seed=2027, scenarios=None,
         if value not in INITIAL_PATHS:
             raise ValueError(f"unknown initial path: {value}")
 
+    scenario_conditions = {
+        scenario: tuple(condition for condition in SCENARIO_CONDITIONS[scenario]
+                        if condition in conditions)
+        for scenario in scenarios
+    }
+    selected_scenarios = tuple(s for s in scenarios if scenario_conditions[s])
+    used_conditions = tuple(c for c in conditions
+                            if any(c in scenario_conditions[s] for s in selected_scenarios))
+    if not selected_scenarios or not used_conditions:
+        raise ValueError("selected scenarios and telemetry conditions produce no cells")
+
     rows = []
-    for scenario, condition, initial, policy, repetition in itertools.product(
-        scenarios, conditions, initial_paths, policies, range(1, repetitions + 1)
-    ):
-        # Same seed for all policies in a matched scenario/condition/path/repetition block.
-        block_seed = seed + (SCENARIO_NAMES.index(scenario) * 100000) + (
-            tuple(TELEMETRY_CONDITIONS).index(condition) * 10000
-        ) + (INITIAL_PATHS.index(initial) * 1000) + repetition
-        spec = build_scenario(scenario, seed=block_seed)
-        rows.append({
-            "scenario": scenario,
-            "scenario_sha256": scenario_digest(spec),
-            "telemetry_condition": condition,
-            **TELEMETRY_CONDITIONS[condition],
-            "initial_bottleneck_path": initial,
-            "policy": policy,
-            "repetition": repetition,
-            "workload_seed": block_seed,
-            "split": "development" if development else "final_test",
-        })
+    for scenario in selected_scenarios:
+        for condition, initial, policy, repetition in itertools.product(
+            scenario_conditions[scenario], initial_paths, policies,
+            range(1, repetitions + 1)
+        ):
+            # Same seed for all policies within a matched scenario/condition/path/repetition block.
+            block_seed = seed + (SCENARIO_NAMES.index(scenario) * 100000) + (
+                tuple(TELEMETRY_CONDITIONS).index(condition) * 10000
+            ) + (INITIAL_PATHS.index(initial) * 1000) + repetition
+            spec = build_scenario(scenario, seed=block_seed)
+            rows.append({
+                "scenario": scenario,
+                "scenario_sha256": scenario_digest(spec),
+                "telemetry_condition": condition,
+                **TELEMETRY_CONDITIONS[condition],
+                "initial_bottleneck_path": initial,
+                "policy": policy,
+                "repetition": repetition,
+                "workload_seed": block_seed,
+                "split": "development" if development else "final_test",
+            })
     revision_result = subprocess.run(
         ["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=False
     )
@@ -85,8 +110,10 @@ def build_manifest(*, repetitions=10, seed=2027, scenarios=None,
         "seed_base": seed,
         "repetitions_per_cell": repetitions,
         "policies": list(policies),
-        "scenarios": list(scenarios),
-        "telemetry_conditions": list(conditions),
+        "scenarios": list(selected_scenarios),
+        "scenario_conditions": {key: list(value) for key, value in scenario_conditions.items()
+                                if value},
+        "telemetry_conditions": list(used_conditions),
         "initial_paths": list(initial_paths),
         "trial_count": len(rows),
         "estimated_runtime_seconds_lower_bound": estimated_seconds,
