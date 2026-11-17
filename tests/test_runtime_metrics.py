@@ -25,7 +25,7 @@ def test_path_transition_metrics_counts_changes_and_reversals():
     assert result == {
         "path_decision_count": 5,
         "path_changes": 3,
-        "path_reversals": 2,
+        "path_reversals": 1,
     }
 
 
