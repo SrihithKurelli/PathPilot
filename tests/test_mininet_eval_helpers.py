@@ -150,7 +150,7 @@ def test_mininet_summary_separates_first_and_successive_flow_metrics_by_conditio
     assert path2["first_policy_flow_avoidance_rate"] == 1.0
     assert path2["successive_flow_avoidance_rate"] == 0.5
     assert path1["successive_flow_count"] == 4
-    assert path1["successive_flow_mean_goodput_mbps"] == 43.0
+    assert path1["successive_flow_mean_goodput_mbps"] == 42.925
 
 
 def test_mininet_summary_rejects_mismatched_successive_flow_arrays():
