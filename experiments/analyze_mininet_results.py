@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import math
 import statistics
 from collections import defaultdict
@@ -24,7 +25,7 @@ def summarize_mininet(rows):
         sd = statistics.stdev(goodput) if n > 1 else 0.0
         # Normal-approximation interval; label it explicitly as approximate.
         margin = 1.96 * sd / math.sqrt(n) if n > 1 else 0.0
-        summaries.append({
+        summary = {
             "policy": policy,
             "trials": n,
             "mean_second_flow_mbps": round(mean, 4),
@@ -34,7 +35,22 @@ def summarize_mininet(rows):
             "approx_ci95_low_mbps": round(max(0.0, mean - margin), 4),
             "approx_ci95_high_mbps": round(mean + margin, 4),
             "bottleneck_avoidance_rate": round(statistics.mean(avoided), 4),
-        })
+        }
+        if all("fallback_flow_avoidance_rate" in item for item in items):
+            summary["successive_flow_avoidance_rate"] = round(
+                statistics.mean(float(item["fallback_flow_avoidance_rate"]) for item in items),
+                4,
+            )
+            flow_goodputs = [
+                float(value)
+                for item in items
+                for value in json.loads(item["fallback_flow_goodputs_mbps"])
+            ]
+            if flow_goodputs:
+                summary["successive_flow_mean_goodput_mbps"] = round(
+                    statistics.mean(flow_goodputs), 4
+                )
+        summaries.append(summary)
     return summaries
 
 
