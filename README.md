@@ -385,5 +385,7 @@ sudo env PYTHONPATH="$PWD" EVENTLET_NO_GREENDNS=yes \
 ```
 
 Do not use the final campaign command until the rehearsal and integrity audit
-are green. Existing historical results are preserved and are not inputs to
-this new campaign.
+are green. A successful full campaign automatically writes the integrity audit,
+condition-stratified CSVs, paired policy comparisons, an analysis report and SVG
+plots. Existing historical results are preserved and are not inputs to this new
+campaign.
