@@ -89,6 +89,6 @@ This is not yet a completed or validated end-to-end evaluation. The following ga
 6. Add final condition-stratified analysis and plots, verify campaign manifest/result matching, and run the complete integrity auditor.
 7. Freeze policy parameters on development workloads before creating the final-test manifest.
 
-The current proposed full-factorial manifest has 2,800 trials and emits a lower-bound runtime estimate. Its feasibility must be reviewed after rehearsal; any reduced/fractional design must preserve all required proposal workload families and telemetry impairment questions and be documented before test execution.
+The default manifest now uses a balanced fractional design of 2,000 trials: full baseline/delay/noise/combined telemetry coverage for sudden and alternating bursts; baseline+combined for steady low/high, mixed short/long, degradation, link-loss and packet-loss recovery. Both initial paths, all five policies and ten matched repetitions remain represented. The manifest emits a runtime lower-bound estimate. Review the estimate after rehearsal and document any further change before final-test execution.
 
 The event log estimates OpenFlow message bytes when the parsed Ryu message does not retain a serialized wire buffer. These estimates must be reported as estimates, not packet-capture byte counts. Controller CPU/RSS remain process-level and exclude OVS/host-wide overhead. Mininet results remain emulation results.
