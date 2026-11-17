@@ -101,7 +101,7 @@ def build_scenario(name: str, *, seed: int = 7) -> Scenario:
             FlowSpec("TCP", 60, 12, 0, "background"),
         ), (
             ImpairmentEvent(20, "s1-s2-s4", "set_rate", "5mbit"),
-            ImpairmentEvent(40, "s1-s2-s4", "link_up"),
+            ImpairmentEvent(40, "s1-s2-s4", "set_rate", "100mbit"),
         ))
     if name == "link_loss_recovery":
         return Scenario(name, 65, (
