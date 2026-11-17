@@ -128,7 +128,12 @@ def parse_ovs_port_stats(text):
     if current: rows.append(current)
     return rows
 
-def aggregate_concurrent_flow_fairness(records):
+def aggregate_concurrent_flow_fairness(records, minimum_flows=2):
+    """Compute fairness only in time windows with simultaneous competing flows."""
+    if minimum_flows < 2:
+        raise ValueError("minimum_flows must be at least two")
     grouped=defaultdict(list)
-    for row in records: grouped[row["window_id"]].append(float(row["goodput_mbps"]))
-    return {window:jain_fairness(values) for window,values in grouped.items()}
+    for row in records:
+        grouped[row["window_id"]].append(float(row["goodput_mbps"]))
+    return {window:jain_fairness(values) for window,values in grouped.items()
+            if len(values) >= minimum_flows}
