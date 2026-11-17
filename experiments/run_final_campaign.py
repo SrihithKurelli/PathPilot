@@ -68,9 +68,11 @@ def execute(manifest_path, output_root, *, dry_run=False, resume=False, limit=No
             "--controller-port", str(controller_port),
             "--warmup-seconds", str(warmup),
         ]
-        print(f"[{index}/{len(rows)}] {' '.join(command)}", flush=True)
         if dry_run:
+            if index <= 3:
+                print(f"[{index}/{len(rows)}] {' '.join(command)}", flush=True)
             continue
+        print(f"[{index}/{len(rows)}] {' '.join(command)}", flush=True)
         target.mkdir(parents=True, exist_ok=True)
         subprocess.run(command, check=True, env={
             **os.environ, "PYTHONPATH": str(Path.cwd()),
