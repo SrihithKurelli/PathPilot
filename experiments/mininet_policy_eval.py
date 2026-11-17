@@ -24,6 +24,8 @@ import threading
 import time
 from pathlib import Path
 
+from controller.event_ledger import EventLedger
+from experiments.network_sampling import NetworkStatsSampler
 from experiments.runtime_metrics import ProcessMetricsSampler, path_transition_metrics
 
 POLICIES = ("static", "least_loaded", "threshold", "stability_aware", "uncertainty_aware")
@@ -183,7 +185,11 @@ def run_trial(policy, trial, args, repo_root):
         raise FileNotFoundError(f"Cannot find {ryu_manager}; set --venv to the Ryu environment.")
 
     env = os.environ.copy()
+    event_dir = Path(args.output).expanduser().resolve().parent / "controller_events"
+    event_dir.mkdir(parents=True, exist_ok=True)
+    event_log_path = event_dir / f"{Path(args.output).stem}_{policy}_trial{trial}.jsonl"
     env.update({
+        "PATHPILOT_EVENT_LOG": str(event_log_path),
         "PATHPILOT_POLICY": policy,
         "PYTHONPATH": str(repo_root),
         "EVENTLET_NO_GREENDNS": "yes",
@@ -206,11 +212,13 @@ def run_trial(policy, trial, args, repo_root):
     servers = []
     first_client = second_client = ping_client = None
     qdisc_switch = None
+    network_sampler = None
     try:
         time.sleep(1.5)
         if controller.poll() is not None:
             raise RuntimeError("Ryu exited during startup:\n" + log.text())
         net = build_network(args.controller_ip, args.controller_port)
+        network_sampler = NetworkStatsSampler(net, EventLedger(event_log_path)).start()
         log.wait_for(r"Live telemetry ready:", timeout=35)
         loss = net.pingAll()
         if loss != 0:
@@ -324,6 +332,7 @@ def run_trial(policy, trial, args, repo_root):
             "policy": policy, "trial": trial, "seed": args.seed + trial,
             "git_revision": git_revision,
             "working_tree_dirty": working_tree_dirty,
+            "controller_event_log": str(event_log_path),
             "requested_initial_path": args.initial_path or "policy_selected",
             "telemetry_delay_seconds": args.telemetry_delay_seconds,
             "telemetry_noise_std": args.telemetry_noise_std,
@@ -364,6 +373,8 @@ def run_trial(policy, trial, args, repo_root):
             _stop_process(second_client)
         if first_client is not None:
             _stop_process(first_client)
+        if network_sampler is not None:
+            network_sampler.stop()
         if net is not None:
             if qdisc_switch is not None:
                 net.get(qdisc_switch).cmd(

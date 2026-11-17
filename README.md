@@ -333,3 +333,73 @@ Key interpretation points:
 ## Stability-aware baseline
 
 The `stability_aware` comparator retains the previously selected path unless another candidate improves measured utilization by at least an absolute 0.10 (10 percentage points). This is a deliberately simple, documented baseline for comparison, not PathPilot's proposed telemetry-confidence mechanism and not a novelty claim. The synthetic replay carries each policy's previous choice across time steps and records path changes and immediate reversals. The two-flow Mininet bottleneck harness starts a fresh controller for each trial, so its first policy decision has no prior policy-selected path; use the replay for controlled temporal comparison and a multi-flow Mininet workload for deployment-level stability measurements.
+
+
+### Proposal-aligned final evaluation harness
+
+The revised proposal's complete metric and workload contract is documented in
+[docs/FINAL_EVALUATION_IMPLEMENTATION_PLAN.md](docs/FINAL_EVALUATION_IMPLEMENTATION_PLAN.md).
+The new implementation is being developed separately from the historical
+balanced matrices.
+
+Implemented modules:
+- `experiments/final_metrics.py`: distributions, bootstrap intervals, concurrent
+  Jain fairness, TCP/UDP iperf3 parsing, TCP socket RTT parsing, qdisc/OVS
+  counters, route stability and settling-time helpers.
+- `experiments/scenarios.py`: seeded steady-low/high, sudden-burst,
+  alternating-burst, mixed short/long, degradation/recovery and link-loss
+  scenarios.
+- `experiments/tcp_echo.py`: TCP request/echo application RTT probe. Its p99 is
+  distinct from ICMP p99 and kernel smoothed RTT.
+- `controller/event_ledger.py` and `experiments/network_sampling.py`:
+  structured decision, FlowMod, OpenFlow telemetry, qdisc and OVS event records.
+- `experiments/impairments.py` and `experiments/scenario_traffic.py`: scheduled
+  link impairments and concurrent TCP/UDP traffic execution.
+- `experiments/run_final_scenario_trial.py`: one complete controller/Mininet
+  scenario trial.
+- `experiments/final_campaign.py`, `run_final_campaign.py`, and
+  `audit_final_campaign.py`: frozen campaign manifest, resumable execution and
+  strict post-run integrity audit.
+
+The campaign is not yet cleared for execution. Live end-to-end rehearsal,
+measurement validation, full analysis/report generation and CI must pass first.
+The default balanced fractional design is 2,000 trials: full telemetry
+impairment coverage for sudden/alternating bursts, with baseline+combined
+conditions for steady, mixed-flow and recovery scenarios. Both initial paths,
+all five policies and ten matched repetitions remain represented. The manifest
+estimates runtime; use development workloads for tuning and keep them separate
+from the final test split. Install `iperf3` on the Ubuntu host and inside Mininet hosts
+before the scenario runner is used.
+
+Create a manifest (does not start Mininet):
+
+```bash
+python -m experiments.final_campaign --output results/final_campaign_manifest.json
+python -m experiments.run_final_campaign --manifest results/final_campaign_manifest.json --dry-run
+```
+Create a development-only manifest for tuning (must use a separate output directory):
+
+```bash
+python -m experiments.final_campaign --development --output results/development_manifest.json
+sudo env PYTHONPATH="$PWD" EVENTLET_NO_GREENDNS=yes \
+  /usr/bin/python3 -m experiments.run_final_campaign \
+  --manifest results/development_manifest.json \
+  --output-root results/development_campaign --allow-development
+```
+
+Development results are never accepted by the final-test auditor.
+
+A single trial can be rehearsed only after the implementation is validated:
+
+```bash
+sudo env PYTHONPATH="$PWD" EVENTLET_NO_GREENDNS=yes \
+  /usr/bin/python3 -m experiments.run_final_scenario_trial \
+  --policy least_loaded --scenario steady_low --condition baseline \
+  --initial-path s1-s2-s4 --output-dir results/final_harness_rehearsal
+```
+
+Do not use the final campaign command until the rehearsal and integrity audit
+are green. A successful full campaign automatically writes the integrity audit,
+condition-stratified CSVs, paired policy comparisons, an analysis report and SVG
+plots. Existing historical results are preserved and are not inputs to this new
+campaign.
