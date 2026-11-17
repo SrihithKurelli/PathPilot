@@ -59,6 +59,11 @@ def build_manifest(*, repetitions=10, seed=2027, scenarios=None,
             "workload_seed": block_seed,
             "split": "development" if development else "final_test",
         })
+    estimated_seconds = sum(
+        build_scenario(row["scenario"], seed=row["workload_seed"]).duration_s
+        + max(6.0, row["delay_s"] + 4.0) + 7.0
+        for row in rows
+    )
     return {
         "schema_version": 1,
         "campaign": "pathpilot_proposal_final" if not development else "pathpilot_development",
@@ -69,6 +74,8 @@ def build_manifest(*, repetitions=10, seed=2027, scenarios=None,
         "telemetry_conditions": list(conditions),
         "initial_paths": list(initial_paths),
         "trial_count": len(rows),
+        "estimated_runtime_seconds_lower_bound": estimated_seconds,
+        "estimated_runtime_hours_lower_bound": round(estimated_seconds / 3600, 2),
         "matched_policy_seed_rule": "same workload seed within scenario/condition/initial-path/repetition block",
         "development_workloads_must_not_be_mixed_with_final_test": True,
         "trials": rows,
