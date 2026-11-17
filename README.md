@@ -279,6 +279,26 @@ rebuild the combined CSV and report from saved cells. Outputs include
 includes median and inclusive IQR as well as mean and standard deviation.
 
 
+### Runtime metrics collected by the Mininet runner
+
+The single-trial Mininet runner now records best-effort Ryu controller process
+CPU time, mean CPU percentage and peak resident memory using Linux
+`/proc`. It also records the number of controller path decisions, path
+changes and immediate reversals observed in the controller log during each
+trial. The balanced matrix carries these fields into its grouped summary.
+
+These measurements are limited to the Ryu process and logged new-flow
+decisions. They do not measure OVS CPU, host-wide resource use, flow-rule
+installation latency, or migration of established flows. The current matrix
+uses successive, non-overlapping TCP transfers, so Jain fairness is not
+reported. A helper for Jain's index is provided for a future concurrent-flow
+experiment, but applying it to sequential flows would be misleading.
+
+The existing ICMP p99 remains a separate probe-flow RTT statistic. The new
+instrumentation does not yet measure per-TCP-flow latency distributions or
+TCP data-plane packet loss. Treat runtime metrics as unvalidated until the
+unit suite and Ubuntu Mininet pilot have been run.
+
 ### Balanced 400-trial results
 
 The completed counterbalanced Mininet experiment contains 400 trials across five telemetry conditions, two initial bottleneck placements, four policies, and ten repetitions per cell. The analysis documents the throughput and bottleneck-avoidance findings, telemetry-age observations, anomalous trials, and limitations.
