@@ -104,8 +104,9 @@ def run_scenario(net, scenario, output_dir, ledger, *, base_port=5300,
         })
         flow_results.append(result)
         for interval in parse_iperf3_intervals(stdout, result["flow_id"]):
-            global_start = flow.start_offset_s + float(interval["start_s"])
-            global_end = flow.start_offset_s + float(interval["end_s"])
+            actual_offset = launched_at - origin
+            global_start = actual_offset + float(interval["start_s"])
+            global_end = actual_offset + float(interval["end_s"])
             for window in range(int(global_start), int(math.ceil(global_end))):
                 overlap = min(global_end, window + 1) - max(global_start, window)
                 if overlap > 0:
