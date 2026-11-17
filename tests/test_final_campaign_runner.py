@@ -63,3 +63,17 @@ def test_development_manifest_requires_explicit_opt_in(tmp_path):
     result = execute(manifest_path, tmp_path / "out", dry_run=True,
                      allow_development=True)
     assert result["planned"] == 1
+
+
+def test_fractional_design_keeps_full_impairment_factorial_for_bursts():
+    manifest = build_manifest(repetitions=1)
+    burst_conditions = {
+        row["telemetry_condition"] for row in manifest["trials"]
+        if row["scenario"] in {"sudden_burst", "alternating_bursts"}
+    }
+    steady_conditions = {
+        row["telemetry_condition"] for row in manifest["trials"]
+        if row["scenario"] in {"steady_low", "steady_high"}
+    }
+    assert burst_conditions == {"baseline", "delayed", "noisy", "combined"}
+    assert steady_conditions == {"baseline", "combined"}
