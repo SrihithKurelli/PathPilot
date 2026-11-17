@@ -296,8 +296,11 @@ experiment, but applying it to sequential flows would be misleading.
 
 The existing ICMP p99 remains a separate probe-flow RTT statistic. The new
 instrumentation does not yet measure per-TCP-flow latency distributions or
-TCP data-plane packet loss. Treat runtime metrics as unvalidated until the
-unit suite and Ubuntu Mininet pilot have been run.
+TCP data-plane packet loss. The updated unit suite (81 tests) and one-trial
+baseline Mininet pilots on both initial paths have completed successfully.
+Those pilots are smoke checks, not statistically meaningful comparisons;
+audit the raw CPU/RSS/path-transition fields and run repeated trials before
+reporting quantitative overhead or stability conclusions.
 
 ### Balanced 400-trial results
 
