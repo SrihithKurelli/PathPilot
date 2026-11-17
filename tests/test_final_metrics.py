@@ -2,7 +2,7 @@ import pytest
 
 from experiments.final_metrics import (
     aggregate_concurrent_flow_fairness, bootstrap_mean_ci, jain_fairness,
-    parse_iperf3_json, parse_ovs_port_stats, parse_ss_tcp_rtt,
+    parse_iperf3_intervals, parse_iperf3_json, parse_ovs_port_stats, parse_ss_tcp_rtt,
     parse_tc_qdisc_stats, path_stability, percentile, settling_time,
     summarize_distribution,
 )
@@ -97,3 +97,14 @@ def test_parse_ovs_port_drop_counters():
     assert rows[0]["port"] == 2
     assert rows[0]["rx_packets"] == 10
     assert rows[0]["tx_dropped"] == 1
+
+
+def test_iperf3_interval_goodput_is_keyed_for_fairness():
+    records = parse_iperf3_intervals({
+        "intervals": [
+            {"sum": {"start": 0, "end": 1, "bits_per_second": 2_000_000}},
+            {"sum": {"start": 1, "end": 2, "bits_per_second": 4_000_000}},
+        ]
+    }, "flow-a")
+    assert [row["window_id"] for row in records] == [0, 1]
+    assert [row["goodput_mbps"] for row in records] == [2, 4]
