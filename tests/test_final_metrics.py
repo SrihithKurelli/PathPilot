@@ -1,0 +1,99 @@
+import pytest
+
+from experiments.final_metrics import (
+    aggregate_concurrent_flow_fairness, bootstrap_mean_ci, jain_fairness,
+    parse_iperf3_json, parse_ovs_port_stats, parse_ss_tcp_rtt,
+    parse_tc_qdisc_stats, path_stability, percentile, settling_time,
+    summarize_distribution,
+)
+
+
+def test_percentile_and_distribution_summary():
+    assert percentile([0, 10], .5) == 5
+    result = summarize_distribution([1, 2, 3], "latency_ms")
+    assert result["latency_ms_p99"] == pytest.approx(2.98)
+    assert result["latency_ms_count"] == 3
+
+
+def test_jain_fairness_only_uses_concurrent_window():
+    assert jain_fairness([10, 10]) == 1
+    assert jain_fairness([10, 0]) == pytest.approx(.5)
+    assert aggregate_concurrent_flow_fairness([
+        {"window_id": "w1", "goodput_mbps": 10},
+        {"window_id": "w1", "goodput_mbps": 10},
+        {"window_id": "w2", "goodput_mbps": 10},
+        {"window_id": "w2", "goodput_mbps": 0},
+    ]) == {"w1": 1.0, "w2": .5}
+
+
+def test_bootstrap_ci_is_deterministic():
+    first = bootstrap_mean_ci([1, 2, 3, 4], resamples=500, seed=11)
+    second = bootstrap_mean_ci([1, 2, 3, 4], resamples=500, seed=11)
+    assert first == second
+    assert first["n"] == 4
+
+
+def test_path_stability_rate_and_reversal_window():
+    result = path_stability([
+        {"path": "A", "monotonic_time": 0},
+        {"path": "B", "monotonic_time": 10},
+        {"path": "A", "monotonic_time": 20},
+        {"path": "A", "monotonic_time": 40},
+    ], window_seconds=25)
+    assert result["path_changes"] == 2
+    assert result["path_reversals"] == 1
+    assert result["path_changes_per_minute"] == pytest.approx(3)
+
+
+def test_settling_time_requires_continuous_hold():
+    samples = [
+        {"monotonic_time": 11, "utilization": .2},
+        {"monotonic_time": 13, "utilization": .8},
+        {"monotonic_time": 14, "utilization": .2},
+        {"monotonic_time": 17, "utilization": .2},
+    ]
+    assert settling_time([10], samples, .5, 2) == 4
+    assert settling_time([10], samples[:2], .5, 2) == ""
+
+
+def test_parse_iperf3_keeps_tcp_retransmits_distinct_from_udp_loss():
+    tcp = parse_iperf3_json({
+        "start": {"test_start": {"protocol": "TCP"}},
+        "end": {"sum_received": {"bits_per_second": 2_000_000, "bytes": 1000},
+                "sum_sent": {"retransmits": 7}},
+    })
+    assert tcp["goodput_mbps"] == 2
+    assert tcp["tcp_retransmits"] == 7
+    assert tcp["udp_loss_pct"] == ""
+
+    udp = parse_iperf3_json({
+        "start": {"test_start": {"protocol": "UDP"}},
+        "end": {"sum": {"bits_per_second": 1_000_000, "bytes": 1000,
+                        "packets": 100, "lost_packets": 5, "jitter_ms": 1.2}},
+    })
+    assert udp["udp_loss_pct"] == 5
+    assert udp["udp_jitter_ms"] == 1.2
+    assert udp["tcp_retransmits"] == ""
+
+
+def test_parse_kernel_tcp_rtt_and_qdisc_counters():
+    assert parse_ss_tcp_rtt(" cubic rto:201 rtt:12.34/2.0 ato:40") == [12.34]
+    stats = parse_tc_qdisc_stats(
+        "Sent 1200 bytes 12 pkt (dropped 3, overlimits 4 requeues 0)\n"
+        " backlog 500b 5p requeues 0"
+    )
+    assert stats["qdisc_packets"] == 12
+    assert stats["qdisc_drops"] == 3
+    assert stats["qdisc_overlimits"] == 4
+    assert stats["qdisc_backlog_bytes"] == 500
+    assert stats["qdisc_backlog_packets"] == 5
+
+
+def test_parse_ovs_port_drop_counters():
+    rows = parse_ovs_port_stats(
+        "  port 2: rx pkts=10, bytes=1000, dropped=2, errs=0\n"
+        "           tx pkts=9, bytes=900, dropped=1, errs=0"
+    )
+    assert rows[0]["port"] == 2
+    assert rows[0]["rx_packets"] == 10
+    assert rows[0]["tx_dropped"] == 1
