@@ -143,6 +143,7 @@ def run_trial(policy, scenario_name, condition, initial_path, repetition,
     decisions = [
         {"path": event["path"], "monotonic_time": event["monotonic_time"]}
         for event in experiment_events if event.get("event") == "path_decision"
+        and int(event.get("dst_port", 0)) != 5199
     ]
     samples = [
         event for event in experiment_events if event.get("event") == "telemetry_sample"
