@@ -310,3 +310,36 @@ Key interpretation points:
 ## Stability-aware baseline
 
 The `stability_aware` comparator retains the previously selected path unless another candidate improves measured utilization by at least an absolute 0.10 (10 percentage points). This is a deliberately simple, documented baseline for comparison, not PathPilot's proposed telemetry-confidence mechanism and not a novelty claim. The synthetic replay carries each policy's previous choice across time steps and records path changes and immediate reversals. The two-flow Mininet bottleneck harness starts a fresh controller for each trial, so its first policy decision has no prior policy-selected path; use the replay for controlled temporal comparison and a multi-flow Mininet workload for deployment-level stability measurements.
+
+
+## Latest post-merge evaluation status (November 2026)
+
+The current controller and experiment runner include five policies:
+`static`, `least_loaded`, `threshold`, `stability_aware`, and
+`uncertainty_aware`. The latest counterbalanced experiment was completed on
+the project Ubuntu VM after adding four successive policy-selected TCP flows
+per trial.
+
+- Matrix: 500 Mininet/OVS trials (5 policies × 5 telemetry conditions × 2
+  bottleneck placements × 10 repetitions).
+- Successive-flow measurements: four per trial, 2,000 total.
+- Local audit: 500 unique trial keys, four aligned successive-flow records in
+  every trial, no nonzero successive-flow client return codes.
+- Fallback audit: 400 uncertainty-aware successive decisions; 298 invoked the
+  low-confidence round-robin fallback. This verifies fallback use and rotation,
+  not congestion identification.
+- Merged-branch local verification: `compileall` succeeded and
+  `python -m pytest -v` reported 74 passed.
+
+The latest raw data and generated report remain on the Ubuntu VM under
+`results/round_robin_balanced_matrix/`; they are not included in the
+historical 400-trial archive in `results/balanced_full/`. Keep those datasets
+separate. Before quoting detailed per-cell values in a final report, copy the
+latest generated `BALANCED_REPORT.md`, `balanced_summary.csv`, and raw CSVs
+into the submission evidence bundle and verify them.
+
+The latest experiment still does **not** measure TCP-flow p99 latency, TCP
+data-plane packet loss, Jain fairness, controller CPU, flow-rule update
+overhead, or settling time. ICMP p99 is a separate probe-flow RTT metric.
+See [the updated professor rubric traceability](docs/PROFESSOR_RUBRIC_TRACEABILITY.md)
+for the complete status and remaining work.
