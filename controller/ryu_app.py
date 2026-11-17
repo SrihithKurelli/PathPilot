@@ -1,4 +1,5 @@
 """Ryu OpenFlow 1.3 controller for the PathPilot two-path teaching topology."""
+import hashlib
 import json
 import os
 import random
@@ -246,8 +247,22 @@ class PathPilotController(app_manager.RyuApp):
                     )
                 else:
                     telemetry = self.read_telemetry()
+                    # When uncertainty-aware telemetry cannot distinguish
+                    # paths, avoid a permanent alphabetical bias. A stable
+                    # hash of the flow 5-tuple gives a reproducible fallback
+                    # distributed across new flows without random state.
+                    safe_fallback = self.last_selected_path
+                    if self.policy == "uncertainty_aware" and safe_fallback is None:
+                        candidates = sorted(telemetry)
+                        digest = hashlib.sha256(repr(key).encode("utf-8")).digest()
+                        safe_fallback = candidates[
+                            int.from_bytes(digest[:8], "big") % len(candidates)
+                        ]
                     path = choose_path(
-                        telemetry, self.policy, previous_path=self.last_selected_path
+                        telemetry,
+                        self.policy,
+                        previous_path=self.last_selected_path,
+                        safe_fallback=safe_fallback,
                     )
                     self.last_selected_path = path
                 self.logger.info(
