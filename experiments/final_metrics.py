@@ -135,11 +135,22 @@ def parse_ovs_port_stats(text):
     return rows
 
 def aggregate_concurrent_flow_fairness(records, minimum_flows=2):
-    """Compute fairness only in time windows with simultaneous competing flows."""
+    """Compute Jain fairness over distinct flows in overlapping time windows."""
     if minimum_flows < 2:
         raise ValueError("minimum_flows must be at least two")
-    grouped=defaultdict(list)
-    for row in records:
-        grouped[row["window_id"]].append(float(row["goodput_mbps"]))
-    return {window:jain_fairness(values) for window,values in grouped.items()
-            if len(values) >= minimum_flows}
+    grouped=defaultdict(lambda: defaultdict(lambda: [0.0, 0.0]))
+    for index, row in enumerate(records):
+        window = row["window_id"]
+        flow_id = row.get("flow_id", f"row-{index}")
+        weight = float(row.get("overlap_seconds", 1.0))
+        if weight <= 0:
+            continue
+        bucket = grouped[window][flow_id]
+        bucket[0] += float(row["goodput_mbps"]) * weight
+        bucket[1] += weight
+    result = {}
+    for window, flows in grouped.items():
+        values = [total / duration for total, duration in flows.values() if duration > 0]
+        if len(values) >= minimum_flows:
+            result[window] = jain_fairness(values)
+    return result
