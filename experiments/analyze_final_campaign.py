@@ -46,6 +46,11 @@ def load_trial(root, row):
         for item in result.get("adaptation", [])
         if item.get("utilization_settling_time_s") not in ("", None)
     ]
+    recovery_detection = [
+        float(item["telemetry_recovery_detection_delay_s"])
+        for item in result.get("adaptation", [])
+        if item.get("telemetry_recovery_detection_delay_s") not in ("", None)
+    ]
     return {
         "scenario": row["scenario"],
         "condition": row["telemetry_condition"],
@@ -70,6 +75,9 @@ def load_trial(root, row):
         "controller_rss_peak_mb": float(result["controller_metrics"]["controller_rss_peak_mb"])
             if result["controller_metrics"]["controller_rss_peak_mb"] not in ("", None) else "",
         "utilization_settling_time_s": statistics.mean(adaptation) if adaptation else "",
+        "telemetry_recovery_detection_delay_s": (
+            statistics.mean(recovery_detection) if recovery_detection else ""
+        ),
     }
 
 
@@ -96,6 +104,7 @@ def analyze(manifest_path, output_root):
         "flow_mod_count", "telemetry_estimated_bytes", "qdisc_drops_counter_peak",
         "qdisc_backlog_bytes_peak", "ovs_port_drops_counter_peak", "controller_cpu_seconds",
         "controller_rss_peak_mb", "utilization_settling_time_s",
+        "telemetry_recovery_detection_delay_s",
     )
     groups = {}
     for row in rows:
