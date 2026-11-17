@@ -63,8 +63,7 @@ class ProcessMetricsSampler:
         self._start_wall = None
         self._start_cpu = None
         self._peak_rss_kb = 0
-        self._last_cpu = None
-        self._cpu_samples = []
+        self._result = None
 
     def _read(self):
         stat = Path(f"/proc/{self.pid}/stat").read_text()
@@ -88,7 +87,6 @@ class ProcessMetricsSampler:
             return self
         self._start_wall = time.monotonic()
         self._start_cpu = ticks
-        self._last_cpu = ticks
         self._peak_rss_kb = rss
         self._thread = threading.Thread(target=self._sample, daemon=True)
         self._thread.start()
@@ -97,32 +95,38 @@ class ProcessMetricsSampler:
     def _sample(self):
         while not self._stop.wait(self.interval_s):
             try:
-                ticks, rss = self._read()
+                _, rss = self._read()
             except (OSError, ValueError, IndexError):
                 continue
             self._peak_rss_kb = max(self._peak_rss_kb, rss)
-            self._cpu_samples.append(ticks)
 
     def stop(self):
+        # The trial harness may request metrics more than once while cleaning
+        # up. Freeze the first completed snapshot so elapsed time cannot grow
+        # and make the reported mean CPU percentage artificially decrease.
+        if self._result is not None:
+            return dict(self._result)
         if self._thread is None:
-            return {"controller_cpu_seconds": "",
-                    "controller_cpu_percent_mean": "",
-                    "controller_rss_peak_mb": ""}
+            self._result = {
+                "controller_cpu_seconds": "",
+                "controller_cpu_percent_mean": "",
+                "controller_rss_peak_mb": "",
+            }
+            return dict(self._result)
         self._stop.set()
         self._thread.join(timeout=max(1.0, self.interval_s * 4))
         try:
             final_ticks, rss = self._read()
             self._peak_rss_kb = max(self._peak_rss_kb, rss)
         except (OSError, ValueError, IndexError):
-            final_ticks = self._last_cpu
+            final_ticks = self._start_cpu
         wall = max(time.monotonic() - self._start_wall, 1e-9)
-        # Linux clock ticks are normally 100 Hz; obtain the configured rate
-        # from os.sysconf instead of assuming it.
         import os
         hz = float(os.sysconf("SC_CLK_TCK"))
         cpu_seconds = max(0.0, (final_ticks - self._start_cpu) / hz)
-        return {
+        self._result = {
             "controller_cpu_seconds": round(cpu_seconds, 6),
             "controller_cpu_percent_mean": round(100.0 * cpu_seconds / wall, 4),
             "controller_rss_peak_mb": round(self._peak_rss_kb / 1024.0, 4),
         }
+        return dict(self._result)
