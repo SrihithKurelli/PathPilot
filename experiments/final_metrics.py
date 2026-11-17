@@ -55,17 +55,22 @@ def path_stability(decisions,window_seconds,observation_duration_s=None):
       "path_changes_per_minute":changes*60/elapsed if elapsed>0 else "",
       "reversal_window_seconds":window_seconds}
 
-def settling_time(events,samples,utilization_threshold,hold_seconds):
+def settling_time(events,samples,utilization_threshold,hold_seconds,max_sample_gap_s=3.0):
     if not events: return ""
-    if not 0<=utilization_threshold<=1 or hold_seconds<0: raise ValueError("invalid settling parameters")
+    if (not 0<=utilization_threshold<=1 or hold_seconds<0
+            or max_sample_gap_s<=0):
+        raise ValueError("invalid settling parameters")
     event=min(map(float,events)); points=sorted((float(x["monotonic_time"]),float(x["utilization"]))
       for x in samples if float(x["monotonic_time"])>=event)
-    start=None
+    start=None; previous=None
     for timestamp,util in points:
+        if previous is not None and timestamp-previous>max_sample_gap_s:
+            start=None
         if util<=utilization_threshold:
             if start is None: start=timestamp
             if timestamp-start>=hold_seconds: return start-event
         else: start=None
+        previous=timestamp
     return ""
 
 def parse_iperf3_json(payload):
