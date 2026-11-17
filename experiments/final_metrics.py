@@ -62,6 +62,8 @@ def settling_time(events,samples,utilization_threshold,hold_seconds,max_sample_g
         raise ValueError("invalid settling parameters")
     event=min(map(float,events)); points=sorted((float(x["monotonic_time"]),float(x["utilization"]))
       for x in samples if float(x["monotonic_time"])>=event)
+    if not any(util > utilization_threshold for _, util in points):
+        return ""
     start=None; previous=None
     for timestamp,util in points:
         if previous is not None and timestamp-previous>max_sample_gap_s:
