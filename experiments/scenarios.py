@@ -108,6 +108,15 @@ def _base_scenario(name: str) -> Scenario:
             ImpairmentEvent(20, "s1-s2-s4", "link_down"),
             ImpairmentEvent(40, "s1-s2-s4", "link_up"),
         ))
+    if name == "loss_recovery":
+        return Scenario(name, 65, (
+            FlowSpec("TCP", 60, 12, 0, "background"),
+            FlowSpec("TCP", 10, 8, 25, "during_packet_loss"),
+            FlowSpec("TCP", 10, 8, 45, "after_packet_loss"),
+        ), (
+            ImpairmentEvent(20, "s1-s2-s4", "set_loss", "5%"),
+            ImpairmentEvent(40, "s1-s2-s4", "set_loss", "0%"),
+        ))
     raise KeyError(f"unknown scenario: {name}")
 
 
@@ -135,7 +144,7 @@ def build_scenario(name: str, *, seed: int = 7) -> Scenario:
 
 SCENARIO_NAMES = (
     "steady_low", "steady_high", "sudden_burst", "alternating_bursts",
-    "mixed_short_long", "degrade_recover", "link_loss_recovery",
+    "mixed_short_long", "degrade_recover", "link_loss_recovery", "loss_recovery",
 )
 
 
