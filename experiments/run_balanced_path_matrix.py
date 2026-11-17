@@ -41,6 +41,8 @@ RAW_FIELDS = (
     "first_flow_iperf_output", "second_flow_iperf_output",
     "warmup_seconds", "first_selection_log", "second_selection_log",
     "first_telemetry_log", "second_telemetry_log",
+    "path_decision_count", "path_changes", "path_reversals",
+    "controller_cpu_seconds", "controller_cpu_percent_mean", "controller_rss_peak_mb",
 )
 
 
@@ -58,6 +60,10 @@ def summarize(rows):
         successive_goodputs = []
         successive_avoidance = []
         successive_count = 0
+        cpu_percent = []
+        rss_peak = []
+        path_changes = []
+        path_reversals = []
         for item in items:
             flow_goodputs = [float(value) for value in __import__("json").loads(
                 item.get("fallback_flow_goodputs_mbps") or "[]"
@@ -75,6 +81,14 @@ def summarize(rows):
             successive_avoidance.extend(
                 int(path != item["bottleneck_path"]) for path in flow_paths
             )
+            if item.get("controller_cpu_percent_mean") not in ("", None):
+                cpu_percent.append(float(item["controller_cpu_percent_mean"]))
+            if item.get("controller_rss_peak_mb") not in ("", None):
+                rss_peak.append(float(item["controller_rss_peak_mb"]))
+            if item.get("path_changes") not in ("", None):
+                path_changes.append(float(item["path_changes"]))
+            if item.get("path_reversals") not in ("", None):
+                path_reversals.append(float(item["path_reversals"]))
         icmp_losses = [float(item["icmp_probe_packet_loss_pct"]) for item in items
                        if item.get("icmp_probe_packet_loss_pct") not in ("", None)]
         icmp_p99 = [float(item["icmp_probe_rtt_p99_ms"]) for item in items
@@ -109,6 +123,14 @@ def summarize(rows):
                 if icmp_losses else "",
             "mean_icmp_probe_rtt_p99_ms": round(statistics.mean(icmp_p99), 4)
                 if icmp_p99 else "",
+            "mean_controller_cpu_percent": round(statistics.mean(cpu_percent), 4)
+                if cpu_percent else "",
+            "mean_controller_rss_peak_mb": round(statistics.mean(rss_peak), 4)
+                if rss_peak else "",
+            "mean_path_changes_per_trial": round(statistics.mean(path_changes), 4)
+                if path_changes else "",
+            "mean_path_reversals_per_trial": round(statistics.mean(path_reversals), 4)
+                if path_reversals else "",
         })
     return summaries
 
