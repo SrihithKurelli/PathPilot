@@ -1,5 +1,4 @@
 """Ryu OpenFlow 1.3 controller for the PathPilot two-path teaching topology."""
-import hashlib
 import os
 import random
 import time
@@ -19,7 +18,7 @@ from ryu.lib.packet import ether_types
 from ryu.ofproto import ofproto_v1_3
 
 from controller.live_telemetry import PortRateTracker
-from controller.policies import Telemetry, choose_path
+from controller.policies import Telemetry, choose_path, confidence, next_round_robin_fallback
 from controller.telemetry_loader import load_static_telemetry, conservative_telemetry
 from experiments.path_pinning import pinned_experiment_path
 
@@ -59,6 +58,7 @@ class PathPilotController(app_manager.RyuApp):
         )
         self.reverse_paths = {}
         self.last_selected_path = None
+        self.last_uncertain_fallback_path = None
         self.datapaths = {}
         self.port_rate_tracker = PortRateTracker()
         self._stats_reply_switches = set()
@@ -248,23 +248,34 @@ class PathPilotController(app_manager.RyuApp):
                     )
                 else:
                     telemetry = self.read_telemetry()
-                    # When uncertainty-aware telemetry cannot distinguish
-                    # paths, avoid a permanent alphabetical bias. A stable
-                    # hash of the flow 5-tuple gives a reproducible fallback
-                    # distributed across new flows without random state.
-                    safe_fallback = self.last_selected_path
-                    if self.policy == "uncertainty_aware" and safe_fallback is None:
-                        candidates = sorted(telemetry)
-                        digest = hashlib.sha256(repr(key).encode("utf-8")).digest()
-                        safe_fallback = candidates[
-                            int.from_bytes(digest[:8], "big") % len(candidates)
+                    if self.policy == "uncertainty_aware":
+                        confident_paths = [
+                            name for name, sample in telemetry.items()
+                            if confidence(sample) >= 0.5
                         ]
-                    path = choose_path(
-                        telemetry,
-                        self.policy,
-                        previous_path=self.last_selected_path,
-                        safe_fallback=safe_fallback,
-                    )
+                        if not confident_paths:
+                            path = next_round_robin_fallback(
+                                telemetry, self.last_uncertain_fallback_path
+                            )
+                            self.last_uncertain_fallback_path = path
+                            self.logger.warning(
+                                "Uncertainty fallback: all paths below confidence "
+                                "0.50; round-robin selected %s",
+                                path,
+                            )
+                        else:
+                            path = choose_path(
+                                telemetry,
+                                self.policy,
+                                previous_path=self.last_selected_path,
+                                safe_fallback=self.last_selected_path,
+                            )
+                    else:
+                        path = choose_path(
+                            telemetry,
+                            self.policy,
+                            previous_path=self.last_selected_path,
+                        )
                     self.last_selected_path = path
                 self.logger.info(
                     "Selected path %s for new flow %s -> %s (policy=%s)",
