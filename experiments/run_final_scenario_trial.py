@@ -175,14 +175,23 @@ def run_trial(policy, scenario_name, condition, initial_path, repetition,
              "utilization": sample["utilization"]}
             for sample in samples if sample.get("path") == event.get("path")
         ]
+        recovery_delay = ""
+        if event.get("action") == "link_up":
+            later = [sample["monotonic_time"] for sample in path_samples
+                     if sample["monotonic_time"] >= event["monotonic_time"]]
+            if later:
+                recovery_delay = min(later) - event["monotonic_time"]
         adaptation.append({
             "path": event.get("path"),
             "action": event.get("action"),
             "event_monotonic_time": event["monotonic_time"],
-            "utilization_settling_time_s": settling_time(
-                [event["monotonic_time"]], path_samples,
-                utilization_threshold=.20, hold_seconds=4.0,
+            "utilization_settling_time_s": (
+                settling_time(
+                    [event["monotonic_time"]], path_samples,
+                    utilization_threshold=.20, hold_seconds=4.0,
+                ) if event.get("action") == "set_rate" else ""
             ),
+            "telemetry_recovery_detection_delay_s": recovery_delay,
         })
     result["adaptation"] = adaptation
     result["controller_events"] = events
