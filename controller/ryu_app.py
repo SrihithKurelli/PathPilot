@@ -269,6 +269,8 @@ class PathPilotController(app_manager.RyuApp):
         key = self.flow_key(ip, transport)
         if dp.id == 1:
             if in_port == 1:
+                decision_previous_path = self.last_selected_path
+                fallback_reason = "none"
                 pinned_path = pinned_experiment_path(
                     self.experiment_initial_path,
                     tcp_pkt.dst_port if tcp_pkt else None,
@@ -280,6 +282,8 @@ class PathPilotController(app_manager.RyuApp):
                     self.last_selected_path = None
                     self.last_uncertain_fallback_path = None
                     path = pinned_path
+                    fallback_reason = "experiment_path_pin"
+                    decision_previous_path = ""
                     self.logger.info(
                         "Experiment path pin applied to TCP destination port %s: %s",
                         tcp_pkt.dst_port, path,
@@ -296,6 +300,7 @@ class PathPilotController(app_manager.RyuApp):
                                 telemetry, self.last_uncertain_fallback_path
                             )
                             self.last_uncertain_fallback_path = path
+                            fallback_reason = "all_paths_below_confidence_round_robin"
                             self.logger.warning(
                                 "Uncertainty fallback: all paths below confidence "
                                 "0.50; round-robin selected %s",
@@ -320,6 +325,8 @@ class PathPilotController(app_manager.RyuApp):
                     src=ip.src, dst=ip.dst,
                     src_port=(transport.src_port if transport else 0),
                     dst_port=(transport.dst_port if transport else 0),
+                    previous_path=decision_previous_path or "",
+                    fallback_reason=fallback_reason,
                     confidence=(confidence(telemetry[path]) if "telemetry" in locals() and path in telemetry else ""),
                     telemetry_age_s=(telemetry[path].age_s if "telemetry" in locals() and path in telemetry else ""),
                     telemetry_variability=(telemetry[path].variability if "telemetry" in locals() and path in telemetry else ""),
