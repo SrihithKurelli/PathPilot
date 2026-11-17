@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import os
 import re
 import subprocess
@@ -198,7 +199,8 @@ def run_trial(policy, trial, args, repo_root):
             raise RuntimeError(f"Mininet connectivity check failed: {loss:.1f}% loss")
 
         h1, h2 = net.get("h1", "h2")
-        for port in (5001, 5002):
+        fallback_ports = list(range(5002, 5002 + args.fallback_flow_count))
+        for port in [5001, *fallback_ports]:
             servers.append(h2.popen(
                 ["iperf", "-s", "-p", str(port)],
                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
@@ -235,26 +237,48 @@ def run_trial(policy, trial, args, repo_root):
 
         # The warm-up must cover both the deliberate delay and multiple polls.
         time.sleep(args.warmup_seconds)
-        second_mark = log.mark()
-        second_client = _run_client(h1, h2.IP(), 5002, args.second_flow_seconds)
-        # Concurrent ICMP probes measure RTT/loss under the second-flow load.
-        # ICMP is a separate flow and may be assigned to a different path.
-        ping_client = h1.popen(
-            ["ping", "-n", "-i", "0.05", "-c", str(args.ping_count), h2.IP()],
-            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
-        )
-        second_match, second_line = log.wait_for(
-            r"Selected path (s1-s2-s4|s1-s3-s4) for new flow .*"
-            + re.escape(f"(policy={policy})"), start=second_mark, timeout=20,
-        )
-        second_path = second_match.group(1)
-        second_telemetry_log = log.telemetry_before(second_mark, second_line)
-        second_output, _ = second_client.communicate(timeout=args.second_flow_seconds + 20)
-        second_returncode = second_client.returncode
-        second_client = None
-        ping_output, _ = ping_client.communicate(timeout=args.second_flow_seconds + 20)
-        ping_returncode = ping_client.returncode
-        ping_client = None
+        fallback_paths = []
+        fallback_goodputs = []
+        fallback_returncodes = []
+        second_telemetry_log = "NOT_CAPTURED"
+        ping_output = ""
+        ping_returncode = -1
+
+        # Send multiple distinct new TCP flows through the same controller.
+        # This exposes fallback distribution across successive decisions.
+        for flow_index, port in enumerate(fallback_ports):
+            flow_mark = log.mark()
+            client = _run_client(h1, h2.IP(), port, args.second_flow_seconds)
+            match, selection_line = log.wait_for(
+                r"Selected path (s1-s2-s4|s1-s3-s4) for new flow .*"
+                + re.escape(f"(policy={policy})"), start=flow_mark, timeout=20,
+            )
+            selected_path = match.group(1)
+            if flow_index == 0:
+                second_telemetry_log = log.telemetry_before(flow_mark, selection_line)
+                # Probe RTT/loss concurrently with the first fallback flow.
+                ping_client = h1.popen(
+                    ["ping", "-n", "-i", "0.05", "-c", str(args.ping_count), h2.IP()],
+                    stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
+                )
+                second_path = selected_path
+                second_line = selection_line
+                second_client = client
+            output, _ = client.communicate(timeout=args.second_flow_seconds + 20)
+            returncode = client.returncode
+            goodput = round(parse_iperf_mbps(output), 4)
+            fallback_paths.append(selected_path)
+            fallback_goodputs.append(goodput)
+            fallback_returncodes.append(returncode)
+            if flow_index == 0:
+                second_output = output
+                second_returncode = returncode
+                second_client = None
+
+        if ping_client is not None:
+            ping_output, _ = ping_client.communicate(timeout=args.second_flow_seconds + 20)
+            ping_returncode = ping_client.returncode
+            ping_client = None
         ping_metrics = parse_ping_metrics(ping_output)
         first_output, _ = first_client.communicate(
             timeout=max(5, args.first_flow_seconds - args.warmup_seconds
@@ -276,6 +300,13 @@ def run_trial(policy, trial, args, repo_root):
             "second_flow_path": second_path,
             "avoided_bottleneck": int(second_path != first_path),
             "second_flow_mbps": round(parse_iperf_mbps(second_output), 4),
+            "fallback_flow_count": len(fallback_paths),
+            "fallback_flow_paths": json.dumps(fallback_paths),
+            "fallback_flow_goodputs_mbps": json.dumps(fallback_goodputs),
+            "fallback_flow_client_returncodes": json.dumps(fallback_returncodes),
+            "fallback_flow_avoidance_rate": round(
+                sum(path != first_path for path in fallback_paths) / len(fallback_paths), 4
+            ),
             **ping_metrics,
             "icmp_probe_returncode": ping_returncode,
             "first_flow_mbps": round(parse_iperf_mbps(first_output), 4),
@@ -319,6 +350,10 @@ def main():
     parser.add_argument("--first-flow-seconds", type=int, default=25)
     parser.add_argument("--warmup-seconds", type=float, default=6.0)
     parser.add_argument("--second-flow-seconds", type=int, default=8)
+    parser.add_argument(
+        "--fallback-flow-count", type=int, default=1,
+        help="number of successive policy-selected TCP flows after the pinned flow",
+    )
     parser.add_argument("--ping-count", type=int, default=100,
                         help="number of concurrent ICMP RTT/loss probes")
     parser.add_argument("--bottleneck-rate", default="10mbit")
@@ -336,10 +371,20 @@ def main():
         parser.error("--ping-count must be positive")
     if args.trials < 1:
         parser.error("--trials must be positive")
+    if args.fallback_flow_count < 1:
+        parser.error("--fallback-flow-count must be positive")
+    if 5001 + args.fallback_flow_count > 65535:
+        parser.error("--fallback-flow-count exceeds available TCP destination ports")
     if not 1 <= args.first_flow_port <= 65535:
         parser.error("--first-flow-port must be in [1,65535]")
-    if args.first_flow_seconds <= args.warmup_seconds + args.second_flow_seconds:
-        parser.error("--first-flow-seconds must exceed warmup + second-flow duration")
+    required_background = (
+        args.warmup_seconds + args.fallback_flow_count * args.second_flow_seconds
+    )
+    if args.first_flow_seconds <= required_background:
+        parser.error(
+            "--first-flow-seconds must exceed warmup + all fallback-flow durations "
+            "so the pinned bottleneck flow remains active"
+        )
     if args.telemetry_delay_seconds < 0:
         parser.error("--telemetry-delay-seconds must be non-negative")
     if not 0 <= args.telemetry_noise_std <= 1:
