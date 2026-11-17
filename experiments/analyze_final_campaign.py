@@ -17,6 +17,25 @@ def load_trial(root, row):
     result = json.loads(path.read_text(encoding="utf-8"))
     traffic = result["traffic"]
     flows = traffic["flow_results"]
+    event_path = Path(result["controller_event_log"])
+    events = [json.loads(line) for line in event_path.read_text(encoding="utf-8").splitlines()
+              if line.strip()]
+    qdisc_samples = [event for event in events if event.get("event") == "qdisc_sample"]
+    ovs_samples = [event for event in events if event.get("event") == "ovs_port_sample"]
+    qdisc_drop_values = [
+        int(event["counters"]["qdisc_drops"]) for event in qdisc_samples
+        if event.get("counters", {}).get("qdisc_drops") not in ("", None)
+    ]
+    qdisc_backlog_values = [
+        int(event["counters"]["qdisc_backlog_bytes"]) for event in qdisc_samples
+        if event.get("counters", {}).get("qdisc_backlog_bytes") not in ("", None)
+    ]
+    ovs_drop_values = [
+        int(port.get("rx_dropped", 0)) + int(port.get("tx_dropped", 0))
+        for event in ovs_samples for port in event.get("counters", [])
+        if port.get("rx_dropped") not in ("", None)
+        and port.get("tx_dropped") not in ("", None)
+    ]
     goodputs = [float(flow["goodput_mbps"]) for flow in flows]
     udp_losses = [float(flow["udp_loss_pct"]) for flow in flows
                   if flow.get("protocol") == "UDP" and flow.get("udp_loss_pct") not in ("", None)]
@@ -40,6 +59,9 @@ def load_trial(root, row):
         "path_changes_per_minute": float(result["event_metrics"]["path_changes_per_minute"])
             if result["event_metrics"]["path_changes_per_minute"] not in ("", None) else "",
         "path_reversals": int(result["event_metrics"]["path_reversals"]),
+        "qdisc_drops_counter_peak": max(qdisc_drop_values) if qdisc_drop_values else "",
+        "qdisc_backlog_bytes_peak": max(qdisc_backlog_values) if qdisc_backlog_values else "",
+        "ovs_port_drops_counter_peak": max(ovs_drop_values) if ovs_drop_values else "",
         "flow_mod_count": int(result["event_metrics"]["flow_mod_count"]),
         "telemetry_estimated_bytes": int(result["event_metrics"]["telemetry_estimated_bytes"]),
         "controller_cpu_seconds": float(result["controller_metrics"]["controller_cpu_seconds"])
@@ -70,7 +92,8 @@ def analyze(manifest_path, output_root):
     metrics = (
         "tcp_app_rtt_p99_ms", "aggregate_goodput_mbps", "udp_loss_pct",
         "jain_fairness", "path_changes_per_minute", "path_reversals",
-        "flow_mod_count", "telemetry_estimated_bytes", "controller_cpu_seconds",
+        "flow_mod_count", "telemetry_estimated_bytes", "qdisc_drops_counter_peak",
+        "qdisc_backlog_bytes_peak", "ovs_port_drops_counter_peak", "controller_cpu_seconds",
         "controller_rss_peak_mb", "utilization_settling_time_s",
     )
     groups = {}
