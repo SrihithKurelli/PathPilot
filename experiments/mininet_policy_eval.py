@@ -24,6 +24,8 @@ import threading
 import time
 from pathlib import Path
 
+from controller.event_ledger import EventLedger
+from experiments.network_sampling import NetworkStatsSampler
 from experiments.runtime_metrics import ProcessMetricsSampler, path_transition_metrics
 
 POLICIES = ("static", "least_loaded", "threshold", "stability_aware", "uncertainty_aware")
@@ -210,11 +212,13 @@ def run_trial(policy, trial, args, repo_root):
     servers = []
     first_client = second_client = ping_client = None
     qdisc_switch = None
+    network_sampler = None
     try:
         time.sleep(1.5)
         if controller.poll() is not None:
             raise RuntimeError("Ryu exited during startup:\n" + log.text())
         net = build_network(args.controller_ip, args.controller_port)
+        network_sampler = NetworkStatsSampler(net, EventLedger(event_log_path)).start()
         log.wait_for(r"Live telemetry ready:", timeout=35)
         loss = net.pingAll()
         if loss != 0:
@@ -369,6 +373,8 @@ def run_trial(policy, trial, args, repo_root):
             _stop_process(second_client)
         if first_client is not None:
             _stop_process(first_client)
+        if network_sampler is not None:
+            network_sampler.stop()
         if net is not None:
             if qdisc_switch is not None:
                 net.get(qdisc_switch).cmd(
