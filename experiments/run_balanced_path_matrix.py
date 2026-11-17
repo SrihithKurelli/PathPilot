@@ -33,7 +33,7 @@ RAW_FIELDS = (
     "fallback_flow_paths", "fallback_flow_goodputs_mbps",
     "fallback_flow_client_returncodes", "fallback_flow_reason_logs",
     "fallback_flow_avoidance_rate", "first_flow_mbps",
-    "git_revision", "working_tree_dirty", "icmp_probe_packets",
+    "git_revision", "working_tree_dirty", "controller_event_log", "icmp_probe_packets",
     "icmp_probe_packet_loss_pct", "icmp_probe_rtt_p50_ms",
     "icmp_probe_rtt_p95_ms", "icmp_probe_rtt_p99_ms",
     "icmp_probe_rtt_samples", "icmp_probe_returncode",
