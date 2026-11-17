@@ -1,0 +1,115 @@
+"""Proposal-aligned metric extraction for final PathPilot campaigns."""
+from __future__ import annotations
+import json, math, re, statistics
+from collections import defaultdict
+
+def _finite(values):
+    xs=[float(v) for v in values]
+    if any(not math.isfinite(v) for v in xs): raise ValueError("samples must be finite")
+    return xs
+
+def percentile(values, fraction):
+    if not 0 <= fraction <= 1: raise ValueError("fraction must be in [0,1]")
+    xs=sorted(_finite(values))
+    if not xs: return ""
+    p=(len(xs)-1)*fraction; lo=int(p); hi=min(lo+1,len(xs)-1)
+    return xs[lo]*(1-(p-lo))+xs[hi]*(p-lo)
+
+def jain_fairness(values):
+    xs=_finite(values)
+    if not xs: return ""
+    if any(x<0 for x in xs): raise ValueError("throughputs must be non-negative")
+    d=len(xs)*sum(x*x for x in xs)
+    return 1.0 if d==0 else sum(xs)**2/d
+
+def summarize_distribution(values,prefix):
+    xs=_finite(values)
+    names=("count","mean","std","p50","p95","p99","min","max")
+    if not xs: return {f"{prefix}_{n}":"" for n in names}
+    return {f"{prefix}_count":len(xs),f"{prefix}_mean":statistics.mean(xs),
+      f"{prefix}_std":statistics.stdev(xs) if len(xs)>1 else 0.0,
+      f"{prefix}_p50":percentile(xs,.5),f"{prefix}_p95":percentile(xs,.95),
+      f"{prefix}_p99":percentile(xs,.99),f"{prefix}_min":min(xs),f"{prefix}_max":max(xs)}
+
+def bootstrap_mean_ci(values,confidence=.95,resamples=4000,seed=7):
+    xs=_finite(values)
+    if not xs: return {"mean":"","ci_low":"","ci_high":"","n":0}
+    if not 0<confidence<1 or resamples<100: raise ValueError("invalid CI parameters")
+    import random
+    rng=random.Random(seed)
+    means=sorted(statistics.mean(rng.choices(xs,k=len(xs))) for _ in range(resamples))
+    tail=(1-confidence)/2
+    return {"mean":statistics.mean(xs),"ci_low":percentile(means,tail),
+            "ci_high":percentile(means,1-tail),"n":len(xs)}
+
+def path_stability(decisions,window_seconds):
+    rows=sorted(decisions,key=lambda x:float(x["monotonic_time"]))
+    if window_seconds<0: raise ValueError("window_seconds must be non-negative")
+    changes=sum(a["path"]!=b["path"] for a,b in zip(rows,rows[1:]))
+    reversals=sum(rows[i-2]["path"]==rows[i]["path"]!=rows[i-1]["path"]
+      and float(rows[i]["monotonic_time"])-float(rows[i-2]["monotonic_time"])<=window_seconds
+      for i in range(2,len(rows)))
+    elapsed=float(rows[-1]["monotonic_time"])-float(rows[0]["monotonic_time"]) if len(rows)>1 else 0
+    return {"path_decisions":len(rows),"path_changes":changes,"path_reversals":reversals,
+      "path_changes_per_minute":changes*60/elapsed if elapsed>0 else "",
+      "reversal_window_seconds":window_seconds}
+
+def settling_time(events,samples,utilization_threshold,hold_seconds):
+    if not events: return ""
+    if not 0<=utilization_threshold<=1 or hold_seconds<0: raise ValueError("invalid settling parameters")
+    event=min(map(float,events)); points=sorted((float(x["monotonic_time"]),float(x["utilization"]))
+      for x in samples if float(x["monotonic_time"])>=event)
+    start=None
+    for timestamp,util in points:
+        if util<=utilization_threshold:
+            if start is None: start=timestamp
+            if timestamp-start>=hold_seconds: return start-event
+        else: start=None
+    return ""
+
+def parse_iperf3_json(payload):
+    data=json.loads(payload) if isinstance(payload,str) else payload
+    end=data.get("end",{}); protocol=data.get("start",{}).get("test_start",{}).get("protocol","")
+    summary=end.get("sum_received",end.get("sum",{}))
+    udp=end.get("sum",{})
+    packets=udp.get("packets"); lost=udp.get("lost_packets")
+    return {"iperf3_protocol":protocol,
+      "goodput_mbps":summary.get("bits_per_second",0)/1e6 if summary else "",
+      "bytes_received":summary.get("bytes","") if summary else "",
+      "tcp_retransmits":end.get("sum_sent",{}).get("retransmits",""),
+      "udp_packets":packets if protocol=="UDP" else "",
+      "udp_lost_packets":lost if protocol=="UDP" else "",
+      "udp_loss_pct":100*lost/packets if protocol=="UDP" and isinstance(packets,(int,float)) and packets>0 and isinstance(lost,(int,float)) else "",
+      "udp_jitter_ms":udp.get("jitter_ms","") if protocol=="UDP" else ""}
+
+def parse_ss_tcp_rtt(text):
+    return [float(x) for x in re.findall(r"\\brtt:([0-9]+(?:\\.[0-9]+)?)/",text)]
+
+def parse_tc_qdisc_stats(text):
+    def val(pattern):
+        m=re.search(pattern,text); return int(m.group(1)) if m else ""
+    return {"qdisc_packets":val(r" Sent \\d+ bytes \\d+ pkt"),
+      "qdisc_drops":val(r" dropped (\\d+)"),"qdisc_overlimits":val(r" overlimits (\\d+)"),
+      "qdisc_backlog_bytes":val(r" backlog (\\d+)b"),"qdisc_backlog_packets":val(r" backlog \\d+b (\\d+)p")}
+
+def parse_ovs_port_stats(text):
+    rows=[]; current=None
+    for line in text.splitlines():
+        m=re.search(r"port (\\d+):",line)
+        if m:
+            if current: rows.append(current)
+            current={"port":int(m.group(1))}
+        if current:
+            for key,pattern in (("rx_packets",r"rx pkts=(\\d+)"),("tx_packets",r"tx pkts=(\\d+)"),
+              ("rx_bytes",r"rx bytes=(\\d+)"),("tx_bytes",r"tx bytes=(\\d+)"),
+              ("rx_dropped",r"rx dropped=(\\d+)"),("tx_dropped",r"tx dropped=(\\d+)"),
+              ("rx_errors",r"rx errs=(\\d+)"),("tx_errors",r"tx errs=(\\d+)")):
+                m=re.search(pattern,line)
+                if m: current[key]=int(m.group(1))
+    if current: rows.append(current)
+    return rows
+
+def aggregate_concurrent_flow_fairness(records):
+    grouped=defaultdict(list)
+    for row in records: grouped[row["window_id"]].append(float(row["goodput_mbps"]))
+    return {window:jain_fairness(values) for window,values in grouped.items()}
