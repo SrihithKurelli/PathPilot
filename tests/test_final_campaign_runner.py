@@ -49,3 +49,17 @@ def test_campaign_runner_rejects_development_manifest(tmp_path):
     manifest_path.write_text(json.dumps(manifest))
     with pytest.raises(ValueError):
         execute(manifest_path, tmp_path / "results", dry_run=True)
+
+
+def test_development_manifest_requires_explicit_opt_in(tmp_path):
+    manifest = build_manifest(
+        repetitions=1, scenarios=["steady_low"], conditions=["baseline"],
+        initial_paths=["s1-s2-s4"], policies=["static"], development=True,
+    )
+    manifest_path = tmp_path / "development.json"
+    manifest_path.write_text(json.dumps(manifest))
+    with pytest.raises(ValueError):
+        execute(manifest_path, tmp_path / "out", dry_run=True)
+    result = execute(manifest_path, tmp_path / "out", dry_run=True,
+                     allow_development=True)
+    assert result["planned"] == 1
