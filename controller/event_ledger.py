@@ -30,7 +30,7 @@ class EventLedger:
                 fd = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o600)
                 try:
                     with os.fdopen(fd, "a", encoding="utf-8") as handle:
-                        handle.write(json.dumps(event, sort_keys=True) + "\\n")
+                        handle.write(json.dumps(event, sort_keys=True) + "\n")
                         handle.flush()
                         os.fsync(handle.fileno())
                 except Exception:
