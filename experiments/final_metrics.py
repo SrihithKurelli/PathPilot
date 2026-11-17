@@ -108,7 +108,7 @@ def parse_tc_qdisc_stats(text):
     def val(pattern):
         m=re.search(pattern,text); return int(m.group(1)) if m else ""
     return {"qdisc_packets":val(r"Sent \d+ bytes (\d+) pkt"),
-      "qdisc_drops":val(r" dropped (\d+)"),"qdisc_overlimits":val(r" overlimits (\d+)"),
+      "qdisc_drops":val(r"dropped (\d+)"),"qdisc_overlimits":val(r" overlimits (\d+)"),
       "qdisc_backlog_bytes":val(r" backlog (\d+)b"),"qdisc_backlog_packets":val(r" backlog \d+b (\d+)p")}
 
 def parse_ovs_port_stats(text):
