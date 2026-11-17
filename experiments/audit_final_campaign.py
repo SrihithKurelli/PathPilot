@@ -70,6 +70,14 @@ def audit(manifest_path, output_root):
             failures.append(f"no traffic flow results: {folder}")
         if any(flow.get("client_returncode") != 0 for flow in flows):
             failures.append(f"failed iperf3 client: {folder}")
+        if any(flow.get("goodput_mbps") in ("", None) for flow in flows):
+            failures.append(f"missing per-flow goodput: {folder}")
+        if any(flow.get("protocol") == "TCP" and flow.get("tcp_retransmits") in ("", None)
+               for flow in flows):
+            failures.append(f"missing TCP retransmission evidence: {folder}")
+        if any(flow.get("protocol") == "UDP" and flow.get("udp_loss_pct") in ("", None)
+               for flow in flows):
+            failures.append(f"missing UDP packet-loss evidence: {folder}")
         rtt = traffic.get("tcp_application_rtt", {})
         if not rtt.get("tcp_app_rtt_ms_count") or rtt.get("tcp_app_rtt_ms_p99") in ("", None):
             failures.append(f"missing TCP application RTT p99: {folder}")
@@ -88,6 +96,13 @@ def audit(manifest_path, output_root):
             failures.append(f"topology connectivity loss: {folder}")
         if not events:
             failures.append(f"empty controller event log: {folder}")
+        event_types = {event.get("event") for event in events}
+        if "qdisc_sample" not in event_types:
+            failures.append(f"missing qdisc counter samples: {folder}")
+        if "ovs_port_sample" not in event_types:
+            failures.append(f"missing OVS port counter samples: {folder}")
+        if "flow_mod" not in event_types:
+            failures.append(f"missing FlowMod evidence: {folder}")
         audited.append({
             "key": key,
             "flow_count": len(flows),
