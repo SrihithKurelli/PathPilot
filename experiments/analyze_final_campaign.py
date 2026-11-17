@@ -137,7 +137,7 @@ def analyze(manifest_path, output_root):
     }
     paired = []
     for scenario in manifest["scenarios"]:
-        for condition in manifest["telemetry_conditions"]:
+        for condition in manifest["scenario_conditions"].get(scenario, []):
             for initial in manifest["initial_paths"]:
                 keys = sorted({
                     (scenario, condition, initial, row["repetition"])
