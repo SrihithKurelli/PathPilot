@@ -93,6 +93,8 @@ def _base_scenario(name: str) -> Scenario:
     if name == "degrade_recover":
         return Scenario(name, 65, (
             FlowSpec("TCP", 60, 12, 0, "background"),
+            FlowSpec("TCP", 10, 8, 25, "during_degradation"),
+            FlowSpec("TCP", 10, 8, 45, "after_recovery"),
         ), (
             ImpairmentEvent(20, "s1-s2-s4", "set_rate", "5mbit"),
             ImpairmentEvent(40, "s1-s2-s4", "set_rate", "100mbit"),
@@ -100,6 +102,8 @@ def _base_scenario(name: str) -> Scenario:
     if name == "link_loss_recovery":
         return Scenario(name, 65, (
             FlowSpec("TCP", 60, 12, 0, "background"),
+            FlowSpec("TCP", 10, 8, 25, "during_link_loss"),
+            FlowSpec("TCP", 10, 8, 45, "after_link_recovery"),
         ), (
             ImpairmentEvent(20, "s1-s2-s4", "link_down"),
             ImpairmentEvent(40, "s1-s2-s4", "link_up"),
