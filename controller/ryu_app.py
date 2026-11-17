@@ -1,6 +1,5 @@
 """Ryu OpenFlow 1.3 controller for the PathPilot two-path teaching topology."""
 import hashlib
-import json
 import os
 import random
 import time
@@ -21,6 +20,7 @@ from ryu.ofproto import ofproto_v1_3
 
 from controller.live_telemetry import PortRateTracker
 from controller.policies import Telemetry, choose_path
+from controller.telemetry_loader import load_static_telemetry, conservative_telemetry
 from experiments.path_pinning import pinned_experiment_path
 
 
@@ -172,18 +172,19 @@ class PathPilotController(app_manager.RyuApp):
             return live
 
         try:
-            raw = json.loads(self.telemetry_file.read_text())
-            telemetry = {key: Telemetry(**value) for key, value in raw.items()}
-            self.logger.info("Using STATIC telemetry fallback from %s", self.telemetry_file)
-            return telemetry
-        except (OSError, ValueError, TypeError) as exc:
-            self.logger.warning(
-                "Telemetry unavailable (%s); using conservative fallback", exc
+            telemetry = load_static_telemetry(self.telemetry_file)
+            self.logger.info(
+                "Using validated STATIC telemetry fallback from %s",
+                self.telemetry_file,
             )
-            return {
-                "s1-s2-s4": Telemetry(.5, 999, 1),
-                "s1-s3-s4": Telemetry(.5, 999, 1),
-            }
+            return telemetry
+        except ValueError as exc:
+            self.logger.warning(
+                "Static telemetry unavailable or invalid (%s); "
+                "using conservative fallback",
+                exc,
+            )
+            return conservative_telemetry()
 
     @staticmethod
     def flow_key(ip, transport):
