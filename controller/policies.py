@@ -11,12 +11,22 @@ class Telemetry:
     variability: float
 
     def validate(self):
-        if not math.isfinite(self.utilization) or not 0 <= self.utilization <= 1:
-            raise ValueError("utilization must be finite and in [0,1]")
-        if self.age_s < 0 or not math.isfinite(self.age_s):
-            raise ValueError("age_s must be finite and >= 0")
-        if not math.isfinite(self.variability) or not 0 <= self.variability <= 1:
-            raise ValueError("variability must be finite and in [0,1]")
+        values = {
+            "utilization": self.utilization,
+            "age_s": self.age_s,
+            "variability": self.variability,
+        }
+        for name, value in values.items():
+            if isinstance(value, bool) or not isinstance(value, (int, float)):
+                raise ValueError(f"{name} must be a real number")
+            if not math.isfinite(value):
+                raise ValueError(f"{name} must be finite")
+        if not 0 <= self.utilization <= 1:
+            raise ValueError("utilization must be in [0,1]")
+        if self.age_s < 0:
+            raise ValueError("age_s must be >= 0")
+        if not 0 <= self.variability <= 1:
+            raise ValueError("variability must be in [0,1]")
 
 
 def confidence(sample: Telemetry, alpha=0.5, beta=2.0):
