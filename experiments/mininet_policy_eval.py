@@ -23,6 +23,8 @@ import threading
 import time
 from pathlib import Path
 
+from experiments.runtime_metrics import ProcessMetricsSampler, path_transition_metrics
+
 POLICIES = ("static", "least_loaded", "threshold", "stability_aware", "uncertainty_aware")
 PATH_TO_SWITCH = {"s1-s2-s4": "s2", "s1-s3-s4": "s3"}
 BANDWIDTH_RE = re.compile(r"([0-9]+(?:\.[0-9]+)?)\s+([KMG])bits/sec")
@@ -198,6 +200,7 @@ def run_trial(policy, trial, args, repo_root):
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1,
     )
     log = ControllerLog(controller.stdout)
+    process_metrics = ProcessMetricsSampler(controller.pid).start()
     net = None
     servers = []
     first_client = second_client = ping_client = None
@@ -294,6 +297,7 @@ def run_trial(policy, trial, args, repo_root):
                 second_returncode = returncode
                 second_client = None
 
+        process_metrics.stop()
         if ping_client is not None:
             ping_output, _ = ping_client.communicate(timeout=args.second_flow_seconds + 20)
             ping_returncode = ping_client.returncode
@@ -306,6 +310,11 @@ def run_trial(policy, trial, args, repo_root):
         first_returncode = first_client.returncode
         first_client = None
         git_revision, working_tree_dirty = repository_revision(repo_root)
+        selected_paths = re.findall(
+            r"Selected path (s1-s2-s4|s1-s3-s4) for new flow", log.text()
+        )
+        route_metrics = path_transition_metrics(selected_paths)
+        resource_metrics = process_metrics.stop()
         return {
             "policy": policy, "trial": trial, "seed": args.seed + trial,
             "git_revision": git_revision,
@@ -340,6 +349,8 @@ def run_trial(policy, trial, args, repo_root):
             "first_selection_log": first_line, "second_selection_log": second_line,
             "first_telemetry_log": first_telemetry_log,
             "second_telemetry_log": second_telemetry_log,
+            **route_metrics,
+            **resource_metrics,
         }
     finally:
         if ping_client is not None:
