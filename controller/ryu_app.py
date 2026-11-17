@@ -241,6 +241,7 @@ class PathPilotController(app_manager.RyuApp):
                     # Reset any path state created by the connectivity ping; the
                     # priming flow must not bias the policy's second decision.
                     self.last_selected_path = None
+                    self.last_uncertain_fallback_path = None
                     path = pinned_path
                     self.logger.info(
                         "Experiment path pin applied to TCP destination port %s: %s",
