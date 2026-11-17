@@ -8,6 +8,7 @@ from pathlib import Path
 
 from experiments.final_campaign import POLICIES
 from experiments.final_metrics import bootstrap_mean_ci
+from experiments.plot_final_campaign import plot_summary
 from experiments.run_final_campaign import trial_directory
 from experiments.audit_final_campaign import audit
 
@@ -175,6 +176,7 @@ def analyze(manifest_path, output_root):
 
     _write_csv(root / "FINAL_CAMPAIGN_SUMMARY.csv", summary)
     _write_csv(root / "PAIRED_POLICY_COMPARISONS.csv", paired)
+    plots = plot_summary(root / "FINAL_CAMPAIGN_SUMMARY.csv", root / "plots")
     report = [
         "# PathPilot Final Campaign Analysis", "",
         f"- Trials analyzed: {len(rows)}",
@@ -183,6 +185,7 @@ def analyze(manifest_path, output_root):
         f"- Scenarios: {', '.join(manifest['scenarios'])}",
         f"- Telemetry conditions: {', '.join(manifest['telemetry_conditions'])}",
         "",
+        f"Generated {len(plots)} condition-stratified SVG plots in plots/.",
         "The CSV files report condition- and initial-path-stratified metrics with trial-level bootstrap 95% intervals. "
         "Paired comparisons use matched scenario/condition/path/repetition blocks.",
         "",
@@ -195,7 +198,8 @@ def analyze(manifest_path, output_root):
         "thresholds in the campaign manifest and report failures or mixed outcomes without post-hoc threshold changes.",
     ]
     (root / "FINAL_CAMPAIGN_ANALYSIS.md").write_text("\n".join(report) + "\n", encoding="utf-8")
-    return {"trials": len(rows), "summary_rows": len(summary), "paired_rows": len(paired)}
+    return {"trials": len(rows), "summary_rows": len(summary),
+            "paired_rows": len(paired), "plots": len(plots)}
 
 
 def main():
