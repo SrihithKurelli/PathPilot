@@ -1,7 +1,8 @@
 """Deterministic workload scenario definitions for PathPilot evaluation."""
 from __future__ import annotations
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 import hashlib
+import random
 import json
 
 
@@ -65,15 +66,8 @@ class Scenario:
         }
 
 
-def build_scenario(name: str, *, seed: int = 7) -> Scenario:
-    """Return a fixed workload schedule; seed is recorded and validated by caller.
-
-    The current profiles are intentionally deterministic. Seeded variation is
-    introduced at the campaign assignment layer, not by mutating a scenario
-    after its identity has been recorded.
-    """
-    if seed < 0:
-        raise ValueError("seed must be non-negative")
+def _base_scenario(name: str) -> Scenario:
+    """Return the unperturbed base schedule for a scenario."""
     low = (FlowSpec("TCP", 50, 8, 0, "background"),)
     high = tuple(FlowSpec("TCP", 45, 30, i * 0.25, "background") for i in range(4))
     if name == "steady_low":
@@ -111,6 +105,28 @@ def build_scenario(name: str, *, seed: int = 7) -> Scenario:
             ImpairmentEvent(40, "s1-s2-s4", "link_up"),
         ))
     raise KeyError(f"unknown scenario: {name}")
+
+
+def build_scenario(name: str, *, seed: int = 7) -> Scenario:
+    """Create deterministic, seed-specific workload timing/rate variation.
+
+    Matched policies receive the same seed and therefore the same offered load.
+    Perturbations are deliberately small (±2% rate, ±50 ms start/event timing)
+    and are recorded through the scenario digest in the run manifest.
+    """
+    if seed < 0:
+        raise ValueError("seed must be non-negative")
+    base = _base_scenario(name)
+    rng = random.Random(seed)
+    flows = tuple(replace(
+        flow,
+        offered_rate_mbps=round(flow.offered_rate_mbps * rng.uniform(.98, 1.02), 5),
+        start_offset_s=max(0.0, flow.start_offset_s + rng.uniform(-.05, .05)),
+    ) for flow in base.flows)
+    events = tuple(replace(
+        event, offset_s=max(0.0, event.offset_s + rng.uniform(-.05, .05))
+    ) for event in base.impairments)
+    return Scenario(base.name, base.duration_s, flows, events)
 
 
 SCENARIO_NAMES = (
