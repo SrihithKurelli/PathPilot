@@ -3,6 +3,8 @@ from __future__ import annotations
 import argparse
 import itertools
 import json
+import platform
+import subprocess
 from pathlib import Path
 
 from experiments.scenarios import SCENARIO_NAMES, build_scenario, scenario_digest
@@ -59,6 +61,16 @@ def build_manifest(*, repetitions=10, seed=2027, scenarios=None,
             "workload_seed": block_seed,
             "split": "development" if development else "final_test",
         })
+    revision_result = subprocess.run(
+        ["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=False
+    )
+    status_result = subprocess.run(
+        ["git", "status", "--porcelain"], capture_output=True, text=True, check=False
+    )
+    git_revision = revision_result.stdout.strip() if revision_result.returncode == 0 else "unknown"
+    git_dirty = int(bool(status_result.stdout.strip())) if status_result.returncode == 0 else -1
+    if not development and (git_revision == "unknown" or git_dirty != 0):
+        raise ValueError("final-test manifest requires a known revision and clean working tree")
     estimated_seconds = sum(
         build_scenario(row["scenario"], seed=row["workload_seed"]).duration_s
         + max(6.0, row["delay_s"] + 4.0) + 7.0
@@ -66,6 +78,9 @@ def build_manifest(*, repetitions=10, seed=2027, scenarios=None,
     )
     return {
         "schema_version": 1,
+        "git_revision": git_revision,
+        "git_worktree_dirty": git_dirty,
+        "python_version": platform.python_version(),
         "campaign": "pathpilot_proposal_final" if not development else "pathpilot_development",
         "seed_base": seed,
         "repetitions_per_cell": repetitions,
