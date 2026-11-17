@@ -94,6 +94,17 @@ def audit(manifest_path, output_root):
             failures.append(f"missing OpenFlow telemetry messages: {folder}")
         if result.get("connectivity_loss_pct") != 0:
             failures.append(f"topology connectivity loss: {folder}")
+        if result.get("network_sampler_errors"):
+            failures.append(f"network counter sampler errors: {folder}")
+        if traffic.get("impairment_errors"):
+            failures.append(f"impairment execution errors: {folder}")
+        controller_metrics = result.get("controller_metrics", {})
+        if controller_metrics.get("controller_cpu_seconds") in ("", None):
+            failures.append(f"missing controller CPU metric: {folder}")
+        if controller_metrics.get("controller_rss_peak_mb") in ("", None):
+            failures.append(f"missing controller RSS metric: {folder}")
+        if metrics.get("flow_mod_count", 0) <= 0:
+            failures.append(f"missing FlowMod count: {folder}")
         if not events:
             failures.append(f"empty controller event log: {folder}")
         event_types = {event.get("event") for event in events}
