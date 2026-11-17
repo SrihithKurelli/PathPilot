@@ -128,6 +128,13 @@ class PathPilotController(app_manager.RyuApp):
             self._stats_reply_switches.add(dpid)
             self.logger.info("Received first port-stats reply from switch %s", dpid)
         live = self.port_rate_tracker.path_telemetry(now)
+        if live is not None:
+            for path, sample in live.items():
+                self.event_ledger.record(
+                    "telemetry_sample", datapath_id=dpid, path=path,
+                    utilization=sample.utilization, age_s=sample.age_s,
+                    variability=sample.variability,
+                )
         if live is not None and not self._logged_live_ready:
             self._logged_live_ready = True
             self.logger.info(
