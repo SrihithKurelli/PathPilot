@@ -54,7 +54,7 @@ sudo python3 topology/mininet_topology.py --controller 127.0.0.1
 ```
 
 The controller reads the static fallback from `experiments/telemetry.json` (override with `PATHPILOT_TELEMETRY`) and selects a policy using `PATHPILOT_POLICY`:
-`static`, `least_loaded`, `threshold`, or `uncertainty_aware`.
+`static`, `least_loaded`, `threshold`, `stability_aware`, or `uncertainty_aware`.
 
 ## Unit tests
 
@@ -92,7 +92,7 @@ Run from the repository root with the project virtual environment active:
 
 ```bash
 python -m pytest -q
-python -m experiments.policy_replay --seed 7 --trials 10 --steps 100
+python -m experiments.policy_replay --seed 7 --trials 10 --steps 100 --step-interval-seconds 2
 python -m experiments.analyze_results results/policy_replay.csv
 ```
 
@@ -124,16 +124,22 @@ python -m experiments.analyze_mininet_results \
 
 The runner defaults to three trials per policy, a 10 Mbps bottleneck, a
 25-second first flow, a 6-second telemetry warm-up, and an 8-second second
-flow. It writes raw trial data, including both selected paths, the bottleneck
-interface, and second-flow goodput. Increase `--trials` for a more stable
+flow. During the second flow it also runs concurrent ICMP probes and records
+RTT p50/p95/p99 and packet loss. These are end-to-end ICMP probe measurements;
+the ICMP probe is a separate flow and may use a different selected path from
+the TCP flow. It writes raw trial data, including both selected paths, the
+bottleneck interface, second-flow goodput, ICMP probe metrics, Git revision,
+and tracked-working-tree status. Increase `--trials` for a more stable
 comparison. The summary reports means, standard deviations, ranges, an
 approximate normal 95% interval, and the rate at which the second flow avoided
 the bottleneck. The interval is only an approximation and should not be
 over-interpreted with small trial counts.
 
-These Mininet results are emulation measurements of TCP goodput and path
-selection only. They do not establish p99 latency, fairness, production
-performance, or statistical significance. The current controller makes a
+These Mininet results are emulation measurements. The new ICMP p99 is a probe
+RTT percentile under concurrent load, not a TCP-flow latency percentile. The
+runner still does not measure Jain fairness, controller CPU, flow-rule update
+overhead, or production performance. Do not infer those metrics from goodput
+or ICMP probes. The current controller makes a
 decision only for a new flow and does not migrate established flows.
 
 
@@ -247,7 +253,7 @@ normal controller runs are unchanged when the setting is absent. The pinned
 priming flow also clears prior-path state so connectivity-check traffic cannot
 bias the second-flow decision.
 
-Start with a small pilot (eight trials: four policies × two initial paths):
+Start with a small pilot (ten trials: five policies × two initial paths):
 
 ```bash
 sudo env PYTHONPATH=/home/pathpilot/PathPilot \
@@ -256,8 +262,8 @@ sudo env PYTHONPATH=/home/pathpilot/PathPilot \
 ```
 
 Remove `--dry-run` to execute the pilot. After checking it, run the full
-counterbalanced matrix (default: 400 trials = 5 conditions × 2 initial paths
-× 4 policies × 10 repetitions):
+counterbalanced matrix (current default: 500 trials = 5 conditions × 2 initial
+paths × 5 policies × 10 repetitions):
 
 ```bash
 sudo env PYTHONPATH=/home/pathpilot/PathPilot \
@@ -282,7 +288,7 @@ See [the 400-trial analysis](results/balanced_full/ANALYSIS.md). The raw data an
 
 ### Balanced 400-trial results (completed)
 
-The completed counterbalanced experiment is archived in `results/balanced_full/`. This is a **completed dataset**, not a command to rerun the experiment.
+The historical 400-trial counterbalanced experiment is archived in `results/balanced_full/`. It covers the four policies used at that time and is a **completed dataset**, not a command to rerun the experiment. The current runner additionally includes `stability_aware`; its default new matrix would contain 500 trials.
 
 Start here:
 - [Results guide and navigation](results/balanced_full/README.md)
@@ -299,3 +305,8 @@ Key interpretation points:
 - The severe-combined cells contain highly dispersed outcomes. Read medians and quartiles alongside means.
 - Connectivity loss was 0% in the recorded trials. A few severe-combined Path 2-placement trials have unexpectedly low throughput despite selecting the alternate path; their cause is not established.
 - These are Mininet/OVS emulation results, not physical-network or production guarantees. They do not measure tail latency, fairness, or controller CPU overhead.
+
+
+## Stability-aware baseline
+
+The `stability_aware` comparator retains the previously selected path unless another candidate improves measured utilization by at least an absolute 0.10 (10 percentage points). This is a deliberately simple, documented baseline for comparison, not PathPilot's proposed telemetry-confidence mechanism and not a novelty claim. The synthetic replay carries each policy's previous choice across time steps and records path changes and immediate reversals. The two-flow Mininet bottleneck harness starts a fresh controller for each trial, so its first policy decision has no prior policy-selected path; use the replay for controlled temporal comparison and a multi-flow Mininet workload for deployment-level stability measurements.

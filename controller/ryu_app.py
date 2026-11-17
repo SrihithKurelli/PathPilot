@@ -1,5 +1,4 @@
 """Ryu OpenFlow 1.3 controller for the PathPilot two-path teaching topology."""
-import json
 import os
 import random
 import time
@@ -19,7 +18,8 @@ from ryu.lib.packet import ether_types
 from ryu.ofproto import ofproto_v1_3
 
 from controller.live_telemetry import PortRateTracker
-from controller.policies import Telemetry, choose_path
+from controller.policies import Telemetry, choose_path, confidence, next_round_robin_fallback
+from controller.telemetry_loader import load_static_telemetry, conservative_telemetry
 from experiments.path_pinning import pinned_experiment_path
 
 
@@ -58,6 +58,7 @@ class PathPilotController(app_manager.RyuApp):
         )
         self.reverse_paths = {}
         self.last_selected_path = None
+        self.last_uncertain_fallback_path = None
         self.datapaths = {}
         self.port_rate_tracker = PortRateTracker()
         self._stats_reply_switches = set()
@@ -171,18 +172,19 @@ class PathPilotController(app_manager.RyuApp):
             return live
 
         try:
-            raw = json.loads(self.telemetry_file.read_text())
-            telemetry = {key: Telemetry(**value) for key, value in raw.items()}
-            self.logger.info("Using STATIC telemetry fallback from %s", self.telemetry_file)
-            return telemetry
-        except (OSError, ValueError, TypeError) as exc:
-            self.logger.warning(
-                "Telemetry unavailable (%s); using conservative fallback", exc
+            telemetry = load_static_telemetry(self.telemetry_file)
+            self.logger.info(
+                "Using validated STATIC telemetry fallback from %s",
+                self.telemetry_file,
             )
-            return {
-                "s1-s2-s4": Telemetry(.5, 999, 1),
-                "s1-s3-s4": Telemetry(.5, 999, 1),
-            }
+            return telemetry
+        except ValueError as exc:
+            self.logger.warning(
+                "Static telemetry unavailable or invalid (%s); "
+                "using conservative fallback",
+                exc,
+            )
+            return conservative_telemetry()
 
     @staticmethod
     def flow_key(ip, transport):
@@ -239,6 +241,7 @@ class PathPilotController(app_manager.RyuApp):
                     # Reset any path state created by the connectivity ping; the
                     # priming flow must not bias the policy's second decision.
                     self.last_selected_path = None
+                    self.last_uncertain_fallback_path = None
                     path = pinned_path
                     self.logger.info(
                         "Experiment path pin applied to TCP destination port %s: %s",
@@ -246,9 +249,34 @@ class PathPilotController(app_manager.RyuApp):
                     )
                 else:
                     telemetry = self.read_telemetry()
-                    path = choose_path(
-                        telemetry, self.policy, previous_path=self.last_selected_path
-                    )
+                    if self.policy == "uncertainty_aware":
+                        confident_paths = [
+                            name for name, sample in telemetry.items()
+                            if confidence(sample) >= 0.5
+                        ]
+                        if not confident_paths:
+                            path = next_round_robin_fallback(
+                                telemetry, self.last_uncertain_fallback_path
+                            )
+                            self.last_uncertain_fallback_path = path
+                            self.logger.warning(
+                                "Uncertainty fallback: all paths below confidence "
+                                "0.50; round-robin selected %s",
+                                path,
+                            )
+                        else:
+                            path = choose_path(
+                                telemetry,
+                                self.policy,
+                                previous_path=self.last_selected_path,
+                                safe_fallback=self.last_selected_path,
+                            )
+                    else:
+                        path = choose_path(
+                            telemetry,
+                            self.policy,
+                            previous_path=self.last_selected_path,
+                        )
                     self.last_selected_path = path
                 self.logger.info(
                     "Selected path %s for new flow %s -> %s (policy=%s)",
