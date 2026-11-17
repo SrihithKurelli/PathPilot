@@ -128,9 +128,10 @@ def repository_revision(repo_root):
         revision = subprocess.check_output(
             ["git", "rev-parse", "HEAD"], cwd=repo_root, text=True
         ).strip()
-        dirty = subprocess.call(
-            ["git", "diff", "--quiet"], cwd=repo_root
-        ) != 0
+        status = subprocess.check_output(
+            ["git", "status", "--porcelain"], cwd=repo_root, text=True
+        )
+        dirty = bool(status.strip())
         return revision, int(dirty)
     except (OSError, subprocess.CalledProcessError):
         return "unknown", -1
@@ -261,8 +262,11 @@ def run_trial(policy, trial, args, repo_root):
         )
         first_returncode = first_client.returncode
         first_client = None
+        git_revision, working_tree_dirty = repository_revision(repo_root)
         return {
             "policy": policy, "trial": trial, "seed": args.seed + trial,
+            "git_revision": git_revision,
+            "working_tree_dirty": working_tree_dirty,
             "requested_initial_path": args.initial_path or "policy_selected",
             "telemetry_delay_seconds": args.telemetry_delay_seconds,
             "telemetry_noise_std": args.telemetry_noise_std,
