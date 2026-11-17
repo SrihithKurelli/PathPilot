@@ -106,3 +106,64 @@ def test_mininet_summary_includes_successive_flow_metrics():
     result = summarize_mininet(rows)[0]
     assert result["successive_flow_avoidance_rate"] == 0.75
     assert result["successive_flow_mean_goodput_mbps"] == pytest.approx(62.8)
+
+
+
+def test_mininet_summary_separates_first_and_successive_flow_metrics_by_condition():
+    import json
+
+    rows = [
+        {
+            "policy": "uncertainty_aware",
+            "requested_initial_path": "s1-s2-s4",
+            "telemetry_delay_seconds": "4.0",
+            "telemetry_noise_std": "0.1",
+            "bottleneck_rate": "10mbit",
+            "bottleneck_path": "s1-s2-s4",
+            "second_flow_mbps": "1.2",
+            "avoided_bottleneck": "0",
+            "fallback_flow_paths": json.dumps(["s1-s2-s4", "s1-s3-s4", "s1-s2-s4", "s1-s3-s4"]),
+            "fallback_flow_goodputs_mbps": json.dumps([1.2, 85.0, 0.5, 85.0]),
+            "fallback_flow_client_returncodes": json.dumps([0, 0, 0, 0]),
+        },
+        {
+            "policy": "uncertainty_aware",
+            "requested_initial_path": "s1-s3-s4",
+            "telemetry_delay_seconds": "4.0",
+            "telemetry_noise_std": "0.1",
+            "bottleneck_rate": "10mbit",
+            "bottleneck_path": "s1-s3-s4",
+            "second_flow_mbps": "85.0",
+            "avoided_bottleneck": "1",
+            "fallback_flow_paths": json.dumps(["s1-s2-s4", "s1-s3-s4", "s1-s2-s4", "s1-s3-s4"]),
+            "fallback_flow_goodputs_mbps": json.dumps([85.0, 2.0, 85.0, 2.0]),
+            "fallback_flow_client_returncodes": json.dumps([0, 0, 0, 0]),
+        },
+    ]
+
+    result = summarize_mininet(rows)
+    assert len(result) == 2
+    path1 = next(row for row in result if row["bottleneck_path"] == "s1-s2-s4")
+    path2 = next(row for row in result if row["bottleneck_path"] == "s1-s3-s4")
+    assert path1["first_policy_flow_avoidance_rate"] == 0.0
+    assert path1["successive_flow_avoidance_rate"] == 0.5
+    assert path2["first_policy_flow_avoidance_rate"] == 1.0
+    assert path2["successive_flow_avoidance_rate"] == 0.5
+    assert path1["successive_flow_count"] == 4
+    assert path1["successive_flow_mean_goodput_mbps"] == 43.0
+
+
+def test_mininet_summary_rejects_mismatched_successive_flow_arrays():
+    import json
+
+    row = {
+        "policy": "uncertainty_aware",
+        "requested_initial_path": "s1-s2-s4",
+        "bottleneck_path": "s1-s2-s4",
+        "second_flow_mbps": "1.0",
+        "avoided_bottleneck": "0",
+        "fallback_flow_paths": json.dumps(["s1-s2-s4", "s1-s3-s4"]),
+        "fallback_flow_goodputs_mbps": json.dumps([1.0]),
+    }
+    with pytest.raises(ValueError, match="lengths differ"):
+        summarize_mininet([row])
