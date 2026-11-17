@@ -83,12 +83,34 @@ def test_uncertainty_aware_trusts_a_difference_outside_noise_margin():
     ) == "path-a"
 
 
-def test_uncertainty_aware_uses_least_loaded_without_previous_path():
+def test_uncertainty_aware_uses_explicit_fallback_without_previous_path():
     data = {
         "path-a": Telemetry(.1215, 2.6, .05),
         "path-b": Telemetry(.1267, 2.6, .05),
     }
-    assert choose_path(data, "uncertainty_aware") == "path-a"
+    assert choose_path(
+        data, "uncertainty_aware", safe_fallback="path-b"
+    ) == "path-b"
+
+
+def test_uncertainty_aware_uses_fallback_when_all_samples_are_unconfident():
+    data = {
+        "path-a": Telemetry(.05, 4.6, .10),
+        "path-b": Telemetry(.25, 4.6, .10),
+    }
+    assert choose_path(
+        data, "uncertainty_aware", safe_fallback="path-b"
+    ) == "path-b"
+
+
+def test_uncertainty_aware_rejects_unknown_fallback_and_keeps_legacy_ranking():
+    data = {
+        "path-a": Telemetry(.05, 4.6, .10),
+        "path-b": Telemetry(.25, 4.6, .10),
+    }
+    assert choose_path(
+        data, "uncertainty_aware", safe_fallback="missing"
+    ) == "path-a"
 
 
 def test_uncertainty_aware_uses_confident_candidates_when_available():
