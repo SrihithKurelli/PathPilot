@@ -50,7 +50,6 @@ def summarize_mininet(rows):
         per_trial_flow_goodputs = []
         per_trial_flow_avoidance = []
         total_successive_flows = 0
-        successful_successive_flows = 0
         all_flow_goodputs = []
         all_flow_avoided = []
 
@@ -75,8 +74,12 @@ def summarize_mininet(rows):
                 per_trial_flow_goodputs.append(_mean(flow_goodputs))
                 if avoided:
                     per_trial_flow_avoidance.append(_mean(avoided))
-                    successful_successive_flows += sum(avoided)
                     all_flow_avoided.extend(avoided)
+                elif item.get("fallback_flow_avoidance_rate") not in ("", None):
+                    # Older pilot CSVs recorded the per-trial rate but not paths.
+                    per_trial_flow_avoidance.append(
+                        float(item["fallback_flow_avoidance_rate"])
+                    )
                 all_flow_goodputs.extend(flow_goodputs)
                 total_successive_flows += len(flow_goodputs)
 
@@ -99,7 +102,7 @@ def summarize_mininet(rows):
             "successive_flow_trials": len(per_trial_flow_goodputs),
             "successive_flow_count": total_successive_flows,
             "successive_flow_avoidance_rate": (
-                round(_mean(all_flow_avoided), 4) if all_flow_avoided else ""
+                round(_mean(per_trial_flow_avoidance), 4) if per_trial_flow_avoidance else ""
             ),
             "successive_flow_mean_goodput_mbps": (
                 round(_mean(all_flow_goodputs), 4) if all_flow_goodputs else ""
