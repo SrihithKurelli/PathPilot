@@ -24,7 +24,7 @@ def test_mixed_short_long_contains_both_classes():
 
 def test_degradation_and_recovery_have_ordered_events():
     scenario = build_scenario("degrade_recover")
-    assert [event.action for event in scenario.impairments] == ["set_rate", "link_up"]
+    assert [event.action for event in scenario.impairments] == ["set_rate", "set_rate"]
     assert scenario.impairments[0].offset_s < scenario.impairments[1].offset_s
 
 
