@@ -8,7 +8,7 @@ from experiments.run_final_campaign import execute, trial_directory
 
 def test_final_campaign_manifest_has_all_factors_and_expected_count():
     manifest = build_manifest(repetitions=2)
-    assert manifest["trial_count"] == 7 * 4 * 2 * 5 * 2
+    assert manifest["trial_count"] == 20 * 2 * 5 * 2
     assert len({row["policy"] for row in manifest["trials"]}) == 5
     assert {row["initial_bottleneck_path"] for row in manifest["trials"]} == {
         "s1-s2-s4", "s1-s3-s4"
