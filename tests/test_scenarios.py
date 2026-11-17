@@ -35,3 +35,12 @@ def test_invalid_flow_and_impairment_rejected():
         ImpairmentEvent(-1, "s1-s2-s4", "link_down")
     with pytest.raises(ValueError):
         Scenario("bad", 5, (FlowSpec("TCP", 10, 1, 0, "too_long"),))
+
+
+def test_different_seeds_create_different_but_valid_workload_schedules():
+    first = build_scenario("sudden_burst", seed=7)
+    second = build_scenario("sudden_burst", seed=8)
+    assert first != second
+    assert scenario_digest(first) != scenario_digest(second)
+    assert all(flow.start_offset_s + flow.duration_s <= first.duration_s
+               for flow in first.flows)
