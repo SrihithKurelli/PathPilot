@@ -38,6 +38,11 @@ def load_trial(root, row):
         and port.get("tx_dropped") not in ("", None)
     ]
     goodputs = [float(flow["goodput_mbps"]) for flow in flows]
+    delivered_bytes = [int(flow["bytes_received"]) for flow in flows
+                       if flow.get("bytes_received") not in ("", None)]
+    scenario_duration = float(traffic["scenario"]["duration_s"])
+    aggregate_goodput = (sum(delivered_bytes) * 8 / scenario_duration / 1e6
+                         if len(delivered_bytes) == len(flows) and scenario_duration > 0 else "")
     udp_losses = [float(flow["udp_loss_pct"]) for flow in flows
                   if flow.get("protocol") == "UDP" and flow.get("udp_loss_pct") not in ("", None)]
     fairness = [float(value) for value in traffic["jain_fairness_by_second"].values()]
@@ -64,7 +69,7 @@ def load_trial(root, row):
         "repetition": int(row["repetition"]),
         "seed": int(row["workload_seed"]),
         "tcp_app_rtt_p99_ms": float(traffic["tcp_application_rtt"]["tcp_app_rtt_ms_p99"]),
-        "aggregate_goodput_mbps": sum(goodputs),
+        "aggregate_goodput_mbps": aggregate_goodput,
         "udp_loss_pct": statistics.mean(udp_losses) if udp_losses else "",
         "jain_fairness": statistics.mean(fairness) if fairness else "",
         "path_changes_per_minute": float(result["event_metrics"]["path_changes_per_minute"])
