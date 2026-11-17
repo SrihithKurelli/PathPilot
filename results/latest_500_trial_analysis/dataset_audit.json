@@ -1,0 +1,24 @@
+{
+  "trials": 500,
+  "unique_trial_keys": 500,
+  "duplicate_trial_keys": 0,
+  "git_revisions": ["c2d8588c2346e17880e669a9990ea8873bf67c98"],
+  "dirty_rows": 0,
+  "rows_with_bad_array_shapes": 0,
+  "successive_flow_count": 2000,
+  "nonzero_successive_client_codes": 0,
+  "nonzero_first_client_codes": 0,
+  "nonzero_second_client_codes": 0,
+  "icmp_probe_nonzero_codes": 0,
+  "connectivity_loss_nonzero_rows": 0,
+  "icmp_loss_nonzero_rows": 0,
+  "uncertainty_successive_decisions": 400,
+  "uncertainty_fallback_invocations": 298,
+  "uncertainty_fallback_by_path": {
+    "s1-s2-s4": 159,
+    "s1-s3-s4": 139
+  },
+  "all_four_fallback_trials": 60,
+  "mixed_fallback_trials": 39,
+  "no_fallback_trials": 1
+}
