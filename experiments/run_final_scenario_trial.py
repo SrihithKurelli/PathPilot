@@ -156,7 +156,8 @@ def run_trial(policy, scenario_name, condition, initial_path, repetition,
     ]
     flow_mods = [event for event in events if event.get("event") == "flow_mod"]
     result["event_metrics"] = {
-        **path_stability(decisions, window_seconds=10.0),
+        **path_stability(decisions, window_seconds=10.0,
+                          observation_duration_s=scenario.duration_s),
         "flow_mod_count": len(flow_mods),
         "telemetry_request_count": sum(e["event"] == "telemetry_request" for e in telemetry_messages),
         "telemetry_reply_count": sum(e["event"] == "telemetry_reply" for e in telemetry_messages),
