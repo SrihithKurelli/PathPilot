@@ -195,6 +195,26 @@ def run_trial(policy, scenario_name, condition, initial_path, repetition,
             "telemetry_recovery_detection_delay_s": recovery_delay,
         })
     result["adaptation"] = adaptation
+    link_outages = []
+    for down in [event for event in impairments if event.get("action") == "link_down"]:
+        recoveries = [
+            event for event in impairments
+            if event.get("action") == "link_up"
+            and event.get("path") == down.get("path")
+            and event["monotonic_time"] > down["monotonic_time"]
+        ]
+        link_outages.append({
+            "path": down.get("path"),
+            "down_monotonic_time": down["monotonic_time"],
+            "up_monotonic_time": min(
+                (event["monotonic_time"] for event in recoveries), default=""
+            ),
+            "scheduled_outage_duration_s": (
+                min(event["monotonic_time"] for event in recoveries)
+                - down["monotonic_time"] if recoveries else ""
+            ),
+        })
+    result["link_outages"] = link_outages
     result["controller_events"] = events
     target = output_dir / "trial_result.json"
     target.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
