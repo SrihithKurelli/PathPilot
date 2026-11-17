@@ -15,19 +15,26 @@ def trial_directory(root, row):
 
 
 def execute(manifest_path, output_root, *, dry_run=False, resume=False, limit=None,
-            venv=".venv", controller_ip="127.0.0.1", controller_port=6653):
+            allow_development=False, venv=".venv", controller_ip="127.0.0.1",
+            controller_port=6653):
     manifest_path = Path(manifest_path).resolve()
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     if not manifest.get("trials"):
         raise ValueError("manifest contains no trials")
-    if any(row.get("split") != "final_test" for row in manifest["trials"]):
-        raise ValueError("development manifest cannot be used as a final test campaign")
+    splits = {row.get("split") for row in manifest["trials"]}
+    if len(splits) != 1:
+        raise ValueError("development and final-test rows cannot be mixed")
+    is_development = splits == {"development"}
+    if is_development and not allow_development:
+        raise ValueError("pass --allow-development to execute a development-only manifest")
     revision = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True,
                               text=True, check=False).stdout.strip()
     dirty = subprocess.run(["git", "status", "--porcelain"], capture_output=True,
                            text=True, check=False).stdout.strip()
-    if revision != manifest.get("git_revision") or dirty or manifest.get("git_worktree_dirty") != 0:
-        raise ValueError("checkout must match the clean source revision frozen in the manifest")
+    if revision != manifest.get("git_revision"):
+        raise ValueError("checkout revision differs from the frozen campaign manifest")
+    if not is_development and (dirty or manifest.get("git_worktree_dirty") != 0):
+        raise ValueError("final-test campaign requires the exact clean source revision")
     rows = manifest["trials"][:limit] if limit else manifest["trials"]
     root = Path(output_root).resolve()
     runner = Path(__file__).with_name("run_final_scenario_trial.py")
@@ -99,6 +106,8 @@ def main():
                         default=Path("results/final_campaign"))
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--allow-development", action="store_true",
+                        help="explicitly allow a development-only manifest; never runs final audit")
     parser.add_argument("--limit", type=int,
                         help="execute only the first N manifest rows for rehearsal")
     parser.add_argument("--venv", default=".venv")
@@ -109,17 +118,22 @@ def main():
         parser.error("--limit must be positive")
     summary = execute(
         args.manifest, args.output_root, dry_run=args.dry_run,
-        resume=args.resume, limit=args.limit, venv=args.venv,
+        resume=args.resume, limit=args.limit, allow_development=args.allow_development,
+        venv=args.venv,
         controller_ip=args.controller_ip, controller_port=args.controller_port,
     )
     print(json.dumps(summary, indent=2))
-    if not args.dry_run and args.limit is None:
+    is_development = all(row.get("split") == "development" for row in
+                         json.loads(args.manifest.read_text(encoding="utf-8"))["trials"])
+    if not args.dry_run and args.limit is None and not is_development:
         from experiments.audit_final_campaign import audit
         report = audit(args.manifest, args.output_root)
         print(f"Final integrity audit passed: {report['audited_trial_count']} trials")
         from experiments.analyze_final_campaign import analyze
         analysis = analyze(args.manifest, args.output_root)
         print(f"Generated final analysis: {analysis}")
+    elif not args.dry_run and args.limit is None and is_development:
+        print("Development campaign completed; final-test audit and analysis were intentionally not run.")
 
 
 if __name__ == "__main__":
