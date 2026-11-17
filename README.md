@@ -363,9 +363,12 @@ Implemented modules:
 
 The campaign is not yet cleared for execution. Live end-to-end rehearsal,
 measurement validation, full analysis/report generation and CI must pass first.
-The current full-factorial plan is 2,800 trials and the manifest estimates its
-runtime; use development workloads for tuning and keep them separate from the
-final test split. Install `iperf3` on the Ubuntu host and inside Mininet hosts
+The default balanced fractional design is 2,000 trials: full telemetry
+impairment coverage for sudden/alternating bursts, with baseline+combined
+conditions for steady, mixed-flow and recovery scenarios. Both initial paths,
+all five policies and ten matched repetitions remain represented. The manifest
+estimates runtime; use development workloads for tuning and keep them separate
+from the final test split. Install `iperf3` on the Ubuntu host and inside Mininet hosts
 before the scenario runner is used.
 
 Create a manifest (does not start Mininet):
