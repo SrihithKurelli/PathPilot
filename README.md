@@ -374,6 +374,17 @@ Create a manifest (does not start Mininet):
 python -m experiments.final_campaign --output results/final_campaign_manifest.json
 python -m experiments.run_final_campaign --manifest results/final_campaign_manifest.json --dry-run
 ```
+Create a development-only manifest for tuning (must use a separate output directory):
+
+```bash
+python -m experiments.final_campaign --development --output results/development_manifest.json
+sudo env PYTHONPATH="$PWD" EVENTLET_NO_GREENDNS=yes \
+  /usr/bin/python3 -m experiments.run_final_campaign \
+  --manifest results/development_manifest.json \
+  --output-root results/development_campaign --allow-development
+```
+
+Development results are never accepted by the final-test auditor.
 
 A single trial can be rehearsed only after the implementation is validated:
 
