@@ -67,9 +67,9 @@ class ControllerLog:
                     )
                 self.condition.wait(remaining)
 
-    def text(self):
+    def text(self, start=0):
         with self.condition:
-            return "\n".join(self.lines)
+            return "\n".join(self.lines[start:])
 
     def fallback_before(self, start, selection_line):
         """Return the fallback-decision log immediately before a flow selection."""
@@ -214,6 +214,9 @@ def run_trial(policy, trial, args, repo_root):
         loss = net.pingAll()
         if loss != 0:
             raise RuntimeError(f"Mininet connectivity check failed: {loss:.1f}% loss")
+        # Exclude the preliminary pingAll ICMP connectivity check from the
+        # route-decision stability metrics; count only experiment TCP flows.
+        experiment_log_mark = log.mark()
 
         h1, h2 = net.get("h1", "h2")
         fallback_ports = list(range(5002, 5002 + args.fallback_flow_count))
@@ -311,7 +314,8 @@ def run_trial(policy, trial, args, repo_root):
         first_client = None
         git_revision, working_tree_dirty = repository_revision(repo_root)
         selected_paths = re.findall(
-            r"Selected path (s1-s2-s4|s1-s3-s4) for new flow", log.text()
+            r"Selected path (s1-s2-s4|s1-s3-s4) for new flow",
+            log.text(start=experiment_log_mark),
         )
         route_metrics = path_transition_metrics(selected_paths)
         resource_metrics = process_metrics.stop()
