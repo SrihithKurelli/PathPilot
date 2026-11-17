@@ -108,3 +108,12 @@ def test_iperf3_interval_goodput_is_keyed_for_fairness():
     }, "flow-a")
     assert [row["window_id"] for row in records] == [0, 1]
     assert [row["goodput_mbps"] for row in records] == [2, 4]
+
+
+def test_settling_time_rejects_gaps_in_telemetry_coverage():
+    samples = [
+        {"monotonic_time": 11, "utilization": .1},
+        {"monotonic_time": 20, "utilization": .1},
+        {"monotonic_time": 22, "utilization": .1},
+    ]
+    assert settling_time([10], samples, .2, 4, max_sample_gap_s=3) == 10
