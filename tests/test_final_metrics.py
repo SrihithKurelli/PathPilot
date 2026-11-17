@@ -120,11 +120,9 @@ def test_settling_time_rejects_gaps_in_telemetry_coverage():
 
 
 def test_parse_ovs_openflow13_named_port_header():
-    rows = parse_ovs_port_stats(
-        "OFPST_PORT reply (OF1.3) (xid=0x2):\\n"
-        " 2(s2-eth2): rx pkts=10, bytes=1000, drop=2, errs=0\\n"
-        "     tx pkts=9, bytes=900, drop=1, errs=0"
-    )
+    rows = parse_ovs_port_stats("""OFPST_PORT reply (OF1.3) (xid=0x2):
+ 2(s2-eth2): rx pkts=10, bytes=1000, drop=2, errs=0
+     tx pkts=9, bytes=900, drop=1, errs=0""")
     assert rows == [{
         "port": 2, "rx_packets": 10, "rx_bytes": 1000,
         "rx_dropped": 2, "rx_errors": 0,
