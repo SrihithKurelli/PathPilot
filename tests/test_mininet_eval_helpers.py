@@ -83,3 +83,26 @@ def test_repository_revision_records_tracked_and_untracked_changes(tmp_path):
     (tmp_path / "untracked.txt").write_text("new")
     _, dirty = repository_revision(tmp_path)
     assert dirty == 1
+
+def test_mininet_summary_includes_successive_flow_metrics():
+    import json
+
+    rows = [
+        {
+            "policy": "uncertainty_aware",
+            "second_flow_mbps": "80",
+            "avoided_bottleneck": "1",
+            "fallback_flow_avoidance_rate": "0.5",
+            "fallback_flow_goodputs_mbps": json.dumps([80.0, 1.2]),
+        },
+        {
+            "policy": "uncertainty_aware",
+            "second_flow_mbps": "1.2",
+            "avoided_bottleneck": "0",
+            "fallback_flow_avoidance_rate": "1.0",
+            "fallback_flow_goodputs_mbps": json.dumps([85.0, 85.0]),
+        },
+    ]
+    result = summarize_mininet(rows)[0]
+    assert result["successive_flow_avoidance_rate"] == 0.75
+    assert result["successive_flow_mean_goodput_mbps"] == pytest.approx(62.8)
