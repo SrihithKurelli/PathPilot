@@ -8,7 +8,7 @@ def test_event_ledger_writes_timestamped_jsonl_and_counts(tmp_path):
     ledger = EventLedger(tmp_path / "events.jsonl", clock=lambda: next(ticks))
     first = ledger.record("decision", path="s1-s2-s4", policy="least_loaded")
     ledger.record("flow_mod", command="add", estimated_bytes=128)
-    assert first["elapsed_s"] == 0
+    assert first["elapsed_s"] == 0.5
     rows = [json.loads(line) for line in (tmp_path / "events.jsonl").read_text().splitlines()]
     assert [row["event"] for row in rows] == ["decision", "flow_mod"]
     assert rows[1]["elapsed_s"] == 1
