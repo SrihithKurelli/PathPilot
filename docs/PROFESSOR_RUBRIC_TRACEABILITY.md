@@ -55,3 +55,14 @@ This document maps the professor's Project Orientation and the revised PathPilot
 - The current measured primary outcome is second-flow TCP goodput and bottleneck avoidance, not p99 latency.
 - The uncertainty-aware policy is a heuristic using sample age and variability. Do not claim novelty or statistically robust uncertainty estimation without a literature audit and suitable evidence.
 - Do not claim the rubric is fully satisfied until the missing experiments are run and independently checked.
+
+
+## Runtime evaluation instrumentation update
+
+The Mininet single-trial runner now samples the Ryu controller process through Linux `/proc` and records CPU time, mean CPU percentage over the trial, and peak resident memory when the process statistics are available. It also derives path-decision count, path changes, and immediate A→B→A reversals from the controller's selected-path log lines. The balanced matrix aggregator carries these measurements into per-condition/policy summaries.
+
+These are process-level measurements for the controller process only; they do not include child processes, host-wide resource usage, Open vSwitch CPU, or OpenFlow rule-install latency. Path changes are counted across the controller's logged decisions within a trial, not as a continuous path-change rate for established flows.
+
+The helper module also provides a Jain fairness calculation and percentile utility, but the present sequential-flow experiment does not create simultaneous competing TCP flows. Therefore Jain fairness is still **not measured** and no fairness result is emitted. Per-TCP-flow latency distributions and TCP data-plane packet loss also remain unmeasured. The existing ICMP probe remains a separate-flow measurement.
+
+The new runtime instrumentation and tests are code additions only until the user runs the test suite and Mininet smoke/pilot on the Ubuntu VM. Do not treat the metrics as validated measurements before that run.
