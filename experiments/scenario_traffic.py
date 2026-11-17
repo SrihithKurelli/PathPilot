@@ -102,9 +102,16 @@ def run_scenario(net, scenario, output_dir, ledger, *, base_port=5300,
         flow_results.append(result)
         for interval in parse_iperf3_intervals(stdout, result["flow_id"]):
             global_start = flow.start_offset_s + float(interval["start_s"])
-            interval["window_id"] = int(global_start)
-            interval["goodput_mbps"] = float(interval["goodput_mbps"])
-            interval_records.append(interval)
+            global_end = flow.start_offset_s + float(interval["end_s"])
+            for window in range(int(global_start), int(math.ceil(global_end))):
+                overlap = min(global_end, window + 1) - max(global_start, window)
+                if overlap > 0:
+                    interval_records.append({
+                        **interval,
+                        "window_id": window,
+                        "overlap_seconds": overlap,
+                        "goodput_mbps": float(interval["goodput_mbps"]),
+                    })
 
     rtt_stdout, _ = rtt_client.communicate(timeout=scenario.duration_s + 20)
     if rtt_client.returncode != 0 or not rtt_output.is_file():
