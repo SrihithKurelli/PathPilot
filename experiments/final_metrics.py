@@ -82,6 +82,25 @@ def parse_iperf3_json(payload):
       "udp_loss_pct":100*lost/packets if protocol=="UDP" and isinstance(packets,(int,float)) and packets>0 and isinstance(lost,(int,float)) else "",
       "udp_jitter_ms":udp.get("jitter_ms","") if protocol=="UDP" else ""}
 
+def parse_iperf3_intervals(payload, flow_id):
+    """Return per-second goodput samples keyed for concurrent fairness windows."""
+    data=json.loads(payload) if isinstance(payload,str) else payload
+    records=[]
+    for index, interval in enumerate(data.get("intervals", [])):
+        summary=interval.get("sum", {})
+        rate=summary.get("bits_per_second")
+        if rate is None:
+            continue
+        records.append({
+            "flow_id": flow_id,
+            "window_id": index,
+            "start_s": summary.get("start", index),
+            "end_s": summary.get("end", index + 1),
+            "goodput_mbps": float(rate) / 1e6,
+        })
+    return records
+
+
 def parse_ss_tcp_rtt(text):
     return [float(x) for x in re.findall(r"\brtt:([0-9]+(?:\.[0-9]+)?)/",text)]
 
