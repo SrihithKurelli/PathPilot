@@ -121,7 +121,7 @@ def parse_ovs_port_stats(text):
     """Parse ovs-ofctl dump-ports counters; absent counters remain absent."""
     rows=[]; current=None
     for line in text.splitlines():
-        header=re.search(r"port (\d+):",line)
+        header=re.search(r"(?:port\s+)?(\d+)(?:\([^)]*\))?:",line)
         if header:
             if current: rows.append(current)
             current={"port":int(header.group(1))}
