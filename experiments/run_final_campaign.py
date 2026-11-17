@@ -22,6 +22,12 @@ def execute(manifest_path, output_root, *, dry_run=False, resume=False, limit=No
         raise ValueError("manifest contains no trials")
     if any(row.get("split") != "final_test" for row in manifest["trials"]):
         raise ValueError("development manifest cannot be used as a final test campaign")
+    revision = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True,
+                              text=True, check=False).stdout.strip()
+    dirty = subprocess.run(["git", "status", "--porcelain"], capture_output=True,
+                           text=True, check=False).stdout.strip()
+    if revision != manifest.get("git_revision") or dirty or manifest.get("git_worktree_dirty") != 0:
+        raise ValueError("checkout must match the clean source revision frozen in the manifest")
     rows = manifest["trials"][:limit] if limit else manifest["trials"]
     root = Path(output_root).resolve()
     runner = Path(__file__).with_name("run_final_scenario_trial.py")
