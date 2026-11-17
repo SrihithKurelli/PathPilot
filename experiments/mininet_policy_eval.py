@@ -3,7 +3,7 @@
 
 Each trial starts a fresh Ryu controller and Mininet topology. The first TCP
 flow selects a path; the harness bottlenecks that actual path, waits for the
-configured telemetry delay plus warm-up, then measures a second flow.
+configured telemetry delay plus warm-up, then measures one or more successive new flows.
 
 This is an emulation experiment. It records TCP goodput/path decisions and a
 concurrent ICMP probe's RTT percentiles and packet loss. The ICMP probe is a
@@ -69,6 +69,20 @@ class ControllerLog:
         with self.condition:
             return "\n".join(self.lines)
 
+    def fallback_before(self, start, selection_line):
+        """Return the fallback-decision log immediately before a flow selection."""
+        with self.condition:
+            decision_lines = self.lines[start:]
+            try:
+                decision_index = decision_lines.index(selection_line)
+            except ValueError:
+                return "FALLBACK_LOG_NOT_FOUND"
+            candidates = [
+                line for line in decision_lines[:decision_index]
+                if "Uncertainty fallback:" in line
+            ]
+            return candidates[-1] if candidates else "NO_FALLBACK_USED"
+
     def telemetry_before(self, start, selection_line):
         """Return the latest telemetry-source log immediately before a decision."""
         telemetry_pattern = re.compile(
@@ -124,7 +138,7 @@ def parse_ping_metrics(output):
 
 
 def repository_revision(repo_root):
-    """Return the checked-out Git revision and whether tracked files are dirty."""
+    """Return the checked-out Git revision and whether the working tree is dirty."""
     try:
         revision = subprocess.check_output(
             ["git", "rev-parse", "HEAD"], cwd=repo_root, text=True
@@ -240,6 +254,7 @@ def run_trial(policy, trial, args, repo_root):
         fallback_paths = []
         fallback_goodputs = []
         fallback_returncodes = []
+        fallback_reason_logs = []
         second_telemetry_log = "NOT_CAPTURED"
         ping_output = ""
         ping_returncode = -1
@@ -255,6 +270,9 @@ def run_trial(policy, trial, args, repo_root):
                 + re.escape(f"(policy={policy})"), start=flow_mark, timeout=20,
             )
             selected_path = match.group(1)
+            fallback_reason_logs.append(
+                log.fallback_before(flow_mark, selection_line)
+            )
             if flow_index == 0:
                 second_telemetry_log = log.telemetry_before(flow_mark, selection_line)
                 # Probe RTT/loss concurrently with the first fallback flow.
@@ -305,6 +323,7 @@ def run_trial(policy, trial, args, repo_root):
             "fallback_flow_paths": json.dumps(fallback_paths),
             "fallback_flow_goodputs_mbps": json.dumps(fallback_goodputs),
             "fallback_flow_client_returncodes": json.dumps(fallback_returncodes),
+            "fallback_flow_reason_logs": json.dumps(fallback_reason_logs),
             "fallback_flow_avoidance_rate": round(
                 sum(path != first_path for path in fallback_paths) / len(fallback_paths), 4
             ),
