@@ -129,3 +129,12 @@ def test_parse_ovs_openflow13_named_port_header():
         "tx_packets": 9, "tx_bytes": 900,
         "tx_dropped": 1, "tx_errors": 0,
     }]
+
+
+def test_concurrent_fairness_does_not_double_count_split_intervals():
+    fairness = aggregate_concurrent_flow_fairness([
+        {"window_id": 0, "flow_id": "a", "goodput_mbps": 10, "overlap_seconds": .5},
+        {"window_id": 0, "flow_id": "a", "goodput_mbps": 10, "overlap_seconds": .5},
+        {"window_id": 0, "flow_id": "b", "goodput_mbps": 10, "overlap_seconds": 1},
+    ])
+    assert fairness == {0: 1.0}
