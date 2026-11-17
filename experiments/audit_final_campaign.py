@@ -59,6 +59,10 @@ def audit(manifest_path, output_root):
         if actual != expected:
             failures.append(f"manifest/result mismatch: {folder}")
             continue
+        if result.get("git_revision") != manifest.get("git_revision"):
+            failures.append(f"trial source revision differs from manifest: {folder}")
+        if result.get("working_tree_dirty") != 0:
+            failures.append(f"trial working tree was dirty: {folder}")
 
         traffic = result.get("traffic", {})
         flows = traffic.get("flow_results", [])
