@@ -1,6 +1,6 @@
 import pytest
 
-from controller.policies import Telemetry, confidence, choose_path
+from controller.policies import (Telemetry, confidence, choose_path, next_round_robin_fallback)
 
 
 @pytest.fixture
@@ -162,3 +162,31 @@ def test_stability_aware_uses_least_loaded_without_previous_path():
 def test_non_finite_telemetry_is_rejected():
     with pytest.raises(ValueError):
         choose_path({"bad": Telemetry(float("nan"), 0, 0)})
+
+def test_round_robin_fallback_alternates_successive_uncertain_flows():
+    data = {
+        "s1-s2-s4": Telemetry(.05, 4.6, .10),
+        "s1-s3-s4": Telemetry(.25, 4.6, .10),
+    }
+    selected = []
+    previous = None
+    for _ in range(6):
+        previous = next_round_robin_fallback(data, previous)
+        selected.append(previous)
+    assert selected == [
+        "s1-s2-s4", "s1-s3-s4", "s1-s2-s4",
+        "s1-s3-s4", "s1-s2-s4", "s1-s3-s4",
+    ]
+
+
+def test_round_robin_fallback_handles_unknown_previous_path():
+    data = {
+        "s1-s3-s4": Telemetry(.2, 4.6, .10),
+        "s1-s2-s4": Telemetry(.1, 4.6, .10),
+    }
+    assert next_round_robin_fallback(data, "removed-path") == "s1-s2-s4"
+
+
+def test_round_robin_fallback_rejects_empty_candidates():
+    with pytest.raises(ValueError, match="at least one"):
+        next_round_robin_fallback({})
