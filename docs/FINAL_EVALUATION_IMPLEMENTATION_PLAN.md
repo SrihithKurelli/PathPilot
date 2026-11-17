@@ -97,3 +97,16 @@ Use a staged, balanced design rather than a combinatorial explosion. Include all
 - Queue statistics support varies by OVS/Mininet version. Validate actual available counters before promising queue occupancy.
 - Controller CPU/RSS currently measures the Ryu process only, not OVS or host-wide overhead.
 - Mininet/OVS results are emulation results, not physical-network results.
+
+
+## Proposed preregistered success thresholds (freeze before final-test execution)
+
+The proposal requires a predefined latency success threshold and explicit goodput/loss guardrails. Use these provisional thresholds unless the team documents a justified change using development-only data before the final manifest is generated:
+
+- Primary: uncertainty-aware p99 TCP application RTT is at least 10% lower than least-loaded in the bursty workloads under combined delay/noise, at matched offered load; evaluate paired trial-block differences with a 95% confidence interval.
+- Goodput guardrail: uncertainty-aware aggregate goodput is no more than 5% below least-loaded in the same matched condition.
+- Loss guardrail: UDP packet-loss percentage is no more than 1 percentage point higher than least-loaded.
+- Fairness guardrail: Jain's index is no more than 0.05 below least-loaded in windows with at least two simultaneous competing flows.
+- Stability objective: path changes per minute are at least 10% lower than least-loaded in bursty impaired workloads; report reversals separately and do not treat the stability metric itself as a novelty claim.
+
+These thresholds are evaluation criteria, not expected outcomes. Report negative or mixed results without changing thresholds after inspecting final-test data.
