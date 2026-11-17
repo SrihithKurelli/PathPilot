@@ -183,6 +183,37 @@ def analyze(manifest_path, output_root):
                         out[f"{name}_n"] = ci["n"]
                     paired.append(out)
 
+    threshold_rows = []
+    for row in paired:
+        if row["condition"] != "combined" or row["scenario"] not in {
+            "sudden_burst", "alternating_bursts"
+        }:
+            continue
+        checks = {
+            "p99_primary": (row["p99_improvement_pct_ci95_low"], 10.0, "min"),
+            "goodput_guardrail": (row["goodput_regression_pct_ci95_high"], 5.0, "max"),
+            "udp_loss_guardrail": (row["udp_loss_delta_pp_ci95_high"], 1.0, "max"),
+            "fairness_guardrail": (row["jain_fairness_delta_ci95_low"], -0.05, "min"),
+            "stability_objective": (row["path_changes_reduction_pct_ci95_low"], 10.0, "min"),
+        }
+        out = {key: row[key] for key in ("scenario", "condition", "initial_path", "comparator")}
+        statuses = []
+        for name, (bound, threshold, direction) in checks.items():
+            if bound in ("", None):
+                status = "not_applicable"
+            elif direction == "min":
+                status = "pass" if float(bound) >= threshold else "not_met"
+            else:
+                status = "pass" if float(bound) <= threshold else "not_met"
+            out[f"{name}_status"] = status
+            statuses.append(status)
+        out["overall_status"] = (
+            "pass" if statuses and all(status == "pass" for status in statuses)
+            else "not_met" if "not_met" in statuses else "incomplete"
+        )
+        threshold_rows.append(out)
+
+    _write_csv(root / "PREREGISTERED_THRESHOLD_EVALUATION.csv", threshold_rows)
     _write_csv(root / "FINAL_CAMPAIGN_SUMMARY.csv", summary)
     _write_csv(root / "PAIRED_POLICY_COMPARISONS.csv", paired)
     plots = plot_summary(root / "FINAL_CAMPAIGN_SUMMARY.csv", root / "plots")
@@ -195,6 +226,7 @@ def analyze(manifest_path, output_root):
         f"- Telemetry conditions: {', '.join(manifest['telemetry_conditions'])}",
         "",
         f"Generated {len(plots)} condition-stratified SVG plots in plots/.",
+        f"Preregistered threshold evaluations: {len(threshold_rows)} matched comparisons in combined-telemetry burst workloads; see PREREGISTERED_THRESHOLD_EVALUATION.csv.",
         "The CSV files report condition- and initial-path-stratified metrics with trial-level bootstrap 95% intervals. "
         "Paired comparisons use matched scenario/condition/path/repetition blocks.",
         "",
@@ -208,7 +240,8 @@ def analyze(manifest_path, output_root):
     ]
     (root / "FINAL_CAMPAIGN_ANALYSIS.md").write_text("\n".join(report) + "\n", encoding="utf-8")
     return {"trials": len(rows), "summary_rows": len(summary),
-            "paired_rows": len(paired), "plots": len(plots)}
+            "paired_rows": len(paired), "threshold_rows": len(threshold_rows),
+            "plots": len(plots)}
 
 
 def main():
