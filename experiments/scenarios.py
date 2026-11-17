@@ -82,9 +82,9 @@ def _base_scenario(name: str) -> Scenario:
     if name == "alternating_bursts":
         return Scenario(name, 70, (
             FlowSpec("TCP", 65, 8, 0, "background"),
-            FlowSpec("UDP", 10, 30, 10, "burst_path1"),
-            FlowSpec("UDP", 10, 30, 25, "burst_path2"),
-            FlowSpec("UDP", 10, 30, 40, "burst_path1"),
+            FlowSpec("UDP", 10, 30, 10, "burst_phase_a"),
+            FlowSpec("UDP", 10, 30, 25, "burst_phase_b"),
+            FlowSpec("UDP", 10, 30, 40, "burst_phase_a"),
         ))
     if name == "mixed_short_long":
         short = tuple(FlowSpec("TCP", 2, 5, i * 1.0, "short") for i in range(12))
