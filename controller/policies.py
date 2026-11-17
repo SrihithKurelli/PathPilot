@@ -36,6 +36,16 @@ def confidence(sample: Telemetry, alpha=0.5, beta=2.0):
     return math.exp(-alpha * sample.age_s - beta * sample.variability)
 
 
+def next_round_robin_fallback(telemetry: Mapping[str, Telemetry], previous_path=None):
+    """Choose the next sorted path, rotating across successive uncertain decisions."""
+    names = sorted(telemetry)
+    if not names:
+        raise ValueError("at least one candidate path is required")
+    if previous_path not in names:
+        return names[0]
+    return names[(names.index(previous_path) + 1) % len(names)]
+
+
 def choose_path(
     telemetry: Mapping[str, Telemetry],
     policy="least_loaded",
