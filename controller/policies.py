@@ -75,6 +75,12 @@ def choose_path(
             n for n in names
             if confidence(telemetry[n]) >= min_confidence
         ]
+        # If every sample is below the confidence threshold, measured load is
+        # not trustworthy enough to rank paths. Honor an explicit deterministic
+        # fallback when the caller has one; otherwise retain least-loaded
+        # behavior for backwards compatibility with standalone callers.
+        if not eligible and safe_fallback in names:
+            return safe_fallback
         candidates = eligible or names
         if len(candidates) > 1:
             ranked = sorted(candidates, key=lambda n: telemetry[n].utilization)
@@ -88,6 +94,11 @@ def choose_path(
                 alternatives = [n for n in candidates if n != previous_path]
                 if previous_path in candidates and alternatives:
                     return alternatives[0]
+                # With no previous route, use the caller's deterministic
+                # fallback instead of always favoring the alphabetically first
+                # path when measurements are indistinguishable.
+                if previous_path not in candidates and safe_fallback in candidates:
+                    return safe_fallback
         return min(
             candidates,
             key=lambda n: (
