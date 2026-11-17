@@ -105,6 +105,10 @@ def main():
         controller_ip=args.controller_ip, controller_port=args.controller_port,
     )
     print(json.dumps(summary, indent=2))
+    if not args.dry_run and args.limit is None:
+        from experiments.audit_final_campaign import audit
+        report = audit(args.manifest, args.output_root)
+        print(f"Final integrity audit passed: {report['audited_trial_count']} trials")
 
 
 if __name__ == "__main__":
