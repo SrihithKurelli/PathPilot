@@ -19,7 +19,8 @@ from experiments.impairments import MininetImpairments
 def build_iperf_command(destination, port, flow):
     """Build an iperf3 command that respects each flow's offered rate."""
     command = ["iperf3", "-c", destination, "-p", str(port),
-               "-t", str(math.ceil(flow.duration_s)), "-J"]
+               "-t", str(math.ceil(flow.duration_s)), "-J",
+               "--get-server-output"]
     if flow.protocol == "UDP":
         command.extend(["-u", "-b", f"{flow.offered_rate_mbps}M"])
     else:
@@ -47,7 +48,7 @@ def run_scenario(net, scenario, output_dir, ledger, *, base_port=5300,
     for index, flow in enumerate(scenario.flows):
         port = base_port + index
         servers.append(h2.popen(
-            ["iperf3", "-s", "-1", "-p", str(port)],
+            ["iperf3", "-s", "-1", "-p", str(port), "-J"],
             stdout=None, stderr=None,
         ))
     echo_script = Path(__file__).with_name("tcp_echo.py")
