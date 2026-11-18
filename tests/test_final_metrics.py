@@ -77,6 +77,44 @@ def test_parse_iperf3_keeps_tcp_retransmits_distinct_from_udp_loss():
 
 
 
+def test_udp_parser_prefers_server_receiver_and_intervals():
+    import json
+
+    client = {
+        "start": {"test_start": {"protocol": "UDP"}},
+        "end": {"sum": {
+            "bits_per_second": 34_315_934, "bytes": 51_474_952,
+            "packets": 35_549, "lost_packets": 24_397,
+            "jitter_ms": 0.296,
+        }},
+        "server_output_json": json.dumps({
+            "intervals": [
+                {"sum": {"start": 0, "end": 1, "bits_per_second": 8_373_690,
+                         "bytes": 1_046_904, "packets": 1712,
+                         "lost_packets": 989, "jitter_ms": 0.318}}
+            ],
+            "end": {"sum": {
+                "start": 0, "end": 12.022671, "seconds": 12.022671,
+                "bits_per_second": 6_203_501, "bytes": 51_474_952,
+                "packets": 34_363, "lost_packets": 24_397,
+                "jitter_ms": 0.296, "sender": False,
+            }},
+        }),
+    }
+
+    result = parse_iperf3_json(client)
+    assert result["receiver_report_source"] == "server"
+    assert result["udp_packets"] == 34_363
+    assert result["udp_lost_packets"] == 24_397
+    assert result["udp_loss_pct"] == pytest.approx(100 * 24_397 / 34_363)
+    assert result["receiver_goodput_mbps"] == pytest.approx(6.203501)
+    assert result["receiver_duration_s"] == pytest.approx(12.022671)
+
+    intervals = parse_iperf3_intervals(client, "udp-flow")
+    assert len(intervals) == 1
+    assert intervals[0]["goodput_mbps"] == pytest.approx(8.373690)
+
+
 def test_tcp_parser_prefers_server_receiver_and_preserves_sender_clock():
     import json
 
