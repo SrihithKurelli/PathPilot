@@ -16,8 +16,21 @@ from experiments.final_metrics import (
 from experiments.impairments import MininetImpairments
 
 
+def build_iperf_command(destination, port, flow):
+    """Build an iperf3 command that respects each flow's offered rate."""
+    command = ["iperf3", "-c", destination, "-p", str(port),
+               "-t", str(math.ceil(flow.duration_s)), "-J"]
+    if flow.protocol == "UDP":
+        command.extend(["-u", "-b", f"{flow.offered_rate_mbps}M"])
+    else:
+        # iperf3 TCP pacing is required: without -b, TCP saturates the link
+        # and the scenario's offered_rate_mbps is silently ignored.
+        command.extend(["-b", f"{flow.offered_rate_mbps}M"])
+    return command
+
+
 def run_scenario(net, scenario, output_dir, ledger, *, base_port=5300,
-                 echo_port=5199, echo_rate_hz=10):
+                 echo_port=5199, echo_rate_hz=10, include_rtt_probe=True):
     h1, h2 = net.get("h1", "h2")
     destination = h2.IP()
     output_dir = Path(output_dir).resolve()
@@ -38,11 +51,14 @@ def run_scenario(net, scenario, output_dir, ledger, *, base_port=5300,
             stdout=None, stderr=None,
         ))
     echo_script = Path(__file__).with_name("tcp_echo.py")
-    echo_server = h2.popen([
-        "python3", str(echo_script), "server", "--port", str(echo_port)
-    ])
+    echo_server = None
+    if include_rtt_probe:
+        echo_server = h2.popen([
+            "python3", str(echo_script), "server", "--port", str(echo_port)
+        ])
     time.sleep(.5)
-    if echo_server.poll() is not None or any(server.poll() is not None for server in servers):
+    if (include_rtt_probe and echo_server.poll() is not None) or any(
+            server.poll() is not None for server in servers):
         raise RuntimeError("A traffic server exited during startup")
 
     impairment_runner = MininetImpairments(net, ledger).start(scenario.impairments)
@@ -55,10 +71,7 @@ def run_scenario(net, scenario, output_dir, ledger, *, base_port=5300,
         if delay > 0:
             time.sleep(delay)
         port = base_port + index
-        command = ["iperf3", "-c", destination, "-p", str(port),
-                   "-t", str(math.ceil(flow.duration_s)), "-J"]
-        if flow.protocol == "UDP":
-            command.extend(["-u", "-b", f"{flow.offered_rate_mbps}M"])
+        command = build_iperf_command(destination, port, flow)
         process = h1.popen(command, stdout=-1, stderr=-2, text=True)
         with lock:
             clients[index] = (process, flow, port, time.monotonic())
@@ -72,11 +85,12 @@ def run_scenario(net, scenario, output_dir, ledger, *, base_port=5300,
     # Let the designated pinned priming flow reach the controller before the
     # separate RTT probe creates its own policy decision.
     time.sleep(.2)
-    rtt_client = h1.popen([
-        "python3", str(echo_script), "client", "--host", destination,
-        "--port", str(echo_port), "--duration", str(scenario.duration_s),
-        "--rate-hz", str(echo_rate_hz), "--output", str(rtt_output),
-    ])
+    if include_rtt_probe:
+        rtt_client = h1.popen([
+            "python3", str(echo_script), "client", "--host", destination,
+            "--port", str(echo_port), "--duration", str(scenario.duration_s),
+            "--rate-hz", str(echo_rate_hz), "--output", str(rtt_output),
+        ])
     for thread in launch_threads:
         thread.join()
 
@@ -117,14 +131,16 @@ def run_scenario(net, scenario, output_dir, ledger, *, base_port=5300,
                         "goodput_mbps": float(interval["goodput_mbps"]),
                     })
 
-    rtt_stdout, _ = rtt_client.communicate(timeout=scenario.duration_s + 20)
-    if rtt_client.returncode != 0 or not rtt_output.is_file():
-        raise RuntimeError("TCP application RTT probe failed: " + (rtt_stdout or "")[-2000:])
-    rtt_data = json.loads(rtt_output.read_text(encoding="utf-8"))
-    rtt_values = [sample["rtt_ms"] for sample in rtt_data["rtt_samples"]]
+    rtt_values = []
+    if include_rtt_probe:
+        rtt_stdout, _ = rtt_client.communicate(timeout=scenario.duration_s + 20)
+        if rtt_client.returncode != 0 or not rtt_output.is_file():
+            raise RuntimeError("TCP application RTT probe failed: " + (rtt_stdout or "")[-2000:])
+        rtt_data = json.loads(rtt_output.read_text(encoding="utf-8"))
+        rtt_values = [sample["rtt_ms"] for sample in rtt_data["rtt_samples"]]
     fairness = aggregate_concurrent_flow_fairness(interval_records)
     impairment_errors = impairment_runner.stop()
-    for server in servers + [echo_server]:
+    for server in servers + ([echo_server] if echo_server is not None else []):
         if server.poll() is None:
             server.terminate()
             try:
@@ -142,7 +158,7 @@ def run_scenario(net, scenario, output_dir, ledger, *, base_port=5300,
         "tcp_application_rtt": summarize_distribution(rtt_values, "tcp_app_rtt_ms"),
         "tcp_application_rtt_samples": len(rtt_values),
         "impairment_errors": impairment_errors,
-        "tcp_rtt_probe_output": str(rtt_output),
+        "tcp_rtt_probe_output": str(rtt_output) if include_rtt_probe else "",
     }
     (output_dir / "scenario_result.json").write_text(
         json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8"
