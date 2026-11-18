@@ -28,10 +28,15 @@ def read_events(path):
 def run_trial(policy, scenario_name, condition, initial_path, repetition,
               output_dir, *, seed=2027, bottleneck_rate="10mbit",
               controller_ip="127.0.0.1", controller_port=6653, venv=".venv",
-              warmup_seconds=6.0):
+              warmup_seconds=6.0, traffic_mode="combined"):
     from topology.mininet_topology import build_network
 
     scenario = build_scenario(scenario_name, seed=seed)
+    if traffic_mode not in {"combined", "background-only", "probe-only"}:
+        raise ValueError("traffic_mode must be combined, background-only, or probe-only")
+    if traffic_mode == "probe-only":
+        from dataclasses import replace
+        scenario = replace(scenario, flows=())
     delay, noise = condition
     if warmup_seconds < max(4.0, delay + 4.0):
         raise ValueError("warmup must cover telemetry delay plus four seconds")
@@ -93,6 +98,7 @@ def run_trial(policy, scenario_name, condition, initial_path, repetition,
         sampler = NetworkStatsSampler(net, parent_ledger).start()
         traffic = run_scenario(
             net, scenario, output_dir / "traffic", parent_ledger,
+            include_rtt_probe=(traffic_mode != "background-only"),
         )
         sampler_errors = sampler.stop()
         cpu_metrics = cpu.stop()
@@ -239,6 +245,10 @@ def main():
     parser.add_argument("--controller-port", type=int, default=6653)
     parser.add_argument("--venv", default=".venv")
     parser.add_argument("--warmup-seconds", type=float, default=6)
+    parser.add_argument("--traffic-mode",
+                        choices=("combined", "background-only", "probe-only"),
+                        default="combined",
+                        help="Run both workloads, background flows without RTT probe, or RTT probe alone.")
     args = parser.parse_args()
     conditions = {
         "baseline": (0.0, 0.0), "delayed": (2.0, 0.0),
@@ -249,10 +259,11 @@ def main():
         args.repetition, args.output_dir, seed=args.seed,
         bottleneck_rate=args.bottleneck_rate, controller_ip=args.controller_ip,
         controller_port=args.controller_port, venv=args.venv,
-        warmup_seconds=args.warmup_seconds,
+        warmup_seconds=args.warmup_seconds, traffic_mode=args.traffic_mode,
     )
-    print(f"Completed {args.policy}/{args.scenario}/{args.condition}; "
-          f"TCP app p99={result['traffic']['tcp_application_rtt']['tcp_app_rtt_ms_p99']} ms")
+    p99 = result["traffic"]["tcp_application_rtt"].get("tcp_app_rtt_ms_p99", "")
+    print(f"Completed {args.policy}/{args.scenario}/{args.condition}/{args.traffic_mode}; "
+          f"TCP app p99={p99 if p99 != '' else 'not measured'} ms")
 
 
 if __name__ == "__main__":
