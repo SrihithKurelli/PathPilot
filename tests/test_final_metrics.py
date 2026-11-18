@@ -76,6 +76,71 @@ def test_parse_iperf3_keeps_tcp_retransmits_distinct_from_udp_loss():
     assert udp["tcp_retransmits"] == ""
 
 
+
+def test_tcp_parser_prefers_server_receiver_and_preserves_sender_clock():
+    import json
+
+    client = {
+        "start": {"test_start": {"protocol": "TCP"}},
+        "end": {
+            "sum_sent": {
+                "start": 0.0, "end": 50.000232, "seconds": 50.000232,
+                "bits_per_second": 7_877_000, "bytes": 49_231_640,
+                "retransmits": 0,
+            },
+            "sum_received": {
+                "start": 0.0, "end": 59.952188, "seconds": 59.952188,
+                "bits_per_second": 6_569_000, "bytes": 49_231_640,
+            },
+        },
+        "server_output_json": json.dumps({
+            "intervals": [
+                {"sum": {"start": 49.158712, "end": 59.966959,
+                         "bits_per_second": 657_121.94, "bytes": 887_792,
+                         "sender": False}}
+            ],
+            "end": {
+                "sum_received": {
+                    "start": 0.0, "end": 59.966959, "seconds": 59.966959,
+                    "bits_per_second": 6_570_733.06, "bytes": 49_253_360,
+                    "sender": False,
+                }
+            },
+        }),
+    }
+    result = parse_iperf3_json(client)
+    assert result["sender_goodput_mbps"] == pytest.approx(7.877)
+    assert result["receiver_goodput_mbps"] == pytest.approx(6.57073306)
+    assert result["goodput_mbps"] == result["receiver_goodput_mbps"]
+    assert result["sender_bytes"] == 49_231_640
+    assert result["receiver_bytes"] == 49_253_360
+    assert result["sender_duration_s"] == pytest.approx(50.000232)
+    assert result["receiver_duration_s"] == pytest.approx(59.966959)
+    assert result["receiver_report_source"] == "server"
+
+    intervals = parse_iperf3_intervals(client, "flow-a")
+    assert len(intervals) == 1
+    assert intervals[0]["goodput_mbps"] == pytest.approx(0.65712194)
+    assert intervals[0]["start_s"] == pytest.approx(49.158712)
+
+
+def test_tcp_parser_falls_back_when_server_report_is_missing_or_invalid():
+    import json
+
+    base = {
+        "start": {"test_start": {"protocol": "TCP"}},
+        "end": {
+            "sum_sent": {"bits_per_second": 3_000_000, "bytes": 300},
+            "sum_received": {"bits_per_second": 2_500_000, "bytes": 250},
+        },
+    }
+    for raw in ("not-json", None):
+        payload = {**base, "server_output_json": raw}
+        result = parse_iperf3_json(payload)
+        assert result["receiver_report_source"] == "client"
+        assert result["goodput_mbps"] == pytest.approx(2.5)
+        assert result["sender_goodput_mbps"] == pytest.approx(3.0)
+
 def test_parse_kernel_tcp_rtt_and_qdisc_counters():
     assert parse_ss_tcp_rtt(" cubic rto:201 rtt:12.34/2.0 ato:40") == [12.34]
     stats = parse_tc_qdisc_stats(
