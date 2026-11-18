@@ -122,12 +122,16 @@ def parse_iperf3_json(payload):
         receiver_bytes = received.get("bytes", "") if received else ""
         udp = {}
     else:
-        received = end.get("sum", {})
+        # UDP receiver statistics are authoritative on the server. The client
+        # summary can contain a different packet denominator, so prefer the
+        # one-off server's receiver report when available.
+        received = (server_end.get("sum_received") or server_end.get("sum")
+                    or end.get("sum", {}))
         sender_rate = ""
         receiver_rate = received.get("bits_per_second", "") if received else ""
         sender_bytes = ""
         receiver_bytes = received.get("bytes", "") if received else ""
-        udp = end.get("sum", {})
+        udp = received
 
     packets = udp.get("packets")
     lost = udp.get("lost_packets")
@@ -152,8 +156,10 @@ def parse_iperf3_json(payload):
                          if protocol == "UDP" and isinstance(packets, (int, float))
                          and packets > 0 and isinstance(lost, (int, float)) else ""),
         "udp_jitter_ms": udp.get("jitter_ms", "") if protocol == "UDP" else "",
-        "receiver_report_source": ("server" if protocol == "TCP" and
-                                   server_end.get("sum_received") else "client"),
+        "receiver_report_source": ("server" if (
+            (protocol == "TCP" and server_end.get("sum_received")) or
+            (protocol == "UDP" and (server_end.get("sum_received") or server_end.get("sum"))
+        ) else "client"),
     }
 
 
@@ -162,7 +168,7 @@ def parse_iperf3_intervals(payload, flow_id):
     data = _iperf_payload(payload)
     protocol = data.get("start", {}).get("test_start", {}).get("protocol", "")
     interval_source = data
-    if protocol == "TCP":
+    if protocol in {"TCP", "UDP"}:
         server = _server_report(data)
         if server.get("intervals"):
             interval_source = server
