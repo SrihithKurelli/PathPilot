@@ -73,6 +73,14 @@ def audit(manifest_path, output_root):
         if any(flow.get("goodput_mbps") in ("", None)
                or flow.get("bytes_received") in ("", None) for flow in flows):
             failures.append(f"missing per-flow goodput/delivered-byte evidence: {folder}")
+        for flow in flows:
+            if flow.get("protocol") == "TCP":
+                if flow.get("receiver_goodput_mbps") in ("", None) or flow.get("sender_goodput_mbps") in ("", None):
+                    failures.append(f"missing separate TCP sender/receiver rate evidence: {folder}")
+                if flow.get("receiver_duration_s") in ("", None) or float(flow.get("receiver_duration_s", 0)) <= 0:
+                    failures.append(f"missing positive TCP receiver duration: {folder}")
+                if flow.get("receiver_report_source") not in {"server", "client"}:
+                    failures.append(f"missing TCP receiver report provenance: {folder}")
         if any(flow.get("protocol") == "TCP" and flow.get("tcp_retransmits") in ("", None)
                for flow in flows):
             failures.append(f"missing TCP retransmission evidence: {folder}")
