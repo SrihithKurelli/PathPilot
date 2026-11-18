@@ -86,7 +86,7 @@ jobs:
           assert raw.get("server_output_json") is not None, "missing iperf3 server JSON"
           print("Final-harness smoke passed.")
           print("TCP application RTT p99:", scenario["tcp_application_rtt"]["tcp_app_rtt_ms_p99"])
-          print("iperf3 sender goodput (Mbps):", flow.get("goodput_mbps"))
+          print("iperf3 receiver goodput (Mbps):", flow.get("goodput_mbps"))
           print("iperf3 server report captured.")
           PY
 
