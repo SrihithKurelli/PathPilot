@@ -90,6 +90,13 @@ jobs:
           print("iperf3 server report captured.")
           PY
 
+      - name: Make root-owned smoke evidence readable
+        if: always()
+        run: |
+          if [ -d results/final_harness_ci ]; then
+            sudo chown -R "$(id -u):$(id -g)" results/final_harness_ci
+          fi
+
       - name: Upload raw smoke evidence
         if: always()
         uses: actions/upload-artifact@v4
