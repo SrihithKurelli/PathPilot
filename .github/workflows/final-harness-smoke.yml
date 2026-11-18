@@ -1,6 +1,8 @@
 name: PathPilot final-harness smoke test
 
 on:
+  push:
+    branches: ["fix/iperf-server-json-diagnostic"]
   pull_request:
     branches: ["fix/tcp-offered-rate-isolation"]
   workflow_dispatch:
