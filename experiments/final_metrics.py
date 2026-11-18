@@ -156,10 +156,14 @@ def parse_iperf3_json(payload):
                          if protocol == "UDP" and isinstance(packets, (int, float))
                          and packets > 0 and isinstance(lost, (int, float)) else ""),
         "udp_jitter_ms": udp.get("jitter_ms", "") if protocol == "UDP" else "",
-        "receiver_report_source": ("server" if (
-            (protocol == "TCP" and server_end.get("sum_received")) or
-            (protocol == "UDP" and (server_end.get("sum_received") or server_end.get("sum"))
-        ) else "client"),
+        "receiver_report_source": (
+            "server" if (
+                (protocol == "TCP" and server_end.get("sum_received")) or
+                (protocol == "UDP" and (
+                    server_end.get("sum_received") or server_end.get("sum")
+                ))
+            ) else "client"
+        ),
     }
 
 
