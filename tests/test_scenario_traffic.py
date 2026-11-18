@@ -8,7 +8,7 @@ def test_tcp_command_enforces_offered_rate():
     command = build_iperf_command("10.0.0.2", 5300, flow)
     assert command == [
         "iperf3", "-c", "10.0.0.2", "-p", "5300",
-        "-t", "50", "-J", "-b", "8M",
+        "-t", "50", "-J", "--get-server-output", "-b", "8M",
     ]
 
 
@@ -17,5 +17,5 @@ def test_udp_command_keeps_udp_rate_limit():
     command = build_iperf_command("10.0.0.2", 5301, flow)
     assert command == [
         "iperf3", "-c", "10.0.0.2", "-p", "5301",
-        "-t", "12", "-J", "-u", "-b", "35M",
+        "-t", "12", "-J", "--get-server-output", "-u", "-b", "35M",
     ]
