@@ -36,14 +36,50 @@ def confidence(sample: Telemetry, alpha=0.5, beta=2.0):
     return math.exp(-alpha * sample.age_s - beta * sample.variability)
 
 
-def next_round_robin_fallback(telemetry: Mapping[str, Telemetry], previous_path=None):
-    """Choose the next sorted path, rotating across successive uncertain decisions."""
-    names = sorted(telemetry)
-    if not names:
+def choose_uncertain_fallback(
+    telemetry: Mapping[str, Telemetry],
+    previous_path=None,
+    *,
+    noise_margin_sigma=1.0,
+):
+    """Choose a path when all confidence scores are below the policy threshold.
+
+    A meaningful utilization gap is still used to avoid sending a new flow to
+    an obviously busier path. If the gap is within the combined variability
+    margin, retain the previous path to avoid arbitrary route oscillation.
+    With no previous path, choose the least-loaded path deterministically.
+    """
+    if not telemetry:
         raise ValueError("at least one candidate path is required")
-    if previous_path not in names:
-        return names[0]
-    return names[(names.index(previous_path) + 1) % len(names)]
+    if noise_margin_sigma < 0 or not math.isfinite(noise_margin_sigma):
+        raise ValueError("noise_margin_sigma must be finite and non-negative")
+
+    names = sorted(telemetry)
+    for sample in telemetry.values():
+        sample.validate()
+
+    ranked = sorted(
+        names,
+        key=lambda name: (telemetry[name].utilization, name),
+    )
+    best = ranked[0]
+    if len(ranked) == 1 or previous_path not in telemetry:
+        return best
+
+    second = ranked[1]
+    combined_uncertainty = math.hypot(
+        telemetry[best].variability,
+        telemetry[second].variability,
+    )
+    uncertainty_margin = noise_margin_sigma * combined_uncertainty
+    utilization_gap = (
+        telemetry[second].utilization - telemetry[best].utilization
+    )
+
+    if utilization_gap <= uncertainty_margin:
+        return previous_path
+
+    return best
 
 
 def choose_path(

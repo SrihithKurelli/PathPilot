@@ -19,7 +19,9 @@ from ryu.ofproto import ofproto_v1_3
 
 from controller.event_ledger import EventLedger
 from controller.live_telemetry import PortRateTracker
-from controller.policies import Telemetry, choose_path, confidence, next_round_robin_fallback
+from controller.policies import (
+    Telemetry, choose_path, confidence, choose_uncertain_fallback,
+)
 from controller.telemetry_loader import load_static_telemetry, conservative_telemetry
 from experiments.path_pinning import pinned_experiment_path
 
@@ -60,7 +62,6 @@ class PathPilotController(app_manager.RyuApp):
         self.event_ledger = EventLedger(os.getenv("PATHPILOT_EVENT_LOG"))
         self.reverse_paths = {}
         self.last_selected_path = None
-        self.last_uncertain_fallback_path = None
         self.datapaths = {}
         configured_link_mbps = float(os.getenv("PATHPILOT_LINK_BW_MBPS", "100"))
         link_capacity_bps = float(os.getenv(
@@ -283,7 +284,6 @@ class PathPilotController(app_manager.RyuApp):
                     # Reset any path state created by the connectivity ping; the
                     # priming flow must not bias the policy's second decision.
                     self.last_selected_path = None
-                    self.last_uncertain_fallback_path = None
                     path = pinned_path
                     fallback_reason = "experiment_path_pin"
                     decision_previous_path = ""
@@ -299,15 +299,22 @@ class PathPilotController(app_manager.RyuApp):
                             if confidence(sample) >= 0.5
                         ]
                         if not confident_paths:
-                            path = next_round_robin_fallback(
-                                telemetry, self.last_uncertain_fallback_path
+                            previous_path = self.last_selected_path
+                            path = choose_uncertain_fallback(
+                                telemetry,
+                                previous_path=previous_path,
                             )
-                            self.last_uncertain_fallback_path = path
-                            fallback_reason = "all_paths_below_confidence_round_robin"
+                            fallback_reason = (
+                                "all_paths_below_confidence_retain_previous"
+                                if path == previous_path
+                                else "all_paths_below_confidence_load_aware"
+                            )
                             self.logger.warning(
                                 "Uncertainty fallback: all paths below confidence "
-                                "0.50; round-robin selected %s",
+                                "0.50; selected %s (previous=%s, reason=%s)",
                                 path,
+                                previous_path,
+                                fallback_reason,
                             )
                         else:
                             path = choose_path(
