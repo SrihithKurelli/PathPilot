@@ -1,6 +1,8 @@
 import pytest
 
-from controller.policies import (Telemetry, confidence, choose_path, next_round_robin_fallback)
+from controller.policies import (
+    Telemetry, confidence, choose_path, choose_uncertain_fallback,
+)
 
 
 @pytest.fixture
@@ -163,30 +165,55 @@ def test_non_finite_telemetry_is_rejected():
     with pytest.raises(ValueError):
         choose_path({"bad": Telemetry(float("nan"), 0, 0)})
 
-def test_round_robin_fallback_alternates_successive_uncertain_flows():
+def test_uncertain_fallback_uses_lower_load_when_gap_exceeds_noise_margin():
     data = {
-        "s1-s2-s4": Telemetry(.05, 4.6, .10),
-        "s1-s3-s4": Telemetry(.25, 4.6, .10),
+        "s1-s2-s4": Telemetry(.70, 2.6, .05),
+        "s1-s3-s4": Telemetry(.05, 2.6, .05),
     }
-    selected = []
-    previous = None
-    for _ in range(6):
-        previous = next_round_robin_fallback(data, previous)
-        selected.append(previous)
-    assert selected == [
-        "s1-s2-s4", "s1-s3-s4", "s1-s2-s4",
-        "s1-s3-s4", "s1-s2-s4", "s1-s3-s4",
-    ]
+    assert choose_uncertain_fallback(
+        data, previous_path="s1-s2-s4"
+    ) == "s1-s3-s4"
 
 
-def test_round_robin_fallback_handles_unknown_previous_path():
+def test_uncertain_fallback_retains_previous_path_when_loads_are_indistinguishable():
     data = {
-        "s1-s3-s4": Telemetry(.2, 4.6, .10),
-        "s1-s2-s4": Telemetry(.1, 4.6, .10),
+        "s1-s2-s4": Telemetry(.1215, 2.6, .05),
+        "s1-s3-s4": Telemetry(.1267, 2.6, .05),
     }
-    assert next_round_robin_fallback(data, "removed-path") == "s1-s2-s4"
+    assert choose_uncertain_fallback(
+        data, previous_path="s1-s2-s4"
+    ) == "s1-s2-s4"
+    assert choose_uncertain_fallback(
+        data, previous_path="s1-s3-s4"
+    ) == "s1-s3-s4"
 
 
-def test_round_robin_fallback_rejects_empty_candidates():
+def test_uncertain_fallback_uses_least_loaded_without_previous_path():
+    data = {
+        "s1-s2-s4": Telemetry(.70, 2.6, .05),
+        "s1-s3-s4": Telemetry(.05, 2.6, .05),
+    }
+    assert choose_uncertain_fallback(data) == "s1-s3-s4"
+
+
+def test_uncertain_fallback_uses_load_gap_when_variability_is_zero():
+    data = {
+        "s1-s2-s4": Telemetry(.70, 4.6, 0),
+        "s1-s3-s4": Telemetry(.05, 4.6, 0),
+    }
+    assert choose_uncertain_fallback(
+        data, previous_path="s1-s2-s4"
+    ) == "s1-s3-s4"
+
+
+def test_uncertain_fallback_rejects_empty_candidates():
     with pytest.raises(ValueError, match="at least one"):
-        next_round_robin_fallback({})
+        choose_uncertain_fallback({})
+
+
+def test_uncertain_fallback_rejects_invalid_noise_margin():
+    with pytest.raises(ValueError, match="noise_margin_sigma"):
+        choose_uncertain_fallback(
+            {"path": Telemetry(.1, 1, .1)},
+            noise_margin_sigma=-1,
+        )
