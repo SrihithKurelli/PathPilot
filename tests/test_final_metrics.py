@@ -115,7 +115,7 @@ def test_udp_parser_prefers_server_receiver_and_intervals():
     assert result["receiver_duration_s"] == pytest.approx(2.0)
 
     intervals = parse_iperf3_intervals(client, "udp-flow")
-    assert len(intervals) == 1
+    assert len(intervals) == 2
     assert intervals[0]["goodput_mbps"] == pytest.approx(8.373690)
     assert intervals[1]["goodput_mbps"] == pytest.approx(9.0)
 
