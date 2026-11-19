@@ -137,21 +137,30 @@ def parse_iperf3_json(payload):
         # from the server's per-interval byte counters in that case.
         if (not isinstance(receiver_rate, (int, float)) or receiver_rate <= 0):
             server_intervals = server.get("intervals", [])
-            interval_bytes = [
-                row.get("sum", {}).get("bytes")
-                for row in server_intervals
-                if isinstance(row.get("sum", {}).get("bytes"), (int, float))
-            ]
-            interval_seconds = [
-                float(row.get("sum", {}).get("end", 0)) -
-                float(row.get("sum", {}).get("start", 0))
-                for row in server_intervals
-                if isinstance(row.get("sum", {}).get("start"), (int, float))
-                and isinstance(row.get("sum", {}).get("end"), (int, float))
-                and row.get("sum", {}).get("end", 0) > row.get("sum", {}).get("start", 0)
-            ]
-            total_interval_bytes = sum(interval_bytes)
-            total_interval_seconds = sum(interval_seconds)
+            valid_intervals = []
+            if isinstance(server_intervals, list):
+                for row in server_intervals:
+                    if not isinstance(row, dict):
+                        continue
+                    summary = row.get("sum")
+                    if not isinstance(summary, dict):
+                        continue
+                    interval_bytes = summary.get("bytes")
+                    start, end = summary.get("start"), summary.get("end")
+                    if not all(
+                        isinstance(value, (int, float))
+                        and math.isfinite(float(value))
+                        for value in (interval_bytes, start, end)
+                    ):
+                        continue
+                    interval_seconds = float(end) - float(start)
+                    if interval_bytes < 0 or interval_seconds <= 0:
+                        continue
+                    valid_intervals.append(
+                        (float(interval_bytes), interval_seconds)
+                    )
+            total_interval_bytes = sum(byte_count for byte_count, _ in valid_intervals)
+            total_interval_seconds = sum(duration for _, duration in valid_intervals)
             if total_interval_bytes > 0 and total_interval_seconds > 0:
                 receiver_rate = 8 * total_interval_bytes / total_interval_seconds
                 receiver_bytes = total_interval_bytes

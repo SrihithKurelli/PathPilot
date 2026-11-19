@@ -120,6 +120,37 @@ def test_udp_parser_prefers_server_receiver_and_intervals():
     assert intervals[1]["goodput_mbps"] == pytest.approx(9.0)
 
 
+def test_udp_fallback_only_pairs_bytes_with_their_interval_duration():
+    import json
+
+    payload = {
+        "start": {"test_start": {"protocol": "UDP"}},
+        "end": {"sum": {"bits_per_second": 0, "bytes": 0,
+                         "packets": 100, "lost_packets": 0}},
+        "server_output_json": json.dumps({
+            "intervals": [
+                {"sum": {"bytes": 1_000_000}},
+                {"sum": {"start": 0, "end": 2}},
+                None,
+                {"sum": "malformed"},
+                {"sum": {"start": 0, "end": 1, "bytes": 500_000}},
+                {"sum": {"start": 1, "end": 1, "bytes": 700_000}},
+                {"sum": {"start": 2, "end": 3, "bytes": float("nan")}},
+            ],
+            "end": {"sum": {
+                "start": 0, "end": 3, "bits_per_second": 0, "bytes": 0,
+                "packets": 100, "lost_packets": 0, "sender": False,
+            }},
+        }),
+    }
+
+    result = parse_iperf3_json(payload)
+
+    assert result["receiver_bytes"] == 500_000
+    assert result["receiver_duration_s"] == pytest.approx(1.0)
+    assert result["receiver_goodput_mbps"] == pytest.approx(4.0)
+
+
 def test_tcp_parser_prefers_server_receiver_and_preserves_sender_clock():
     import json
 
