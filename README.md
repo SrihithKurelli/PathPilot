@@ -27,16 +27,13 @@ The Mininet topology assigns stable OpenFlow DPIDs 1–4 to s1–s4 so the contr
 
 ## Environment
 
-Use Ubuntu 22.04 with Mininet, Open vSwitch, Python 3.10, and Ryu 4.34. Ryu/eventlet compatibility can vary by Python version; if installation fails, use a supported Python 3.10 environment.
+Use Ubuntu 22.04 with Mininet, Open vSwitch, Python 3.10, and Ryu 4.34. On Ubuntu or Ubuntu 22.04 in WSL 2, run the setup script from the repository root:
 
 ```bash
-sudo apt update
-sudo apt install -y mininet openvswitch-switch iperf python3.10 python3.10-venv
-python3.10 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-pip install -r requirements.txt
+bash scripts/setup_ubuntu.sh
 ```
+
+The script installs the system packages, starts Open vSwitch, and creates `.venv` with Python 3.10. Ryu 4.34 needs legacy packaging and Eventlet compatibility pins, so the script uses the same versions and compatibility patch as the Mininet CI workflow.
 
 ## Run
 
