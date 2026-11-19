@@ -31,7 +31,8 @@ def build_iperf_command(destination, port, flow):
 
 
 def run_scenario(net, scenario, output_dir, ledger, *, base_port=5300,
-                 echo_port=5199, echo_rate_hz=10, include_rtt_probe=True):
+                 echo_port=5199, echo_rate_hz=10, include_rtt_probe=True,
+                 rate_by_path=None):
     h1, h2 = net.get("h1", "h2")
     destination = h2.IP()
     output_dir = Path(output_dir).resolve()
@@ -62,7 +63,9 @@ def run_scenario(net, scenario, output_dir, ledger, *, base_port=5300,
             server.poll() is not None for server in servers):
         raise RuntimeError("A traffic server exited during startup")
 
-    impairment_runner = MininetImpairments(net, ledger).start(scenario.impairments)
+    impairment_runner = MininetImpairments(
+        net, ledger, rate_by_path=rate_by_path
+    ).start(scenario.impairments)
     rtt_output = output_dir / "tcp_application_rtt.json"
     rtt_client = None
     origin = time.monotonic()

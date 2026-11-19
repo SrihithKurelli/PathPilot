@@ -88,7 +88,7 @@ def run_trial(policy, scenario_name, condition, initial_path, repetition,
         switch = PATH_SWITCH[initial_path]
         interface = f"{switch}-eth2"
         qdisc = net.get(switch).cmd(
-            f"tc qdisc replace dev {interface} root tbf "
+            f"tc qdisc replace dev {interface} root handle 1: tbf "
             f"rate {bottleneck_rate} burst 32kbit latency 400ms"
         )
         if qdisc.strip():
@@ -96,9 +96,13 @@ def run_trial(policy, scenario_name, condition, initial_path, repetition,
         time.sleep(warmup_seconds)
 
         sampler = NetworkStatsSampler(net, parent_ledger).start()
+        link_rate = float(os.getenv("PATHPILOT_LINK_BW_MBPS", "100"))
+        rate_by_path = {path: f"{link_rate:g}mbit" for path in PATH_SWITCH}
+        rate_by_path[initial_path] = bottleneck_rate
         traffic = run_scenario(
             net, scenario, output_dir / "traffic", parent_ledger,
             include_rtt_probe=(traffic_mode != "background-only"),
+            rate_by_path=rate_by_path,
         )
         sampler_errors = sampler.stop()
         cpu_metrics = cpu.stop()

@@ -7,9 +7,11 @@ PATH_SWITCH = {"s1-s2-s4": "s2", "s1-s3-s4": "s3"}
 
 
 class MininetImpairments:
-    def __init__(self, net, ledger=None):
+    def __init__(self, net, ledger=None, *, rate_by_path=None):
         self.net = net
         self.ledger = ledger
+        self.rate_by_path = dict(rate_by_path or {})
+        self.netem_options = {path: {} for path in PATH_SWITCH}
         self._stop = threading.Event()
         self._thread = None
         self.errors = []
@@ -25,27 +27,46 @@ class MininetImpairments:
         for path in paths:
             switch, interface = self.interface_for(path)
             node = self.net.get(switch)
+            commands = []
             if event.action == "set_rate":
-                command = (f"tc qdisc replace dev {interface} root tbf "
-                           f"rate {event.value} burst 32kbit latency 400ms")
+                commands.append(
+                    f"tc qdisc replace dev {interface} root handle 1: tbf "
+                    f"rate {event.value} burst 32kbit latency 400ms"
+                )
             elif event.action == "set_delay":
-                command = f"tc qdisc replace dev {interface} root netem delay {event.value}"
+                self.netem_options[path]["delay"] = event.value
+                commands = self._netem_commands(path, interface)
             elif event.action == "set_loss":
-                command = f"tc qdisc replace dev {interface} root netem loss {event.value}"
+                self.netem_options[path]["loss"] = event.value
+                commands = self._netem_commands(path, interface)
             elif event.action == "link_down":
-                command = f"ip link set dev {interface} down"
+                commands.append(f"ip link set dev {interface} down")
             elif event.action == "link_up":
-                command = f"ip link set dev {interface} up"
+                commands.append(f"ip link set dev {interface} up")
             else:
                 raise ValueError(f"unsupported impairment action: {event.action}")
-            output = node.cmd(command)
-            if output.strip():
-                raise RuntimeError(f"impairment command failed: {command}: {output.strip()}")
+            for command in commands:
+                output = node.cmd(command)
+                if output.strip():
+                    raise RuntimeError(f"impairment command failed: {command}: {output.strip()}")
             if self.ledger:
                 self.ledger.record(
                     "impairment_event", path=path, action=event.action,
-                    value=event.value, command=command,
+                    value=event.value, command="; ".join(commands),
                 )
+
+    def _netem_commands(self, path, interface):
+        rate = self.rate_by_path.get(path)
+        if not rate:
+            raise ValueError(f"a baseline rate is required to impair {path}")
+        options = self.netem_options[path]
+        netem = " ".join(f"{key} {value}" for key, value in options.items())
+        return [
+            f"tc qdisc replace dev {interface} root handle 1: tbf "
+            f"rate {rate} burst 32kbit latency 400ms",
+            f"tc qdisc replace dev {interface} parent 1:1 handle 10: "
+            f"netem {netem}",
+        ]
 
     def start(self, events, clock=time.monotonic, sleep=time.sleep):
         if self._thread is not None:
