@@ -2,6 +2,7 @@
 from __future__ import annotations
 import argparse
 import json
+import math
 import socket
 import struct
 import threading
@@ -46,22 +47,36 @@ def serve(bind, port, stop_event=None):
             threading.Thread(target=serve_connection, args=(connection,), daemon=True).start()
 
 
-def run_client(host, port, duration_s, rate_hz):
+def run_client(host, port, duration_s, rate_hz, *, connect_timeout=0.5,
+               io_timeout=1.0):
     if duration_s <= 0 or rate_hz <= 0:
         raise ValueError("duration and rate must be positive")
     samples = []
+    failure_reasons = {}
     start = time.monotonic()
     deadline = start + duration_s
     next_send = start
     sequence = 0
-    with socket.create_connection((host, port), timeout=5) as connection:
-        connection.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-        connection.settimeout(5)
-        while time.monotonic() < deadline:
-            now = time.monotonic()
-            if now < next_send:
-                time.sleep(next_send - now)
-            sent_ns = time.monotonic_ns()
+    attempted_requests = 0
+    skipped_requests = 0
+    connection = None
+    interval = 1.0 / rate_hz
+    while time.monotonic() < deadline:
+        now = time.monotonic()
+        if now < next_send:
+            time.sleep(next_send - now)
+        if time.monotonic() >= deadline:
+            break
+        sent_ns = time.monotonic_ns()
+        attempted_requests += 1
+        try:
+            if connection is None:
+                remaining = max(0.05, deadline - time.monotonic())
+                connection = socket.create_connection(
+                    (host, port), timeout=min(connect_timeout, remaining)
+                )
+                connection.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+            connection.settimeout(min(io_timeout, max(.05, deadline - time.monotonic())))
             connection.sendall(FRAME.pack(sequence, sent_ns))
             echoed = recv_exact(connection, FRAME.size)
             received_ns = time.monotonic_ns()
@@ -76,11 +91,34 @@ def run_client(host, port, duration_s, rate_hz):
                 "received_monotonic_ns": received_ns,
                 "rtt_ms": (received_ns - sent_ns) / 1e6,
             })
-            sequence += 1
-            next_send += 1.0 / rate_hz
+        except OSError as exc:
+            reason = type(exc).__name__
+            failure_reasons[reason] = failure_reasons.get(reason, 0) + 1
+            if connection is not None:
+                connection.close()
+                connection = None
+        sequence += 1
+        next_send += interval
+        now = time.monotonic()
+        if next_send < now:
+            overdue_slots = int((now - next_send) // interval) + 1
+            remaining_slots = max(0, math.ceil((deadline - next_send) / interval))
+            missed = min(overdue_slots, remaining_slots)
+            skipped_requests += missed
+            sequence += missed
+            next_send += missed * interval
+    if connection is not None:
+        connection.close()
     return {
         "host": host, "port": port, "duration_s": duration_s,
-        "offered_rate_hz": rate_hz, "sent_requests": sequence,
+        "offered_rate_hz": rate_hz,
+        "sent_requests": len(samples),
+        "attempted_requests": attempted_requests,
+        "successful_requests": len(samples),
+        "failed_requests": attempted_requests - len(samples),
+        "skipped_requests": skipped_requests,
+        "scheduled_requests": attempted_requests + skipped_requests,
+        "failure_reasons": failure_reasons,
         "rtt_samples": samples,
     }
 
