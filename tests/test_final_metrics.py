@@ -91,11 +91,14 @@ def test_udp_parser_prefers_server_receiver_and_intervals():
             "intervals": [
                 {"sum": {"start": 0, "end": 1, "bits_per_second": 8_373_690,
                          "bytes": 1_046_904, "packets": 1712,
-                         "lost_packets": 989, "jitter_ms": 0.318}}
+                         "lost_packets": 989, "jitter_ms": 0.318}},
+                {"sum": {"start": 1, "end": 2, "bits_per_second": 9_000_000,
+                         "bytes": 1_125_000, "packets": 1800,
+                         "lost_packets": 1000, "jitter_ms": 0.300}}
             ],
             "end": {"sum": {
                 "start": 0, "end": 12.022671, "seconds": 12.022671,
-                "bits_per_second": 6_203_501, "bytes": 51_474_952,
+                "bits_per_second": 0, "bytes": 0,
                 "packets": 34_363, "lost_packets": 24_397,
                 "jitter_ms": 0.296, "sender": False,
             }},
@@ -107,12 +110,14 @@ def test_udp_parser_prefers_server_receiver_and_intervals():
     assert result["udp_packets"] == 34_363
     assert result["udp_lost_packets"] == 24_397
     assert result["udp_loss_pct"] == pytest.approx(100 * 24_397 / 34_363)
-    assert result["receiver_goodput_mbps"] == pytest.approx(6.203501)
-    assert result["receiver_duration_s"] == pytest.approx(12.022671)
+    assert result["receiver_goodput_mbps"] == pytest.approx(8.68608)
+    assert result["receiver_bytes"] == 2_171_904
+    assert result["receiver_duration_s"] == pytest.approx(2.0)
 
     intervals = parse_iperf3_intervals(client, "udp-flow")
     assert len(intervals) == 1
     assert intervals[0]["goodput_mbps"] == pytest.approx(8.373690)
+    assert intervals[1]["goodput_mbps"] == pytest.approx(9.0)
 
 
 def test_tcp_parser_prefers_server_receiver_and_preserves_sender_clock():
