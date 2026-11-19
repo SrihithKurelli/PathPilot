@@ -110,7 +110,7 @@ def test_udp_parser_prefers_server_receiver_and_intervals():
     assert result["udp_packets"] == 34_363
     assert result["udp_lost_packets"] == 24_397
     assert result["udp_loss_pct"] == pytest.approx(100 * 24_397 / 34_363)
-    assert result["receiver_goodput_mbps"] == pytest.approx(8.68608)
+    assert result["receiver_goodput_mbps"] == pytest.approx(8.687616)
     assert result["receiver_bytes"] == 2_171_904
     assert result["receiver_duration_s"] == pytest.approx(2.0)
 
