@@ -90,6 +90,51 @@ jobs:
           print("iperf3 server report captured.")
           PY
 
+      - name: Run low-confidence uncertainty-fallback rehearsal
+        run: |
+          mkdir -p results/uncertainty_fallback_ci
+          sudo env PYTHONPATH="$PWD" EVENTLET_NO_GREENDNS=yes \
+            /usr/bin/python3 -m experiments.run_final_scenario_trial \
+            --policy uncertainty_aware \
+            --scenario sudden_burst \
+            --condition combined \
+            --initial-path s1-s2-s4 \
+            --traffic-mode combined \
+            --venv "$PWD/.venv" \
+            --output-dir results/uncertainty_fallback_ci
+
+      - name: Validate low-confidence fallback evidence
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path("results/uncertainty_fallback_ci")
+          trial = json.loads((root / "trial_result.json").read_text())
+          events = trial["controller_events"]
+          decisions = [
+              event for event in events
+              if event.get("event") == "path_decision"
+              and str(event.get("fallback_reason", "")).startswith(
+                  "all_paths_below_confidence_"
+              )
+          ]
+          assert decisions, "no low-confidence fallback decision was recorded"
+          allowed = {
+              "all_paths_below_confidence_load_aware",
+              "all_paths_below_confidence_retain_previous",
+          }
+          assert all(event["fallback_reason"] in allowed for event in decisions), decisions
+          assert trial["connectivity_loss_pct"] == 0, trial.get("connectivity_loss_pct")
+          assert trial["network_sampler_errors"] == [], trial["network_sampler_errors"]
+          assert trial["traffic"]["tcp_application_rtt_samples"] > 0
+          print("Low-confidence fallback rehearsal passed.")
+          print("Fallback decisions:", len(decisions))
+          print("Selected paths:", [event["path"] for event in decisions])
+          print("Fallback reasons:", [event["fallback_reason"] for event in decisions])
+
+          PY
+
       - name: Make root-owned smoke evidence readable
         if: always()
         run: |
