@@ -75,28 +75,141 @@ def settling_time(events,samples,utilization_threshold,hold_seconds,max_sample_g
         previous=timestamp
     return ""
 
+def _iperf_payload(payload):
+    return json.loads(payload) if isinstance(payload, str) else payload
+
+
+def _server_report(data):
+    raw = data.get("server_output_json")
+    if not raw:
+        return {}
+    try:
+        return json.loads(raw) if isinstance(raw, str) else raw
+    except (TypeError, json.JSONDecodeError):
+        return {}
+
+
+def _duration(summary):
+    if not isinstance(summary, dict):
+        return ""
+    start, end = summary.get("start"), summary.get("end")
+    if isinstance(start, (int, float)) and isinstance(end, (int, float)) and end > start:
+        return float(end) - float(start)
+    return ""
+
+
 def parse_iperf3_json(payload):
-    data=json.loads(payload) if isinstance(payload,str) else payload
-    end=data.get("end",{}); protocol=data.get("start",{}).get("test_start",{}).get("protocol","")
-    summary=end.get("sum_received",end.get("sum",{}))
-    udp=end.get("sum",{})
-    packets=udp.get("packets"); lost=udp.get("lost_packets")
-    return {"iperf3_protocol":protocol,
-      "goodput_mbps":summary.get("bits_per_second",0)/1e6 if summary else "",
-      "bytes_received":summary.get("bytes","") if summary else "",
-      "tcp_retransmits":end.get("sum_sent",{}).get("retransmits",""),
-      "udp_packets":packets if protocol=="UDP" else "",
-      "udp_lost_packets":lost if protocol=="UDP" else "",
-      "udp_loss_pct":100*lost/packets if protocol=="UDP" and isinstance(packets,(int,float)) and packets>0 and isinstance(lost,(int,float)) else "",
-      "udp_jitter_ms":udp.get("jitter_ms","") if protocol=="UDP" else ""}
+    """Extract sender and receiver measurements without conflating their clocks.
+
+    For TCP, prefer the server's receiver report when iperf3 supplied it.
+    The sender and receiver may finish at different times in an emulated
+    network with queued packets; that difference is retained, not rejected.
+    """
+    data = _iperf_payload(payload)
+    end = data.get("end", {})
+    protocol = data.get("start", {}).get("test_start", {}).get("protocol", "")
+    server = _server_report(data)
+    server_end = server.get("end", {})
+    sent = end.get("sum_sent", {})
+    client_received = end.get("sum_received", {})
+    if protocol == "TCP":
+        received = server_end.get("sum_received") or client_received
+        if not received:
+            received = server_end.get("sum") or end.get("sum", {})
+        sender_rate = sent.get("bits_per_second", "")
+        receiver_rate = received.get("bits_per_second", "") if received else ""
+        sender_bytes = sent.get("bytes", "")
+        receiver_bytes = received.get("bytes", "") if received else ""
+        udp = {}
+    else:
+        # UDP receiver statistics are authoritative on the server. The client
+        # summary can contain a different packet denominator, so prefer the
+        # one-off server's receiver report when available.
+        received = (server_end.get("sum_received") or server_end.get("sum")
+                    or end.get("sum", {}))
+        sender_rate = ""
+        receiver_rate = received.get("bits_per_second", "") if received else ""
+        sender_bytes = ""
+        receiver_bytes = received.get("bytes", "") if received else ""
+        udp = received
+        # Some iperf3 UDP server summaries report packet/loss counters but
+        # leave aggregate bytes and bitrate at zero. Recover receiver goodput
+        # from the server's per-interval byte counters in that case.
+        if (not isinstance(receiver_rate, (int, float)) or receiver_rate <= 0):
+            server_intervals = server.get("intervals", [])
+            interval_bytes = [
+                row.get("sum", {}).get("bytes")
+                for row in server_intervals
+                if isinstance(row.get("sum", {}).get("bytes"), (int, float))
+            ]
+            interval_seconds = [
+                float(row.get("sum", {}).get("end", 0)) -
+                float(row.get("sum", {}).get("start", 0))
+                for row in server_intervals
+                if isinstance(row.get("sum", {}).get("start"), (int, float))
+                and isinstance(row.get("sum", {}).get("end"), (int, float))
+                and row.get("sum", {}).get("end", 0) > row.get("sum", {}).get("start", 0)
+            ]
+            total_interval_bytes = sum(interval_bytes)
+            total_interval_seconds = sum(interval_seconds)
+            if total_interval_bytes > 0 and total_interval_seconds > 0:
+                receiver_rate = 8 * total_interval_bytes / total_interval_seconds
+                receiver_bytes = total_interval_bytes
+                received = {
+                    **received,
+                    "bytes": total_interval_bytes,
+                    "bits_per_second": receiver_rate,
+                    "start": 0,
+                    "end": total_interval_seconds,
+                }
+
+    packets = udp.get("packets")
+    lost = udp.get("lost_packets")
+    receiver_mbps = (float(receiver_rate) / 1e6
+                     if isinstance(receiver_rate, (int, float)) else "")
+    return {
+        "iperf3_protocol": protocol,
+        "sender_goodput_mbps": (float(sender_rate) / 1e6
+                                if isinstance(sender_rate, (int, float)) else ""),
+        "receiver_goodput_mbps": receiver_mbps,
+        # Compatibility fields used by existing campaign analysis.
+        "goodput_mbps": receiver_mbps,
+        "sender_bytes": sender_bytes,
+        "receiver_bytes": receiver_bytes,
+        "bytes_received": receiver_bytes,
+        "sender_duration_s": _duration(sent),
+        "receiver_duration_s": _duration(received),
+        "tcp_retransmits": sent.get("retransmits", ""),
+        "udp_packets": packets if protocol == "UDP" else "",
+        "udp_lost_packets": lost if protocol == "UDP" else "",
+        "udp_loss_pct": (100 * lost / packets
+                         if protocol == "UDP" and isinstance(packets, (int, float))
+                         and packets > 0 and isinstance(lost, (int, float)) else ""),
+        "udp_jitter_ms": udp.get("jitter_ms", "") if protocol == "UDP" else "",
+        "receiver_report_source": (
+            "server" if (
+                (protocol == "TCP" and server_end.get("sum_received")) or
+                (protocol == "UDP" and (
+                    server_end.get("sum_received") or server_end.get("sum")
+                ))
+            ) else "client"
+        ),
+    }
+
 
 def parse_iperf3_intervals(payload, flow_id):
-    """Return per-second goodput samples keyed for concurrent fairness windows."""
-    data=json.loads(payload) if isinstance(payload,str) else payload
-    records=[]
-    for index, interval in enumerate(data.get("intervals", [])):
-        summary=interval.get("sum", {})
-        rate=summary.get("bits_per_second")
+    """Return per-second receiver-goodput samples for concurrent fairness windows."""
+    data = _iperf_payload(payload)
+    protocol = data.get("start", {}).get("test_start", {}).get("protocol", "")
+    interval_source = data
+    if protocol in {"TCP", "UDP"}:
+        server = _server_report(data)
+        if server.get("intervals"):
+            interval_source = server
+    records = []
+    for index, interval in enumerate(interval_source.get("intervals", [])):
+        summary = interval.get("sum", {})
+        rate = summary.get("bits_per_second")
         if rate is None:
             continue
         records.append({
@@ -107,7 +220,6 @@ def parse_iperf3_intervals(payload, flow_id):
             "goodput_mbps": float(rate) / 1e6,
         })
     return records
-
 
 def parse_ss_tcp_rtt(text):
     return [float(x) for x in re.findall(r"\brtt:([0-9]+(?:\.[0-9]+)?)/",text)]

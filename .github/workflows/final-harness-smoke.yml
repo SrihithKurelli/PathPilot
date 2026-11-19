@@ -1,0 +1,115 @@
+name: PathPilot final-harness smoke test
+
+on:
+  push:
+    branches: ["fix/iperf-server-json-diagnostic"]
+  pull_request:
+    branches: ["fix/tcp-offered-rate-isolation"]
+  workflow_dispatch:
+
+jobs:
+  final-harness-smoke:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Mininet, Open vSwitch, and iperf3
+        run: |
+          sudo apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+            mininet openvswitch-switch iperf3 iproute2 python3.10-venv
+
+      - name: Start Open vSwitch
+        run: |
+          sudo service openvswitch-switch start
+          sudo ovs-vsctl show
+
+      - name: Set up Ryu environment
+        run: |
+          python3.10 -m venv .venv
+          .venv/bin/python -m pip install "pip<24"
+          .venv/bin/python -m pip install "setuptools<58" wheel
+          .venv/bin/python -m pip install "eventlet==0.33.3" pytest
+          .venv/bin/python -m pip install --no-build-isolation "ryu==4.34"
+          echo 'ALREADY_HANDLED = object()' >> .venv/lib/python3.10/site-packages/eventlet/wsgi.py
+
+      - name: Compile and run all unit tests
+        run: |
+          .venv/bin/python -m compileall -q controller topology tests experiments
+          .venv/bin/python -m pytest -q
+
+      - name: Run one complete final-harness rehearsal
+        run: |
+          mkdir -p results/final_harness_ci
+          sudo env PYTHONPATH="$PWD" EVENTLET_NO_GREENDNS=yes \
+            /usr/bin/python3 -m experiments.run_final_scenario_trial \
+            --policy least_loaded \
+            --scenario steady_low \
+            --condition baseline \
+            --initial-path s1-s2-s4 \
+            --traffic-mode combined \
+            --venv "$PWD/.venv" \
+            --output-dir results/final_harness_ci
+
+      - name: Validate raw trial evidence
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path("results/final_harness_ci")
+          trial = json.loads((root / "trial_result.json").read_text())
+          scenario = json.loads((root / "traffic/scenario_result.json").read_text())
+          assert trial["connectivity_loss_pct"] == 0, trial.get("connectivity_loss_pct")
+          assert trial["git_revision"], "missing git revision"
+          assert trial["working_tree_dirty"] == 0, "trial ran from dirty checkout"
+          assert trial["network_sampler_errors"] == [], trial["network_sampler_errors"]
+          assert trial["controller_metrics"]["controller_cpu_seconds"] != "", "missing CPU metric"
+          assert trial["controller_metrics"]["controller_rss_peak_mb"] != "", "missing RSS metric"
+          assert trial["event_metrics"]["telemetry_request_count"] > 0, "no telemetry requests"
+          assert trial["event_metrics"]["telemetry_reply_count"] > 0, "no telemetry replies"
+          assert trial["event_metrics"]["flow_mod_count"] > 0, "no FlowMod evidence"
+          assert trial["event_metrics"]["telemetry_samples"] > 0, "no telemetry samples"
+          assert trial["event_metrics"]["impairment_event_count"] >= 0
+          assert scenario["impairment_errors"] == [], scenario["impairment_errors"]
+          assert scenario["tcp_application_rtt_samples"] > 0, "no TCP application RTT samples"
+          assert scenario["tcp_application_rtt"]["tcp_app_rtt_ms_p99"] > 0
+          assert len(scenario["flow_results"]) == 1
+          flow = scenario["flow_results"][0]
+          assert flow["client_returncode"] == 0
+          assert flow["protocol"] == "TCP"
+          assert flow["bytes_received"] > 0
+          assert flow["tcp_retransmits"] >= 0
+          raw = json.loads(flow["iperf3_json"])
+          assert raw.get("server_output_json") is not None, "missing iperf3 server JSON"
+          print("Final-harness smoke passed.")
+          print("TCP application RTT p99:", scenario["tcp_application_rtt"]["tcp_app_rtt_ms_p99"])
+          print("iperf3 receiver goodput (Mbps):", flow.get("goodput_mbps"))
+          print("iperf3 server report captured.")
+          PY
+
+      - name: Make root-owned smoke evidence readable
+        if: always()
+        run: |
+          if [ -d results/final_harness_ci ]; then
+            sudo chown -R "$(id -u):$(id -g)" results/final_harness_ci
+          fi
+
+      - name: Upload raw smoke evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pathpilot-final-harness-smoke
+          path: results/final_harness_ci/
+          if-no-files-found: warn
+
+      - name: Clean up Mininet and Open vSwitch
+        if: always()
+        run: |
+          sudo mn -c || true
+          sudo ovs-vsctl --if-exists del-br s1 || true
+          sudo ovs-vsctl --if-exists del-br s2 || true
+          sudo ovs-vsctl --if-exists del-br s3 || true
+          sudo ovs-vsctl --if-exists del-br s4 || true
