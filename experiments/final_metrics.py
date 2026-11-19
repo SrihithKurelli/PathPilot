@@ -132,6 +132,36 @@ def parse_iperf3_json(payload):
         sender_bytes = ""
         receiver_bytes = received.get("bytes", "") if received else ""
         udp = received
+        # Some iperf3 UDP server summaries report packet/loss counters but
+        # leave aggregate bytes and bitrate at zero. Recover receiver goodput
+        # from the server's per-interval byte counters in that case.
+        if (not isinstance(receiver_rate, (int, float)) or receiver_rate <= 0):
+            server_intervals = server.get("intervals", [])
+            interval_bytes = [
+                row.get("sum", {}).get("bytes")
+                for row in server_intervals
+                if isinstance(row.get("sum", {}).get("bytes"), (int, float))
+            ]
+            interval_seconds = [
+                float(row.get("sum", {}).get("end", 0)) -
+                float(row.get("sum", {}).get("start", 0))
+                for row in server_intervals
+                if isinstance(row.get("sum", {}).get("start"), (int, float))
+                and isinstance(row.get("sum", {}).get("end"), (int, float))
+                and row.get("sum", {}).get("end", 0) > row.get("sum", {}).get("start", 0)
+            ]
+            total_interval_bytes = sum(interval_bytes)
+            total_interval_seconds = sum(interval_seconds)
+            if total_interval_bytes > 0 and total_interval_seconds > 0:
+                receiver_rate = 8 * total_interval_bytes / total_interval_seconds
+                receiver_bytes = total_interval_bytes
+                received = {
+                    **received,
+                    "bytes": total_interval_bytes,
+                    "bits_per_second": receiver_rate,
+                    "start": 0,
+                    "end": total_interval_seconds,
+                }
 
     packets = udp.get("packets")
     lost = udp.get("lost_packets")
