@@ -11,7 +11,7 @@ The static site in `site/` presents the 599 audit-passing trials from the 20 Nov
 
 ## Publish with GitHub Pages
 
-The workflow `.github/workflows/pages.yml` deploys the static `site/` directory from `codex/pathpilot-implementation-followup` after the repository has Pages configured to use GitHub Actions. The repository must permit Pages builds for this private project, and the workflow needs the standard `pages: write` and `id-token: write` permissions declared in the workflow. The first successful Actions run publishes the URL in its `github-pages` environment.
+The workflow `.github/workflows/pages.yml` deploys the static `site/` directory from `codex/pathpilot-implementation-followup`. It asks `actions/configure-pages` to enable Pages and configure the GitHub Actions source, using the standard `pages: write` and `id-token: write` permissions declared in the workflow. If the workflow token cannot change Pages settings for this private repository, a repository administrator must enable **Settings → Pages → Build and deployment → GitHub Actions**. The first successful Actions run publishes the URL in its `github-pages` environment.
 
 If Pages is not enabled for this repository, an owner must enable it under **Settings → Pages → Build and deployment → GitHub Actions**. A static site deployment presents experiment results; the evaluation-day network demo still needs the Linux/WSL environment and should follow `DEMO_RUNBOOK.md`.
 
