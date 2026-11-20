@@ -77,6 +77,13 @@ jobs:
                 "ICMP p99 ms:", row["icmp_probe_rtt_p99_ms"])
           PY
 
+      - name: Make root-owned smoke evidence readable
+        if: always()
+        run: |
+          if [ -d results/ci_smoke ]; then
+            sudo chown -R "$(id -u):$(id -g)" results/ci_smoke
+          fi
+
       - name: Upload smoke-test evidence
         if: always()
         uses: actions/upload-artifact@v4
