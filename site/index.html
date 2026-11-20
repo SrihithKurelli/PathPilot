@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1220">
+  <title>PathPilot | SDN Path Selection Evaluation</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top"><span class="brand-mark">P</span> PathPilot</a>
+    <nav><a href="#results">Results</a><a href="#method">Method</a><a href="#demo">Live demo</a><a href="https://github.com/SrihithKurelli/PathPilot">Source</a></nav>
+  </header>
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Software-defined networking · Mininet emulation</p>
+        <h1>Choosing paths with a view of the network.</h1>
+        <p class="lede">PathPilot evaluates SDN path-selection policies under changing traffic, congestion, and imperfect telemetry. Explore the measured results from a reproducible emulated network campaign.</p>
+        <div class="hero-actions"><a class="button primary" href="#results">Explore results <span aria-hidden="true">↓</span></a><a class="button secondary" href="#demo">See the live demo plan</a></div>
+      </div>
+      <div class="network-card" aria-label="Illustration of alternate network paths">
+        <svg viewBox="0 0 480 250" role="img" aria-labelledby="network-title"><title id="network-title">Two alternate SDN paths between source and destination</title>
+          <path class="route route-muted" d="M42 126 H150 L238 56 H330 L432 126"/><path class="route route-active" d="M42 126 H150 L238 196 H330 L432 126"/>
+          <circle class="node endpoint" cx="42" cy="126" r="16"/><circle class="node" cx="150" cy="126" r="13"/><circle class="node" cx="238" cy="56" r="13"/><circle class="node" cx="238" cy="196" r="13"/><circle class="node" cx="330" cy="56" r="13"/><circle class="node" cx="330" cy="196" r="13"/><circle class="node endpoint" cx="432" cy="126" r="16"/>
+          <text x="24" y="164">host</text><text x="410" y="164">host</text><text x="128" y="158">s1</text><text x="216" y="35">s2</text><text x="216" y="229">s3</text><text x="307" y="35">s4</text><text x="307" y="229">s5</text>
+          <text class="path-label" x="235" y="120">alternate paths</text>
+        </svg>
+        <div class="network-caption"><span><i class="dot cyan"></i> selected route</span><span><i class="dot muted"></i> alternate route</span></div>
+      </div>
+    </section>
+
+    <section class="facts" aria-label="Evaluation campaign facts">
+      <article><span class="fact-number" id="included-count">599</span><span class="fact-label">audit-passing trials shown</span></article>
+      <article><span class="fact-number">5</span><span class="fact-label">path-selection policies</span></article>
+      <article><span class="fact-number">8</span><span class="fact-label">traffic scenarios</span></article>
+      <article><span class="fact-number">4</span><span class="fact-label">telemetry conditions</span></article>
+    </section>
+
+    <section class="section" id="results">
+      <div class="section-heading"><div><p class="eyebrow">Measured campaign</p><h2>Compare policies by workload</h2></div><p class="section-note">Means and trial-level bootstrap 95% intervals. Keep workload and telemetry conditions separated when drawing conclusions.</p></div>
+      <div class="controls">
+        <label>Scenario<select id="scenario"></select></label>
+        <label>Telemetry condition<select id="condition"></select></label>
+        <label>Initial bottleneck path<select id="path"></select></label>
+        <label>Metric<select id="metric"><option value="tcp_app_rtt_p99_ms">TCP application RTT p99 (ms) ↓</option><option value="aggregate_goodput_mbps">Aggregate goodput (Mbps) ↑</option><option value="udp_loss_pct">UDP packet loss (%) ↓</option><option value="jain_fairness">Jain fairness ↑</option><option value="path_changes_per_minute">Path changes per minute ↓</option><option value="controller_cpu_seconds">Controller CPU time (s) ↓</option><option value="controller_rss_peak_mb">Controller peak RSS (MB) ↓</option></select></label>
+      </div>
+      <div class="result-note"><div class="result-note-mark">!</div><div><strong>Report the mixed result clearly.</strong><p>In the 12 preregistered burst-workload comparisons, 0 met every guardrail together. The p99 target was not met in 11 of 12 comparisons, and path-change reduction was not met in 9 of 12. Review each comparison and its interval before making a policy claim.</p></div><a href="data/PREREGISTERED_THRESHOLD_EVALUATION.csv">See all 12 checks ↗</a></div>
+      <div class="chart-card">
+        <div class="chart-head"><div><h3 id="chart-title">Policy comparison</h3><p id="chart-description">Select a workload slice to compare observed means and 95% intervals.</p></div><span class="unit-pill" id="chart-unit">ms</span></div>
+        <div class="chart-scroll"><svg id="chart" viewBox="0 0 900 360" role="img" aria-label="Policy metric comparison chart"></svg></div>
+        <div class="legend" id="legend"></div>
+        <div class="data-links chart-export"><a id="chart-export" href="data/plots/sudden_burst__combined__s1-s2-s4__tcp_app_rtt_p99_ms.svg" download>Download this slice as an SVG ↗</a></div>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>Policy</th><th>Trials</th><th>Mean</th><th>95% interval</th></tr></thead><tbody id="results-table"><tr><td colspan="4">Loading measured campaign data…</td></tr></tbody></table></div>
+      <div class="data-links"><a href="data/trials.csv">Download 599 trial-level metrics (CSV) ↗</a><a href="data/FINAL_CAMPAIGN_SUMMARY.csv">Download condition-stratified summaries (CSV) ↗</a><a href="data/PAIRED_POLICY_COMPARISONS.csv">Download paired comparisons (CSV) ↗</a><a href="data/PREREGISTERED_THRESHOLD_EVALUATION.csv">Download preregistered thresholds (CSV) ↗</a></div>
+    </section>
+
+    <section class="section method-grid" id="method">
+      <article class="info-card"><p class="eyebrow">What is measured</p><h2>Network behavior, not a mockup</h2><p>The experiment runs a Ryu SDN controller with OpenFlow and Open vSwitch inside Mininet. Workloads exercise steady traffic, bursts, mixed flows, degradation, loss, and link recovery with baseline or delayed/noisy telemetry.</p><p>Primary latency is TCP application RTT p99 from a dedicated echo probe during concurrent traffic. Goodput, UDP loss, Jain fairness, path changes, FlowMods, telemetry overhead, and controller CPU/RSS provide supporting outcomes.</p></article>
+      <article class="info-card caveat-card"><p class="eyebrow">Data integrity</p><h2>599 included · 1 excluded</h2><p>The source campaign planned 600 trials. One <code>link_loss_recovery / combined / s1-s3-s4 / uncertainty_aware / rep 001</code> cell was excluded because an impairment command failed during link restoration; its recovery timestamp and measured outage duration are missing.</p><p>The remaining 599 cells passed the strict per-trial artifact checks. This filtered subset is not described as a clean 600-trial audit. Raw source records remain preserved separately.</p><a href="data/manifest.json">View filtered campaign manifest ↗</a></article>
+      <article class="info-card"><p class="eyebrow">How to read it</p><h2>Intervals and limits</h2><p>Summary intervals are trial-level bootstrap 95% intervals, stratified by scenario, telemetry condition, initial bottleneck path, and policy. Paired comparisons match workload seeds across policies. Preregistered guardrails are reported as met, not met, or incomplete; no threshold is changed after seeing results.</p><p>Mininet is an emulation. These results do not establish production carrier-network performance, and the uncertainty-aware policy is evaluated as a project prototype rather than a proven novel algorithm.</p></article>
+    </section>
+
+    <section class="section demo-section" id="demo">
+      <div><p class="eyebrow">Evaluation-day demonstration</p><h2>Run PathPilot on the emulated network</h2><p>Bring up Ryu, the OpenFlow 1.3 Mininet topology, and Open vSwitch; verify host connectivity; create a controlled bottleneck; then generate traffic and show live path decisions beside measured RTT and goodput.</p><div class="demo-actions"><a class="button primary" href="https://github.com/SrihithKurelli/PathPilot/blob/main/docs/DEMO_RUNBOOK.md">Open demo runbook ↗</a><a class="button secondary" href="https://github.com/SrihithKurelli/PathPilot/blob/main/docs/PROFESSOR_RUBRIC_TRACEABILITY.md">See rubric traceability ↗</a></div></div>
+      <ol class="demo-steps"><li><span>01</span><div><b>Start</b><small>Ryu controller + Mininet / OVS topology</small></div></li><li><span>02</span><div><b>Induce</b><small>Bottleneck or telemetry impairment</small></div></li><li><span>03</span><div><b>Observe</b><small>Path decision, RTT, goodput, and events</small></div></li><li><span>04</span><div><b>Explain</b><small>Compare live behavior with the 599-trial evidence</small></div></li></ol>
+    </section>
+  </main>
+  <footer><div class="footer-brand">PathPilot · Network Systems Project</div><p>Results from an emulated SDN evaluation. See the repository for implementation, raw experiment artifacts, and methodology.</p><a href="data/manifest.json">Campaign provenance ↗</a></footer>
+  <script src="app.js" defer></script>
+</body>
+</html>

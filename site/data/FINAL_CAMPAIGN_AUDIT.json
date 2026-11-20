@@ -1,0 +1,8394 @@
+{
+  "audit_rows": [
+    {
+      "event_count": 1150,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s2-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 530
+    },
+    {
+      "event_count": 1135,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s2-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 500
+    },
+    {
+      "event_count": 1141,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s2-s4",
+        "least_loaded",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 527
+    },
+    {
+      "event_count": 1139,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s2-s4",
+        "least_loaded",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 526
+    },
+    {
+      "event_count": 1142,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s2-s4",
+        "least_loaded",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 527
+    },
+    {
+      "event_count": 1066,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s2-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 327
+    },
+    {
+      "event_count": 1066,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s2-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 398
+    },
+    {
+      "event_count": 990,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s2-s4",
+        "stability_aware",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 329
+    },
+    {
+      "event_count": 1066,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s2-s4",
+        "stability_aware",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 327
+    },
+    {
+      "event_count": 1058,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s2-s4",
+        "stability_aware",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 360
+    },
+    {
+      "event_count": 1066,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s2-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 333
+    },
+    {
+      "event_count": 1066,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s2-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 370
+    },
+    {
+      "event_count": 1062,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s2-s4",
+        "static",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 324
+    },
+    {
+      "event_count": 1062,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s2-s4",
+        "static",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 334
+    },
+    {
+      "event_count": 1066,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s2-s4",
+        "static",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 330
+    },
+    {
+      "event_count": 1140,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s2-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 530
+    },
+    {
+      "event_count": 1135,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s2-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 500
+    },
+    {
+      "event_count": 1126,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s2-s4",
+        "threshold",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 529
+    },
+    {
+      "event_count": 1139,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s2-s4",
+        "threshold",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 524
+    },
+    {
+      "event_count": 1142,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s2-s4",
+        "threshold",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 528
+    },
+    {
+      "event_count": 1141,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 530
+    },
+    {
+      "event_count": 1140,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 506
+    },
+    {
+      "event_count": 1135,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1107,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 524
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 530
+    },
+    {
+      "event_count": 1136,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s3-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1122,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s3-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s3-s4",
+        "least_loaded",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s3-s4",
+        "least_loaded",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s3-s4",
+        "least_loaded",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1138,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s3-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1136,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s3-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s3-s4",
+        "stability_aware",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s3-s4",
+        "stability_aware",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1135,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s3-s4",
+        "stability_aware",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s3-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1135,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s3-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1141,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s3-s4",
+        "static",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1126,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s3-s4",
+        "static",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1140,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s3-s4",
+        "static",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1139,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s3-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1110,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s3-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1142,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s3-s4",
+        "threshold",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1142,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s3-s4",
+        "threshold",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1150,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s3-s4",
+        "threshold",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 532
+    },
+    {
+      "event_count": 1138,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1141,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 528
+    },
+    {
+      "event_count": 1065,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1142,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "baseline",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 530
+    },
+    {
+      "event_count": 1140,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s2-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 528
+    },
+    {
+      "event_count": 1140,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s2-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 529
+    },
+    {
+      "event_count": 1066,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s2-s4",
+        "least_loaded",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1140,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s2-s4",
+        "least_loaded",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 526
+    },
+    {
+      "event_count": 1137,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s2-s4",
+        "least_loaded",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 527
+    },
+    {
+      "event_count": 1062,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s2-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 368
+    },
+    {
+      "event_count": 1022,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s2-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 361
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s2-s4",
+        "stability_aware",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1146,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s2-s4",
+        "stability_aware",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 525
+    },
+    {
+      "event_count": 1062,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s2-s4",
+        "stability_aware",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 336
+    },
+    {
+      "event_count": 1062,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s2-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 346
+    },
+    {
+      "event_count": 1062,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s2-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 319
+    },
+    {
+      "event_count": 1062,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s2-s4",
+        "static",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 358
+    },
+    {
+      "event_count": 1062,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s2-s4",
+        "static",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 369
+    },
+    {
+      "event_count": 1062,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s2-s4",
+        "static",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 327
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s2-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 527
+    },
+    {
+      "event_count": 1135,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s2-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 531
+    },
+    {
+      "event_count": 1062,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s2-s4",
+        "threshold",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s2-s4",
+        "threshold",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 528
+    },
+    {
+      "event_count": 1084,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s2-s4",
+        "threshold",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 527
+    },
+    {
+      "event_count": 1135,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 532
+    },
+    {
+      "event_count": 1135,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 530
+    },
+    {
+      "event_count": 1136,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 529
+    },
+    {
+      "event_count": 1136,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 526
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s3-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s3-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1137,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s3-s4",
+        "least_loaded",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s3-s4",
+        "least_loaded",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s3-s4",
+        "least_loaded",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 531
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s3-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1082,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s3-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s3-s4",
+        "stability_aware",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1136,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s3-s4",
+        "stability_aware",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1062,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s3-s4",
+        "stability_aware",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 354
+    },
+    {
+      "event_count": 1135,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s3-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1135,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s3-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1136,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s3-s4",
+        "static",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s3-s4",
+        "static",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1135,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s3-s4",
+        "static",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s3-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1138,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s3-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s3-s4",
+        "threshold",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s3-s4",
+        "threshold",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1122,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s3-s4",
+        "threshold",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 526
+    },
+    {
+      "event_count": 1106,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1135,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1135,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "combined",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 532
+    },
+    {
+      "event_count": 1139,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s2-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 526
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s2-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 529
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s2-s4",
+        "least_loaded",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 532
+    },
+    {
+      "event_count": 1135,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s2-s4",
+        "least_loaded",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 525
+    },
+    {
+      "event_count": 1135,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s2-s4",
+        "least_loaded",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 528
+    },
+    {
+      "event_count": 1062,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s2-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 326
+    },
+    {
+      "event_count": 1062,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s2-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 323
+    },
+    {
+      "event_count": 1022,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s2-s4",
+        "stability_aware",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 327
+    },
+    {
+      "event_count": 1062,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s2-s4",
+        "stability_aware",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 378
+    },
+    {
+      "event_count": 1062,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s2-s4",
+        "stability_aware",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 330
+    },
+    {
+      "event_count": 1062,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s2-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 324
+    },
+    {
+      "event_count": 1064,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s2-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 338
+    },
+    {
+      "event_count": 1064,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s2-s4",
+        "static",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 343
+    },
+    {
+      "event_count": 1062,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s2-s4",
+        "static",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 348
+    },
+    {
+      "event_count": 1062,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s2-s4",
+        "static",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 328
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s2-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 527
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s2-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 526
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s2-s4",
+        "threshold",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s2-s4",
+        "threshold",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 525
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s2-s4",
+        "threshold",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 529
+    },
+    {
+      "event_count": 1122,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 526
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 529
+    },
+    {
+      "event_count": 1136,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 530
+    },
+    {
+      "event_count": 1110,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 528
+    },
+    {
+      "event_count": 1137,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 527
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s3-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1135,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s3-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s3-s4",
+        "least_loaded",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s3-s4",
+        "least_loaded",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s3-s4",
+        "least_loaded",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s3-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1135,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s3-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s3-s4",
+        "stability_aware",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1135,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s3-s4",
+        "stability_aware",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1131,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s3-s4",
+        "stability_aware",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1122,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s3-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1135,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s3-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1095,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s3-s4",
+        "static",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s3-s4",
+        "static",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1136,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s3-s4",
+        "static",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s3-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1135,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s3-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s3-s4",
+        "threshold",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1135,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s3-s4",
+        "threshold",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1135,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s3-s4",
+        "threshold",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1122,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1135,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1118,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "delayed",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1062,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s2-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 336
+    },
+    {
+      "event_count": 1130,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s2-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 527
+    },
+    {
+      "event_count": 1135,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s2-s4",
+        "least_loaded",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s2-s4",
+        "least_loaded",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 532
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s2-s4",
+        "least_loaded",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 527
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s2-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 527
+    },
+    {
+      "event_count": 1062,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s2-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 326
+    },
+    {
+      "event_count": 1136,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s2-s4",
+        "stability_aware",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1062,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s2-s4",
+        "stability_aware",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 356
+    },
+    {
+      "event_count": 1062,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s2-s4",
+        "stability_aware",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 327
+    },
+    {
+      "event_count": 1056,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s2-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 366
+    },
+    {
+      "event_count": 1066,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s2-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 329
+    },
+    {
+      "event_count": 1066,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s2-s4",
+        "static",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 350
+    },
+    {
+      "event_count": 1066,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s2-s4",
+        "static",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 330
+    },
+    {
+      "event_count": 1066,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s2-s4",
+        "static",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 332
+    },
+    {
+      "event_count": 1066,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s2-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 324
+    },
+    {
+      "event_count": 1154,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s2-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 530
+    },
+    {
+      "event_count": 1141,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s2-s4",
+        "threshold",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1135,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s2-s4",
+        "threshold",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 531
+    },
+    {
+      "event_count": 1139,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s2-s4",
+        "threshold",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 530
+    },
+    {
+      "event_count": 1066,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1126,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 537
+    },
+    {
+      "event_count": 1139,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1140,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1142,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 528
+    },
+    {
+      "event_count": 1141,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s3-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1145,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s3-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1137,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s3-s4",
+        "least_loaded",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 531
+    },
+    {
+      "event_count": 1140,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s3-s4",
+        "least_loaded",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1150,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s3-s4",
+        "least_loaded",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1136,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s3-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1136,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s3-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1154,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s3-s4",
+        "stability_aware",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 532
+    },
+    {
+      "event_count": 1126,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s3-s4",
+        "stability_aware",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1142,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s3-s4",
+        "stability_aware",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1140,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s3-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1123,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s3-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1141,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s3-s4",
+        "static",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1141,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s3-s4",
+        "static",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1141,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s3-s4",
+        "static",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1154,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s3-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1143,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s3-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1136,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s3-s4",
+        "threshold",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 531
+    },
+    {
+      "event_count": 1141,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s3-s4",
+        "threshold",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1154,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s3-s4",
+        "threshold",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1140,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1066,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1094,
+      "fairness_windows": 14,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        3
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 530
+    },
+    {
+      "event_count": 1154,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        4
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 13,
+      "flow_count": 2,
+      "key": [
+        "sudden_burst",
+        "noisy",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        5
+      ],
+      "path_decisions": 4,
+      "rtt_samples": 600
+    },
+    {
+      "event_count": 1329,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s2-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 615
+    },
+    {
+      "event_count": 1325,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s2-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 615
+    },
+    {
+      "event_count": 1317,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s2-s4",
+        "least_loaded",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 614
+    },
+    {
+      "event_count": 1325,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s2-s4",
+        "least_loaded",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 620
+    },
+    {
+      "event_count": 1325,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s2-s4",
+        "least_loaded",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 616
+    },
+    {
+      "event_count": 1257,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s2-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 297
+    },
+    {
+      "event_count": 1277,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s2-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 308
+    },
+    {
+      "event_count": 1259,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s2-s4",
+        "stability_aware",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 293
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s2-s4",
+        "stability_aware",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 289
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s2-s4",
+        "stability_aware",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 439
+    },
+    {
+      "event_count": 1249,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s2-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 346
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s2-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 323
+    },
+    {
+      "event_count": 1257,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s2-s4",
+        "static",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 327
+    },
+    {
+      "event_count": 1259,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s2-s4",
+        "static",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 333
+    },
+    {
+      "event_count": 1257,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s2-s4",
+        "static",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 347
+    },
+    {
+      "event_count": 1325,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s2-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 616
+    },
+    {
+      "event_count": 1285,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s2-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 616
+    },
+    {
+      "event_count": 1325,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s2-s4",
+        "threshold",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 615
+    },
+    {
+      "event_count": 1325,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s2-s4",
+        "threshold",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 616
+    },
+    {
+      "event_count": 1329,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s2-s4",
+        "threshold",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 614
+    },
+    {
+      "event_count": 1229,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 478
+    },
+    {
+      "event_count": 1257,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1332,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1330,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 612
+    },
+    {
+      "event_count": 1331,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1336,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s3-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1335,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s3-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1317,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s3-s4",
+        "least_loaded",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1329,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s3-s4",
+        "least_loaded",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1330,
+      "fairness_windows": 36,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s3-s4",
+        "least_loaded",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1330,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s3-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1333,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s3-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1333,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s3-s4",
+        "stability_aware",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1336,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s3-s4",
+        "stability_aware",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1331,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s3-s4",
+        "stability_aware",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1333,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s3-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1285,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s3-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1325,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s3-s4",
+        "static",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1325,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s3-s4",
+        "static",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1314,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s3-s4",
+        "static",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1328,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s3-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1329,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s3-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1326,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s3-s4",
+        "threshold",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1329,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s3-s4",
+        "threshold",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1332,
+      "fairness_windows": 36,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s3-s4",
+        "threshold",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1332,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1231,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 476
+    },
+    {
+      "event_count": 1330,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1332,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1321,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "baseline",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 617
+    },
+    {
+      "event_count": 1326,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s2-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1253,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s2-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1253,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s2-s4",
+        "least_loaded",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1341,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s2-s4",
+        "least_loaded",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 623
+    },
+    {
+      "event_count": 1257,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s2-s4",
+        "least_loaded",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 411
+    },
+    {
+      "event_count": 1285,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s2-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1330,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s2-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s2-s4",
+        "stability_aware",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1248,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s2-s4",
+        "stability_aware",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 340
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s2-s4",
+        "stability_aware",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 333
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s2-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 441
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s2-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 327
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s2-s4",
+        "static",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 405
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s2-s4",
+        "static",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 368
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s2-s4",
+        "static",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 341
+    },
+    {
+      "event_count": 1330,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s2-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s2-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1204,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s2-s4",
+        "threshold",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1336,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s2-s4",
+        "threshold",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 625
+    },
+    {
+      "event_count": 1249,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s2-s4",
+        "threshold",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 388
+    },
+    {
+      "event_count": 1330,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1335,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1245,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1345,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 598
+    },
+    {
+      "event_count": 1241,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 294
+    },
+    {
+      "event_count": 1233,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s3-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1259,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s3-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s3-s4",
+        "least_loaded",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1197,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s3-s4",
+        "least_loaded",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1229,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s3-s4",
+        "least_loaded",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1335,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s3-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1331,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s3-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1330,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s3-s4",
+        "stability_aware",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1333,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s3-s4",
+        "stability_aware",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1217,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s3-s4",
+        "stability_aware",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1323,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s3-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1332,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s3-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1330,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s3-s4",
+        "static",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1289,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s3-s4",
+        "static",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1322,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s3-s4",
+        "static",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s3-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s3-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1260,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s3-s4",
+        "threshold",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1331,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s3-s4",
+        "threshold",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s3-s4",
+        "threshold",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1321,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1317,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1330,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1331,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1331,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "combined",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1257,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s2-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 400
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s2-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 413
+    },
+    {
+      "event_count": 1251,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s2-s4",
+        "least_loaded",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 383
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s2-s4",
+        "least_loaded",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s2-s4",
+        "least_loaded",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 386
+    },
+    {
+      "event_count": 1263,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s2-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 322
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 36,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s2-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 287
+    },
+    {
+      "event_count": 1263,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s2-s4",
+        "stability_aware",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 298
+    },
+    {
+      "event_count": 1213,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s2-s4",
+        "stability_aware",
+        4
+      ],
+      "path_decisions": 11,
+      "rtt_samples": 402
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s2-s4",
+        "stability_aware",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 296
+    },
+    {
+      "event_count": 1257,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s2-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 440
+    },
+    {
+      "event_count": 1264,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s2-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 339
+    },
+    {
+      "event_count": 1257,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s2-s4",
+        "static",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 302
+    },
+    {
+      "event_count": 1257,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s2-s4",
+        "static",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 442
+    },
+    {
+      "event_count": 1233,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s2-s4",
+        "static",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 440
+    },
+    {
+      "event_count": 1257,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s2-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 398
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s2-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 413
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s2-s4",
+        "threshold",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 406
+    },
+    {
+      "event_count": 1297,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s2-s4",
+        "threshold",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s2-s4",
+        "threshold",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 385
+    },
+    {
+      "event_count": 1318,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 619
+    },
+    {
+      "event_count": 1330,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 613
+    },
+    {
+      "event_count": 1335,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 618
+    },
+    {
+      "event_count": 1331,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 617
+    },
+    {
+      "event_count": 1330,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 615
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s3-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1249,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s3-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s3-s4",
+        "least_loaded",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1245,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s3-s4",
+        "least_loaded",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s3-s4",
+        "least_loaded",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1337,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s3-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1332,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s3-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1332,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s3-s4",
+        "stability_aware",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1321,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s3-s4",
+        "stability_aware",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s3-s4",
+        "stability_aware",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 278
+    },
+    {
+      "event_count": 1332,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s3-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1337,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s3-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1334,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s3-s4",
+        "static",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1345,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s3-s4",
+        "static",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1335,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s3-s4",
+        "static",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1269,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s3-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s3-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1264,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s3-s4",
+        "threshold",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1329,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s3-s4",
+        "threshold",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 615
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s3-s4",
+        "threshold",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1330,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1337,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1333,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1331,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1336,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "delayed",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1289,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s2-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 617
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s2-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 476
+    },
+    {
+      "event_count": 1333,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s2-s4",
+        "least_loaded",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 614
+    },
+    {
+      "event_count": 1324,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s2-s4",
+        "least_loaded",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1336,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s2-s4",
+        "least_loaded",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 614
+    },
+    {
+      "event_count": 1337,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s2-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 615
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s2-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 288
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s2-s4",
+        "stability_aware",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 307
+    },
+    {
+      "event_count": 1336,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s2-s4",
+        "stability_aware",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1331,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s2-s4",
+        "stability_aware",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 619
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s2-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 319
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s2-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 323
+    },
+    {
+      "event_count": 1245,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s2-s4",
+        "static",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 350
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s2-s4",
+        "static",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 340
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s2-s4",
+        "static",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 337
+    },
+    {
+      "event_count": 1317,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s2-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 615
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s2-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 474
+    },
+    {
+      "event_count": 1331,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s2-s4",
+        "threshold",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 611
+    },
+    {
+      "event_count": 1333,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s2-s4",
+        "threshold",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1349,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s2-s4",
+        "threshold",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 614
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 479
+    },
+    {
+      "event_count": 1334,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 617
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 305
+    },
+    {
+      "event_count": 1331,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 289
+    },
+    {
+      "event_count": 1245,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s3-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 381
+    },
+    {
+      "event_count": 1333,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s3-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1333,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s3-s4",
+        "least_loaded",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1345,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s3-s4",
+        "least_loaded",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1332,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s3-s4",
+        "least_loaded",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 619
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s3-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 294
+    },
+    {
+      "event_count": 1330,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s3-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1333,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s3-s4",
+        "stability_aware",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1331,
+      "fairness_windows": 35,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s3-s4",
+        "stability_aware",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s3-s4",
+        "stability_aware",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 323
+    },
+    {
+      "event_count": 1330,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s3-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1333,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s3-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1341,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s3-s4",
+        "static",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1333,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s3-s4",
+        "static",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1331,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s3-s4",
+        "static",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s3-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 386
+    },
+    {
+      "event_count": 1336,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s3-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1333,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s3-s4",
+        "threshold",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1336,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s3-s4",
+        "threshold",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1332,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s3-s4",
+        "threshold",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 614
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 330
+    },
+    {
+      "event_count": 1335,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1321,
+      "fairness_windows": 33,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        3
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        4
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 700
+    },
+    {
+      "event_count": 1263,
+      "fairness_windows": 34,
+      "flow_count": 4,
+      "key": [
+        "alternating_bursts",
+        "noisy",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        5
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 442
+    },
+    {
+      "event_count": 1242,
+      "fairness_windows": 42,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "baseline",
+        "s1-s2-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 360
+    },
+    {
+      "event_count": 1245,
+      "fairness_windows": 40,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "baseline",
+        "s1-s2-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 362
+    },
+    {
+      "event_count": 1242,
+      "fairness_windows": 34,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "baseline",
+        "s1-s2-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 359
+    },
+    {
+      "event_count": 1233,
+      "fairness_windows": 31,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "baseline",
+        "s1-s2-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 362
+    },
+    {
+      "event_count": 1242,
+      "fairness_windows": 34,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "baseline",
+        "s1-s2-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 361
+    },
+    {
+      "event_count": 1247,
+      "fairness_windows": 31,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "baseline",
+        "s1-s2-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 360
+    },
+    {
+      "event_count": 1242,
+      "fairness_windows": 42,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "baseline",
+        "s1-s2-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 361
+    },
+    {
+      "event_count": 1245,
+      "fairness_windows": 40,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "baseline",
+        "s1-s2-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 362
+    },
+    {
+      "event_count": 1230,
+      "fairness_windows": 42,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "baseline",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 650
+    },
+    {
+      "event_count": 1217,
+      "fairness_windows": 40,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "baseline",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 361
+    },
+    {
+      "event_count": 1161,
+      "fairness_windows": 27,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "baseline",
+        "s1-s3-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 576
+    },
+    {
+      "event_count": 1162,
+      "fairness_windows": 28,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "baseline",
+        "s1-s3-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 578
+    },
+    {
+      "event_count": 1162,
+      "fairness_windows": 27,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "baseline",
+        "s1-s3-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 577
+    },
+    {
+      "event_count": 1162,
+      "fairness_windows": 28,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "baseline",
+        "s1-s3-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 578
+    },
+    {
+      "event_count": 1161,
+      "fairness_windows": 27,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "baseline",
+        "s1-s3-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 577
+    },
+    {
+      "event_count": 1174,
+      "fairness_windows": 28,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "baseline",
+        "s1-s3-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 579
+    },
+    {
+      "event_count": 1162,
+      "fairness_windows": 27,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "baseline",
+        "s1-s3-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 576
+    },
+    {
+      "event_count": 1174,
+      "fairness_windows": 28,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "baseline",
+        "s1-s3-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 578
+    },
+    {
+      "event_count": 1134,
+      "fairness_windows": 27,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "baseline",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 578
+    },
+    {
+      "event_count": 1160,
+      "fairness_windows": 28,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "baseline",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 205
+    },
+    {
+      "event_count": 1242,
+      "fairness_windows": 32,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "combined",
+        "s1-s2-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 363
+    },
+    {
+      "event_count": 1238,
+      "fairness_windows": 40,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "combined",
+        "s1-s2-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 361
+    },
+    {
+      "event_count": 1238,
+      "fairness_windows": 32,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "combined",
+        "s1-s2-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 361
+    },
+    {
+      "event_count": 1245,
+      "fairness_windows": 32,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "combined",
+        "s1-s2-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 361
+    },
+    {
+      "event_count": 1242,
+      "fairness_windows": 32,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "combined",
+        "s1-s2-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 362
+    },
+    {
+      "event_count": 1242,
+      "fairness_windows": 32,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "combined",
+        "s1-s2-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 361
+    },
+    {
+      "event_count": 1242,
+      "fairness_windows": 33,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "combined",
+        "s1-s2-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 361
+    },
+    {
+      "event_count": 1242,
+      "fairness_windows": 41,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "combined",
+        "s1-s2-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 362
+    },
+    {
+      "event_count": 1242,
+      "fairness_windows": 32,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "combined",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 362
+    },
+    {
+      "event_count": 1242,
+      "fairness_windows": 40,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "combined",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 361
+    },
+    {
+      "event_count": 1146,
+      "fairness_windows": 27,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "combined",
+        "s1-s3-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 577
+    },
+    {
+      "event_count": 1142,
+      "fairness_windows": 28,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "combined",
+        "s1-s3-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 579
+    },
+    {
+      "event_count": 1162,
+      "fairness_windows": 27,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "combined",
+        "s1-s3-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 577
+    },
+    {
+      "event_count": 1174,
+      "fairness_windows": 28,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "combined",
+        "s1-s3-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 578
+    },
+    {
+      "event_count": 1162,
+      "fairness_windows": 27,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "combined",
+        "s1-s3-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 578
+    },
+    {
+      "event_count": 1161,
+      "fairness_windows": 28,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "combined",
+        "s1-s3-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 578
+    },
+    {
+      "event_count": 1161,
+      "fairness_windows": 27,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "combined",
+        "s1-s3-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 578
+    },
+    {
+      "event_count": 1174,
+      "fairness_windows": 28,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "combined",
+        "s1-s3-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 578
+    },
+    {
+      "event_count": 1162,
+      "fairness_windows": 27,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "combined",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 578
+    },
+    {
+      "event_count": 1162,
+      "fairness_windows": 28,
+      "flow_count": 3,
+      "key": [
+        "degrade_recover",
+        "combined",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 578
+    },
+    {
+      "event_count": 1169,
+      "fairness_windows": 22,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "baseline",
+        "s1-s2-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 504
+    },
+    {
+      "event_count": 1153,
+      "fairness_windows": 22,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "baseline",
+        "s1-s2-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 503
+    },
+    {
+      "event_count": 1264,
+      "fairness_windows": 22,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "baseline",
+        "s1-s2-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 216
+    },
+    {
+      "event_count": 1268,
+      "fairness_windows": 22,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "baseline",
+        "s1-s2-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 204
+    },
+    {
+      "event_count": 1213,
+      "fairness_windows": 22,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "baseline",
+        "s1-s2-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 215
+    },
+    {
+      "event_count": 1277,
+      "fairness_windows": 22,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "baseline",
+        "s1-s2-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 208
+    },
+    {
+      "event_count": 1168,
+      "fairness_windows": 23,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "baseline",
+        "s1-s2-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 502
+    },
+    {
+      "event_count": 1169,
+      "fairness_windows": 22,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "baseline",
+        "s1-s2-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 503
+    },
+    {
+      "event_count": 1161,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "baseline",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 650
+    },
+    {
+      "event_count": 1162,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "baseline",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 650
+    },
+    {
+      "event_count": 1260,
+      "fairness_windows": 37,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "baseline",
+        "s1-s3-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 447
+    },
+    {
+      "event_count": 1265,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "baseline",
+        "s1-s3-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 447
+    },
+    {
+      "event_count": 1261,
+      "fairness_windows": 37,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "baseline",
+        "s1-s3-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 447
+    },
+    {
+      "event_count": 1254,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "baseline",
+        "s1-s3-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 447
+    },
+    {
+      "event_count": 1264,
+      "fairness_windows": 37,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "baseline",
+        "s1-s3-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 447
+    },
+    {
+      "event_count": 1265,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "baseline",
+        "s1-s3-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 447
+    },
+    {
+      "event_count": 1249,
+      "fairness_windows": 37,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "baseline",
+        "s1-s3-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 447
+    },
+    {
+      "event_count": 1263,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "baseline",
+        "s1-s3-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 447
+    },
+    {
+      "event_count": 1162,
+      "fairness_windows": 37,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "baseline",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 205
+    },
+    {
+      "event_count": 1174,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "baseline",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 205
+    },
+    {
+      "event_count": 1161,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "combined",
+        "s1-s2-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 650
+    },
+    {
+      "event_count": 1163,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "combined",
+        "s1-s2-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 503
+    },
+    {
+      "event_count": 1160,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "combined",
+        "s1-s2-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 650
+    },
+    {
+      "event_count": 1168,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "combined",
+        "s1-s2-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 502
+    },
+    {
+      "event_count": 1249,
+      "fairness_windows": 22,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "combined",
+        "s1-s2-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 221
+    },
+    {
+      "event_count": 1264,
+      "fairness_windows": 22,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "combined",
+        "s1-s2-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 212
+    },
+    {
+      "event_count": 1162,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "combined",
+        "s1-s2-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 650
+    },
+    {
+      "event_count": 1149,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "combined",
+        "s1-s2-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 502
+    },
+    {
+      "event_count": 1164,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "combined",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 650
+    },
+    {
+      "event_count": 1171,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "combined",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 503
+    },
+    {
+      "event_count": 1102,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "combined",
+        "s1-s3-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 334
+    },
+    {
+      "event_count": 1126,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "combined",
+        "s1-s3-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 204
+    },
+    {
+      "event_count": 1189,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "combined",
+        "s1-s3-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 8,
+      "rtt_samples": 428
+    },
+    {
+      "event_count": 1070,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "combined",
+        "s1-s3-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 207
+    },
+    {
+      "event_count": 1186,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "combined",
+        "s1-s3-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 447
+    },
+    {
+      "event_count": 1264,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "combined",
+        "s1-s3-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 447
+    },
+    {
+      "event_count": 1208,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "combined",
+        "s1-s3-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 319
+    },
+    {
+      "event_count": 1162,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "combined",
+        "s1-s3-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 205
+    },
+    {
+      "event_count": 1160,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "link_loss_recovery",
+        "combined",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 206
+    },
+    {
+      "event_count": 1225,
+      "fairness_windows": 42,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "baseline",
+        "s1-s2-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 429
+    },
+    {
+      "event_count": 1189,
+      "fairness_windows": 41,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "baseline",
+        "s1-s2-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 417
+    },
+    {
+      "event_count": 1168,
+      "fairness_windows": 24,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "baseline",
+        "s1-s2-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 421
+    },
+    {
+      "event_count": 1156,
+      "fairness_windows": 25,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "baseline",
+        "s1-s2-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 412
+    },
+    {
+      "event_count": 1274,
+      "fairness_windows": 25,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "baseline",
+        "s1-s2-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 319
+    },
+    {
+      "event_count": 1259,
+      "fairness_windows": 24,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "baseline",
+        "s1-s2-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 328
+    },
+    {
+      "event_count": 1168,
+      "fairness_windows": 39,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "baseline",
+        "s1-s2-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 421
+    },
+    {
+      "event_count": 1189,
+      "fairness_windows": 41,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "baseline",
+        "s1-s2-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 419
+    },
+    {
+      "event_count": 1189,
+      "fairness_windows": 41,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "baseline",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 413
+    },
+    {
+      "event_count": 1186,
+      "fairness_windows": 41,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "baseline",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 650
+    },
+    {
+      "event_count": 1159,
+      "fairness_windows": 28,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "baseline",
+        "s1-s3-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 636
+    },
+    {
+      "event_count": 1160,
+      "fairness_windows": 27,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "baseline",
+        "s1-s3-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 634
+    },
+    {
+      "event_count": 1161,
+      "fairness_windows": 28,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "baseline",
+        "s1-s3-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 634
+    },
+    {
+      "event_count": 1160,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "baseline",
+        "s1-s3-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 636
+    },
+    {
+      "event_count": 1161,
+      "fairness_windows": 37,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "baseline",
+        "s1-s3-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 634
+    },
+    {
+      "event_count": 1160,
+      "fairness_windows": 27,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "baseline",
+        "s1-s3-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 628
+    },
+    {
+      "event_count": 1160,
+      "fairness_windows": 28,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "baseline",
+        "s1-s3-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 636
+    },
+    {
+      "event_count": 1142,
+      "fairness_windows": 27,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "baseline",
+        "s1-s3-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 636
+    },
+    {
+      "event_count": 1161,
+      "fairness_windows": 37,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "baseline",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 206
+    },
+    {
+      "event_count": 1182,
+      "fairness_windows": 27,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "baseline",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 636
+    },
+    {
+      "event_count": 1169,
+      "fairness_windows": 38,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "combined",
+        "s1-s2-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 427
+    },
+    {
+      "event_count": 1182,
+      "fairness_windows": 41,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "combined",
+        "s1-s2-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 650
+    },
+    {
+      "event_count": 1189,
+      "fairness_windows": 40,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "combined",
+        "s1-s2-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 407
+    },
+    {
+      "event_count": 1184,
+      "fairness_windows": 41,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "combined",
+        "s1-s2-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 650
+    },
+    {
+      "event_count": 1317,
+      "fairness_windows": 23,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "combined",
+        "s1-s2-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 313
+    },
+    {
+      "event_count": 1265,
+      "fairness_windows": 24,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "combined",
+        "s1-s2-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 328
+    },
+    {
+      "event_count": 1155,
+      "fairness_windows": 39,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "combined",
+        "s1-s2-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 397
+    },
+    {
+      "event_count": 1182,
+      "fairness_windows": 41,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "combined",
+        "s1-s2-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 650
+    },
+    {
+      "event_count": 1206,
+      "fairness_windows": 41,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "combined",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 422
+    },
+    {
+      "event_count": 1182,
+      "fairness_windows": 41,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "combined",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 650
+    },
+    {
+      "event_count": 1161,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "combined",
+        "s1-s3-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 628
+    },
+    {
+      "event_count": 1155,
+      "fairness_windows": 27,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "combined",
+        "s1-s3-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 207
+    },
+    {
+      "event_count": 1164,
+      "fairness_windows": 27,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "combined",
+        "s1-s3-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 636
+    },
+    {
+      "event_count": 1161,
+      "fairness_windows": 28,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "combined",
+        "s1-s3-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 205
+    },
+    {
+      "event_count": 1160,
+      "fairness_windows": 27,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "combined",
+        "s1-s3-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 626
+    },
+    {
+      "event_count": 1156,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "combined",
+        "s1-s3-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 636
+    },
+    {
+      "event_count": 1160,
+      "fairness_windows": 36,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "combined",
+        "s1-s3-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 636
+    },
+    {
+      "event_count": 1147,
+      "fairness_windows": 28,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "combined",
+        "s1-s3-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 206
+    },
+    {
+      "event_count": 1160,
+      "fairness_windows": 27,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "combined",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 634
+    },
+    {
+      "event_count": 1157,
+      "fairness_windows": 27,
+      "flow_count": 3,
+      "key": [
+        "loss_recovery",
+        "combined",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 6,
+      "rtt_samples": 206
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "baseline",
+        "s1-s2-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 485
+    },
+    {
+      "event_count": 1020,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "baseline",
+        "s1-s2-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 489
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "baseline",
+        "s1-s2-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 487
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "baseline",
+        "s1-s2-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 490
+    },
+    {
+      "event_count": 1048,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "baseline",
+        "s1-s2-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 487
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "baseline",
+        "s1-s2-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 485
+    },
+    {
+      "event_count": 1054,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "baseline",
+        "s1-s2-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 483
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "baseline",
+        "s1-s2-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 482
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "baseline",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "baseline",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 481
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "baseline",
+        "s1-s3-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "baseline",
+        "s1-s3-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1024,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "baseline",
+        "s1-s3-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "baseline",
+        "s1-s3-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "baseline",
+        "s1-s3-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "baseline",
+        "s1-s3-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "baseline",
+        "s1-s3-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "baseline",
+        "s1-s3-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "baseline",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "baseline",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 498
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "combined",
+        "s1-s2-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 487
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "combined",
+        "s1-s2-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1028,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "combined",
+        "s1-s2-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 487
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "combined",
+        "s1-s2-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "combined",
+        "s1-s2-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 485
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "combined",
+        "s1-s2-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 484
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "combined",
+        "s1-s2-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 486
+    },
+    {
+      "event_count": 1020,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "combined",
+        "s1-s2-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1054,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "combined",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 486
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "combined",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "combined",
+        "s1-s3-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "combined",
+        "s1-s3-s4",
+        "least_loaded",
+        2
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "combined",
+        "s1-s3-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "combined",
+        "s1-s3-s4",
+        "stability_aware",
+        2
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "combined",
+        "s1-s3-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1044,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "combined",
+        "s1-s3-s4",
+        "static",
+        2
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "combined",
+        "s1-s3-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "combined",
+        "s1-s3-s4",
+        "threshold",
+        2
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "combined",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1052,
+      "fairness_windows": 0,
+      "flow_count": 1,
+      "key": [
+        "steady_low",
+        "combined",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        2
+      ],
+      "path_decisions": 2,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 982,
+      "fairness_windows": 46,
+      "flow_count": 4,
+      "key": [
+        "steady_high",
+        "baseline",
+        "s1-s2-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 8,
+      "rtt_samples": 198
+    },
+    {
+      "event_count": 1008,
+      "fairness_windows": 46,
+      "flow_count": 4,
+      "key": [
+        "steady_high",
+        "baseline",
+        "s1-s2-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 8,
+      "rtt_samples": 200
+    },
+    {
+      "event_count": 1012,
+      "fairness_windows": 46,
+      "flow_count": 4,
+      "key": [
+        "steady_high",
+        "baseline",
+        "s1-s2-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 8,
+      "rtt_samples": 205
+    },
+    {
+      "event_count": 1010,
+      "fairness_windows": 46,
+      "flow_count": 4,
+      "key": [
+        "steady_high",
+        "baseline",
+        "s1-s2-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 8,
+      "rtt_samples": 202
+    },
+    {
+      "event_count": 1030,
+      "fairness_windows": 46,
+      "flow_count": 4,
+      "key": [
+        "steady_high",
+        "baseline",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 8,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1034,
+      "fairness_windows": 46,
+      "flow_count": 4,
+      "key": [
+        "steady_high",
+        "baseline",
+        "s1-s3-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 8,
+      "rtt_samples": 260
+    },
+    {
+      "event_count": 1030,
+      "fairness_windows": 46,
+      "flow_count": 4,
+      "key": [
+        "steady_high",
+        "baseline",
+        "s1-s3-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 8,
+      "rtt_samples": 262
+    },
+    {
+      "event_count": 1026,
+      "fairness_windows": 46,
+      "flow_count": 4,
+      "key": [
+        "steady_high",
+        "baseline",
+        "s1-s3-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 8,
+      "rtt_samples": 262
+    },
+    {
+      "event_count": 1010,
+      "fairness_windows": 56,
+      "flow_count": 4,
+      "key": [
+        "steady_high",
+        "baseline",
+        "s1-s3-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 9,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1030,
+      "fairness_windows": 46,
+      "flow_count": 4,
+      "key": [
+        "steady_high",
+        "baseline",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 8,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1032,
+      "fairness_windows": 46,
+      "flow_count": 4,
+      "key": [
+        "steady_high",
+        "combined",
+        "s1-s2-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 8,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1030,
+      "fairness_windows": 56,
+      "flow_count": 4,
+      "key": [
+        "steady_high",
+        "combined",
+        "s1-s2-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 8,
+      "rtt_samples": 266
+    },
+    {
+      "event_count": 1022,
+      "fairness_windows": 47,
+      "flow_count": 4,
+      "key": [
+        "steady_high",
+        "combined",
+        "s1-s2-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 8,
+      "rtt_samples": 203
+    },
+    {
+      "event_count": 1030,
+      "fairness_windows": 46,
+      "flow_count": 4,
+      "key": [
+        "steady_high",
+        "combined",
+        "s1-s2-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 8,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1018,
+      "fairness_windows": 46,
+      "flow_count": 4,
+      "key": [
+        "steady_high",
+        "combined",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 8,
+      "rtt_samples": 263
+    },
+    {
+      "event_count": 1015,
+      "fairness_windows": 46,
+      "flow_count": 4,
+      "key": [
+        "steady_high",
+        "combined",
+        "s1-s3-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 8,
+      "rtt_samples": 265
+    },
+    {
+      "event_count": 1030,
+      "fairness_windows": 56,
+      "flow_count": 4,
+      "key": [
+        "steady_high",
+        "combined",
+        "s1-s3-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 8,
+      "rtt_samples": 264
+    },
+    {
+      "event_count": 1034,
+      "fairness_windows": 46,
+      "flow_count": 4,
+      "key": [
+        "steady_high",
+        "combined",
+        "s1-s3-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 8,
+      "rtt_samples": 260
+    },
+    {
+      "event_count": 1034,
+      "fairness_windows": 46,
+      "flow_count": 4,
+      "key": [
+        "steady_high",
+        "combined",
+        "s1-s3-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 8,
+      "rtt_samples": 262
+    },
+    {
+      "event_count": 1034,
+      "fairness_windows": 46,
+      "flow_count": 4,
+      "key": [
+        "steady_high",
+        "combined",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 8,
+      "rtt_samples": 261
+    },
+    {
+      "event_count": 1188,
+      "fairness_windows": 46,
+      "flow_count": 15,
+      "key": [
+        "mixed_short_long",
+        "baseline",
+        "s1-s2-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 30,
+      "rtt_samples": 218
+    },
+    {
+      "event_count": 1155,
+      "fairness_windows": 46,
+      "flow_count": 15,
+      "key": [
+        "mixed_short_long",
+        "baseline",
+        "s1-s2-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 31,
+      "rtt_samples": 203
+    },
+    {
+      "event_count": 1167,
+      "fairness_windows": 46,
+      "flow_count": 15,
+      "key": [
+        "mixed_short_long",
+        "baseline",
+        "s1-s2-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 30,
+      "rtt_samples": 208
+    },
+    {
+      "event_count": 1188,
+      "fairness_windows": 46,
+      "flow_count": 15,
+      "key": [
+        "mixed_short_long",
+        "baseline",
+        "s1-s2-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 30,
+      "rtt_samples": 227
+    },
+    {
+      "event_count": 1188,
+      "fairness_windows": 46,
+      "flow_count": 15,
+      "key": [
+        "mixed_short_long",
+        "baseline",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 30,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1184,
+      "fairness_windows": 56,
+      "flow_count": 15,
+      "key": [
+        "mixed_short_long",
+        "baseline",
+        "s1-s3-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 30,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1184,
+      "fairness_windows": 56,
+      "flow_count": 15,
+      "key": [
+        "mixed_short_long",
+        "baseline",
+        "s1-s3-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 30,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1184,
+      "fairness_windows": 56,
+      "flow_count": 15,
+      "key": [
+        "mixed_short_long",
+        "baseline",
+        "s1-s3-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 30,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1184,
+      "fairness_windows": 56,
+      "flow_count": 15,
+      "key": [
+        "mixed_short_long",
+        "baseline",
+        "s1-s3-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 30,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1168,
+      "fairness_windows": 56,
+      "flow_count": 15,
+      "key": [
+        "mixed_short_long",
+        "baseline",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 30,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1167,
+      "fairness_windows": 47,
+      "flow_count": 15,
+      "key": [
+        "mixed_short_long",
+        "combined",
+        "s1-s2-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 30,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1184,
+      "fairness_windows": 56,
+      "flow_count": 15,
+      "key": [
+        "mixed_short_long",
+        "combined",
+        "s1-s2-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 30,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1172,
+      "fairness_windows": 46,
+      "flow_count": 15,
+      "key": [
+        "mixed_short_long",
+        "combined",
+        "s1-s2-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 30,
+      "rtt_samples": 209
+    },
+    {
+      "event_count": 1168,
+      "fairness_windows": 47,
+      "flow_count": 15,
+      "key": [
+        "mixed_short_long",
+        "combined",
+        "s1-s2-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 30,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1186,
+      "fairness_windows": 56,
+      "flow_count": 15,
+      "key": [
+        "mixed_short_long",
+        "combined",
+        "s1-s2-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 30,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1184,
+      "fairness_windows": 56,
+      "flow_count": 15,
+      "key": [
+        "mixed_short_long",
+        "combined",
+        "s1-s3-s4",
+        "least_loaded",
+        1
+      ],
+      "path_decisions": 30,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1184,
+      "fairness_windows": 56,
+      "flow_count": 15,
+      "key": [
+        "mixed_short_long",
+        "combined",
+        "s1-s3-s4",
+        "stability_aware",
+        1
+      ],
+      "path_decisions": 30,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1184,
+      "fairness_windows": 56,
+      "flow_count": 15,
+      "key": [
+        "mixed_short_long",
+        "combined",
+        "s1-s3-s4",
+        "static",
+        1
+      ],
+      "path_decisions": 30,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1184,
+      "fairness_windows": 56,
+      "flow_count": 15,
+      "key": [
+        "mixed_short_long",
+        "combined",
+        "s1-s3-s4",
+        "threshold",
+        1
+      ],
+      "path_decisions": 30,
+      "rtt_samples": 550
+    },
+    {
+      "event_count": 1184,
+      "fairness_windows": 56,
+      "flow_count": 15,
+      "key": [
+        "mixed_short_long",
+        "combined",
+        "s1-s3-s4",
+        "uncertainty_aware",
+        1
+      ],
+      "path_decisions": 30,
+      "rtt_samples": 550
+    }
+  ],
+  "audited_trial_count": 599,
+  "failed_checks": [],
+  "manifest_trial_count": 599,
+  "passed": true
+}

@@ -1,0 +1,13 @@
+scenario,condition,initial_path,comparator,p99_primary_status,goodput_guardrail_status,udp_loss_guardrail_status,fairness_guardrail_status,stability_objective_status,overall_status
+sudden_burst,combined,s1-s2-s4,least_loaded,not_met,pass,pass,pass,not_met,not_met
+sudden_burst,combined,s1-s2-s4,threshold,not_met,pass,pass,pass,not_met,not_met
+sudden_burst,combined,s1-s2-s4,stability_aware,pass,pass,pass,pass,not_met,not_met
+sudden_burst,combined,s1-s3-s4,least_loaded,not_met,pass,pass,pass,not_met,not_met
+sudden_burst,combined,s1-s3-s4,threshold,not_met,pass,pass,pass,not_met,not_met
+sudden_burst,combined,s1-s3-s4,stability_aware,not_met,pass,pass,pass,not_met,not_met
+alternating_bursts,combined,s1-s2-s4,least_loaded,not_met,pass,pass,pass,not_met,not_met
+alternating_bursts,combined,s1-s2-s4,threshold,not_met,not_met,not_met,not_met,pass,not_met
+alternating_bursts,combined,s1-s2-s4,stability_aware,not_met,pass,pass,pass,not_met,not_met
+alternating_bursts,combined,s1-s3-s4,least_loaded,not_met,pass,pass,pass,pass,not_met
+alternating_bursts,combined,s1-s3-s4,threshold,not_met,pass,pass,pass,pass,not_met
+alternating_bursts,combined,s1-s3-s4,stability_aware,not_met,pass,pass,pass,not_met,not_met
