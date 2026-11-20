@@ -1,0 +1,29 @@
+{
+  "campaign": "pathpilot_proposal_final",
+  "campaign_date": "2026-11-19",
+  "source_revision": "5bd52e936d72f714480a4fef5960d9cf782b04bf",
+  "source_working_tree_dirty": 0,
+  "manifest_trial_count": 600,
+  "original_audit_passed": false,
+  "original_audit_failed_checks": [
+    "impairment execution errors: link_loss_recovery/combined/s1-s3-s4/uncertainty_aware/rep_001"
+  ],
+  "included_trial_count": 599,
+  "excluded_trial_count": 1,
+  "excluded_trial": {
+    "scenario": "link_loss_recovery",
+    "telemetry_condition": "combined",
+    "initial_bottleneck_path": "s1-s3-s4",
+    "policy": "uncertainty_aware",
+    "repetition": 1,
+    "reason": "The impairment command failed while restoring s2-eth2. The record has no link recovery timestamp or measured outage duration."
+  },
+  "filtered_audit_passed": true,
+  "analysis_source": "experiments/analyze_final_campaign.py",
+  "analysis_outputs": [
+    "trials.csv",
+    "FINAL_CAMPAIGN_SUMMARY.csv",
+    "PAIRED_POLICY_COMPARISONS.csv",
+    "PREREGISTERED_THRESHOLD_EVALUATION.csv"
+  ]
+}

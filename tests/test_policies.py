@@ -1,6 +1,8 @@
 import pytest
 
-from controller.policies import Telemetry, confidence, choose_path
+from controller.policies import (
+    Telemetry, confidence, choose_path, choose_uncertain_fallback,
+)
 
 
 @pytest.fixture
@@ -83,12 +85,34 @@ def test_uncertainty_aware_trusts_a_difference_outside_noise_margin():
     ) == "path-a"
 
 
-def test_uncertainty_aware_uses_least_loaded_without_previous_path():
+def test_uncertainty_aware_uses_explicit_fallback_without_previous_path():
     data = {
         "path-a": Telemetry(.1215, 2.6, .05),
         "path-b": Telemetry(.1267, 2.6, .05),
     }
-    assert choose_path(data, "uncertainty_aware") == "path-a"
+    assert choose_path(
+        data, "uncertainty_aware", safe_fallback="path-b"
+    ) == "path-b"
+
+
+def test_uncertainty_aware_uses_fallback_when_all_samples_are_unconfident():
+    data = {
+        "path-a": Telemetry(.05, 4.6, .10),
+        "path-b": Telemetry(.25, 4.6, .10),
+    }
+    assert choose_path(
+        data, "uncertainty_aware", safe_fallback="path-b"
+    ) == "path-b"
+
+
+def test_uncertainty_aware_rejects_unknown_fallback_and_keeps_legacy_ranking():
+    data = {
+        "path-a": Telemetry(.05, 4.6, .10),
+        "path-b": Telemetry(.25, 4.6, .10),
+    }
+    assert choose_path(
+        data, "uncertainty_aware", safe_fallback="missing"
+    ) == "path-a"
 
 
 def test_uncertainty_aware_uses_confident_candidates_when_available():
@@ -107,3 +131,89 @@ def test_invalid_measurement():
 def test_unknown_policy(samples):
     with pytest.raises(ValueError):
         choose_path(samples, "magic")
+
+
+def test_stability_aware_retains_previous_path_for_small_improvement():
+    data = {
+        "path-a": Telemetry(.40, .1, .01),
+        "path-b": Telemetry(.35, .1, .01),
+    }
+    assert choose_path(
+        data, "stability_aware", previous_path="path-a", switch_margin=.10
+    ) == "path-a"
+
+
+def test_stability_aware_switches_for_material_improvement():
+    data = {
+        "path-a": Telemetry(.55, .1, .01),
+        "path-b": Telemetry(.30, .1, .01),
+    }
+    assert choose_path(
+        data, "stability_aware", previous_path="path-a", switch_margin=.10
+    ) == "path-b"
+
+
+def test_stability_aware_uses_least_loaded_without_previous_path():
+    data = {
+        "path-a": Telemetry(.55, .1, .01),
+        "path-b": Telemetry(.30, .1, .01),
+    }
+    assert choose_path(data, "stability_aware") == "path-b"
+
+
+def test_non_finite_telemetry_is_rejected():
+    with pytest.raises(ValueError):
+        choose_path({"bad": Telemetry(float("nan"), 0, 0)})
+
+def test_uncertain_fallback_uses_lower_load_when_gap_exceeds_noise_margin():
+    data = {
+        "s1-s2-s4": Telemetry(.70, 2.6, .05),
+        "s1-s3-s4": Telemetry(.05, 2.6, .05),
+    }
+    assert choose_uncertain_fallback(
+        data, previous_path="s1-s2-s4"
+    ) == "s1-s3-s4"
+
+
+def test_uncertain_fallback_retains_previous_path_when_loads_are_indistinguishable():
+    data = {
+        "s1-s2-s4": Telemetry(.1215, 2.6, .05),
+        "s1-s3-s4": Telemetry(.1267, 2.6, .05),
+    }
+    assert choose_uncertain_fallback(
+        data, previous_path="s1-s2-s4"
+    ) == "s1-s2-s4"
+    assert choose_uncertain_fallback(
+        data, previous_path="s1-s3-s4"
+    ) == "s1-s3-s4"
+
+
+def test_uncertain_fallback_uses_least_loaded_without_previous_path():
+    data = {
+        "s1-s2-s4": Telemetry(.70, 2.6, .05),
+        "s1-s3-s4": Telemetry(.05, 2.6, .05),
+    }
+    assert choose_uncertain_fallback(data) == "s1-s3-s4"
+
+
+def test_uncertain_fallback_uses_load_gap_when_variability_is_zero():
+    data = {
+        "s1-s2-s4": Telemetry(.70, 4.6, 0),
+        "s1-s3-s4": Telemetry(.05, 4.6, 0),
+    }
+    assert choose_uncertain_fallback(
+        data, previous_path="s1-s2-s4"
+    ) == "s1-s3-s4"
+
+
+def test_uncertain_fallback_rejects_empty_candidates():
+    with pytest.raises(ValueError, match="at least one"):
+        choose_uncertain_fallback({})
+
+
+def test_uncertain_fallback_rejects_invalid_noise_margin():
+    with pytest.raises(ValueError, match="noise_margin_sigma"):
+        choose_uncertain_fallback(
+            {"path": Telemetry(.1, 1, .1)},
+            noise_margin_sigma=-1,
+        )

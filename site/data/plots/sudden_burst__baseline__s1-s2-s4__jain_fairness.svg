@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="450.0" y="38" text-anchor="middle" font-size="22" font-family="sans-serif">sudden_burst / baseline / s1-s2-s4 — Jain fairness (concurrent windows)</text>
+<line x1="90" y1="410" x2="860" y2="410" stroke="#333"/>
+<line x1="90" y1="80" x2="90" y2="410" stroke="#333"/>
+<line x1="90" y1="410.0" x2="860" y2="410.0" stroke="#dddddd"/>
+<text x="78" y="415.0" text-anchor="end" font-size="12" fill="#333">0.00</text>
+<line x1="90" y1="327.5" x2="860" y2="327.5" stroke="#dddddd"/>
+<text x="78" y="332.5" text-anchor="end" font-size="12" fill="#333">0.21</text>
+<line x1="90" y1="245.0" x2="860" y2="245.0" stroke="#dddddd"/>
+<text x="78" y="250.0" text-anchor="end" font-size="12" fill="#333">0.41</text>
+<line x1="90" y1="162.5" x2="860" y2="162.5" stroke="#dddddd"/>
+<text x="78" y="167.5" text-anchor="end" font-size="12" fill="#333">0.62</text>
+<line x1="90" y1="80.0" x2="860" y2="80.0" stroke="#dddddd"/>
+<text x="78" y="85.0" text-anchor="end" font-size="12" fill="#333">0.82</text>
+<rect x="124.7" y="123.0" width="84.7" height="287.0" fill="#386cb0"/>
+<text x="167.0" y="434" text-anchor="middle" font-size="12" fill="#222">least_loaded</text>
+<text x="167.0" y="115.0" text-anchor="middle" font-size="11" fill="#222">0.72</text>
+<rect x="278.6" y="194.2" width="84.7" height="215.8" fill="#fdb462"/>
+<text x="321.0" y="434" text-anchor="middle" font-size="12" fill="#222">stability_aware</text>
+<text x="321.0" y="186.2" text-anchor="middle" font-size="11" fill="#222">0.54</text>
+<rect x="432.6" y="193.5" width="84.7" height="216.5" fill="#7fc97f"/>
+<text x="475.0" y="434" text-anchor="middle" font-size="12" fill="#222">static</text>
+<text x="475.0" y="185.5" text-anchor="middle" font-size="11" fill="#222">0.54</text>
+<rect x="586.6" y="123.1" width="84.7" height="286.9" fill="#beaed4"/>
+<text x="629.0" y="434" text-anchor="middle" font-size="12" fill="#222">threshold</text>
+<text x="629.0" y="115.1" text-anchor="middle" font-size="11" fill="#222">0.72</text>
+<rect x="740.6" y="123.1" width="84.7" height="286.9" fill="#fdc086"/>
+<text x="783.0" y="434" text-anchor="middle" font-size="12" fill="#222">uncertainty_aware</text>
+<text x="783.0" y="115.1" text-anchor="middle" font-size="11" fill="#222">0.72</text>
+</svg>

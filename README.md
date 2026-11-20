@@ -27,16 +27,13 @@ The Mininet topology assigns stable OpenFlow DPIDs 1–4 to s1–s4 so the contr
 
 ## Environment
 
-Use Ubuntu 22.04 with Mininet, Open vSwitch, Python 3.10, and Ryu 4.34. Ryu/eventlet compatibility can vary by Python version; if installation fails, use a supported Python 3.10 environment.
+Use Ubuntu 22.04 with Mininet, Open vSwitch, Python 3.10, and Ryu 4.34. On Ubuntu or Ubuntu 22.04 in WSL 2, run the setup script from the repository root:
 
 ```bash
-sudo apt update
-sudo apt install -y mininet openvswitch-switch iperf python3.10 python3.10-venv
-python3.10 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-pip install -r requirements.txt
+bash scripts/setup_ubuntu.sh
 ```
+
+The script installs the system packages, starts Open vSwitch, and creates `.venv` with Python 3.10. Ryu 4.34 needs legacy packaging and Eventlet compatibility pins, so the script uses the same versions and compatibility patch as the Mininet CI workflow.
 
 ## Run
 
@@ -54,7 +51,7 @@ sudo python3 topology/mininet_topology.py --controller 127.0.0.1
 ```
 
 The controller reads the static fallback from `experiments/telemetry.json` (override with `PATHPILOT_TELEMETRY`) and selects a policy using `PATHPILOT_POLICY`:
-`static`, `least_loaded`, `threshold`, or `uncertainty_aware`.
+`static`, `least_loaded`, `threshold`, `stability_aware`, or `uncertainty_aware`.
 
 ## Unit tests
 
@@ -92,7 +89,7 @@ Run from the repository root with the project virtual environment active:
 
 ```bash
 python -m pytest -q
-python -m experiments.policy_replay --seed 7 --trials 10 --steps 100
+python -m experiments.policy_replay --seed 7 --trials 10 --steps 100 --step-interval-seconds 2
 python -m experiments.analyze_results results/policy_replay.csv
 ```
 
@@ -124,16 +121,22 @@ python -m experiments.analyze_mininet_results \
 
 The runner defaults to three trials per policy, a 10 Mbps bottleneck, a
 25-second first flow, a 6-second telemetry warm-up, and an 8-second second
-flow. It writes raw trial data, including both selected paths, the bottleneck
-interface, and second-flow goodput. Increase `--trials` for a more stable
+flow. During the second flow it also runs concurrent ICMP probes and records
+RTT p50/p95/p99 and packet loss. These are end-to-end ICMP probe measurements;
+the ICMP probe is a separate flow and may use a different selected path from
+the TCP flow. It writes raw trial data, including both selected paths, the
+bottleneck interface, second-flow goodput, ICMP probe metrics, Git revision,
+and tracked-working-tree status. Increase `--trials` for a more stable
 comparison. The summary reports means, standard deviations, ranges, an
 approximate normal 95% interval, and the rate at which the second flow avoided
 the bottleneck. The interval is only an approximation and should not be
 over-interpreted with small trial counts.
 
-These Mininet results are emulation measurements of TCP goodput and path
-selection only. They do not establish p99 latency, fairness, production
-performance, or statistical significance. The current controller makes a
+These Mininet results are emulation measurements. The new ICMP p99 is a probe
+RTT percentile under concurrent load, not a TCP-flow latency percentile. The
+runner still does not measure Jain fairness, controller CPU, flow-rule update
+overhead, or production performance. Do not infer those metrics from goodput
+or ICMP probes. The current controller makes a
 decision only for a new flow and does not migrate established flows.
 
 
@@ -247,7 +250,7 @@ normal controller runs are unchanged when the setting is absent. The pinned
 priming flow also clears prior-path state so connectivity-check traffic cannot
 bias the second-flow decision.
 
-Start with a small pilot (eight trials: four policies × two initial paths):
+Start with a small pilot (ten trials: five policies × two initial paths):
 
 ```bash
 sudo env PYTHONPATH=/home/pathpilot/PathPilot \
@@ -256,8 +259,8 @@ sudo env PYTHONPATH=/home/pathpilot/PathPilot \
 ```
 
 Remove `--dry-run` to execute the pilot. After checking it, run the full
-counterbalanced matrix (default: 400 trials = 5 conditions × 2 initial paths
-× 4 policies × 10 repetitions):
+counterbalanced matrix (current default: 500 trials = 5 conditions × 2 initial
+paths × 5 policies × 10 repetitions):
 
 ```bash
 sudo env PYTHONPATH=/home/pathpilot/PathPilot \
@@ -273,6 +276,29 @@ rebuild the combined CSV and report from saved cells. Outputs include
 includes median and inclusive IQR as well as mean and standard deviation.
 
 
+### Runtime metrics collected by the Mininet runner
+
+The single-trial Mininet runner now records best-effort Ryu controller process
+CPU time, mean CPU percentage and peak resident memory using Linux
+`/proc`. It also records the number of controller path decisions, path
+changes and immediate reversals observed in the controller log during each
+trial. The balanced matrix carries these fields into its grouped summary.
+
+These measurements are limited to the Ryu process and logged new-flow
+decisions. They do not measure OVS CPU, host-wide resource use, flow-rule
+installation latency, or migration of established flows. The current matrix
+uses successive, non-overlapping TCP transfers, so Jain fairness is not
+reported. A helper for Jain's index is provided for a future concurrent-flow
+experiment, but applying it to sequential flows would be misleading.
+
+The existing ICMP p99 remains a separate probe-flow RTT statistic. The new
+instrumentation does not yet measure per-TCP-flow latency distributions or
+TCP data-plane packet loss. The updated unit suite (81 tests) and one-trial
+baseline Mininet pilots on both initial paths have completed successfully.
+Those pilots are smoke checks, not statistically meaningful comparisons;
+audit the raw CPU/RSS/path-transition fields and run repeated trials before
+reporting quantitative overhead or stability conclusions.
+
 ### Balanced 400-trial results
 
 The completed counterbalanced Mininet experiment contains 400 trials across five telemetry conditions, two initial bottleneck placements, four policies, and ten repetitions per cell. The analysis documents the throughput and bottleneck-avoidance findings, telemetry-age observations, anomalous trials, and limitations.
@@ -282,7 +308,7 @@ See [the 400-trial analysis](results/balanced_full/ANALYSIS.md). The raw data an
 
 ### Balanced 400-trial results (completed)
 
-The completed counterbalanced experiment is archived in `results/balanced_full/`. This is a **completed dataset**, not a command to rerun the experiment.
+The historical 400-trial counterbalanced experiment is archived in `results/balanced_full/`. It covers the four policies used at that time and is a **completed dataset**, not a command to rerun the experiment. The current runner additionally includes `stability_aware`; its default new matrix would contain 500 trials.
 
 Start here:
 - [Results guide and navigation](results/balanced_full/README.md)
@@ -299,3 +325,78 @@ Key interpretation points:
 - The severe-combined cells contain highly dispersed outcomes. Read medians and quartiles alongside means.
 - Connectivity loss was 0% in the recorded trials. A few severe-combined Path 2-placement trials have unexpectedly low throughput despite selecting the alternate path; their cause is not established.
 - These are Mininet/OVS emulation results, not physical-network or production guarantees. They do not measure tail latency, fairness, or controller CPU overhead.
+
+
+## Stability-aware baseline
+
+The `stability_aware` comparator retains the previously selected path unless another candidate improves measured utilization by at least an absolute 0.10 (10 percentage points). This is a deliberately simple, documented baseline for comparison, not PathPilot's proposed telemetry-confidence mechanism and not a novelty claim. The synthetic replay carries each policy's previous choice across time steps and records path changes and immediate reversals. The two-flow Mininet bottleneck harness starts a fresh controller for each trial, so its first policy decision has no prior policy-selected path; use the replay for controlled temporal comparison and a multi-flow Mininet workload for deployment-level stability measurements.
+
+
+### Proposal-aligned final evaluation harness
+
+The revised proposal's complete metric and workload contract is documented in
+[docs/FINAL_EVALUATION_IMPLEMENTATION_PLAN.md](docs/FINAL_EVALUATION_IMPLEMENTATION_PLAN.md).
+The new implementation is being developed separately from the historical
+balanced matrices.
+
+Implemented modules:
+- `experiments/final_metrics.py`: distributions, bootstrap intervals, concurrent
+  Jain fairness, TCP/UDP iperf3 parsing, TCP socket RTT parsing, qdisc/OVS
+  counters, route stability and settling-time helpers.
+- `experiments/scenarios.py`: seeded steady-low/high, sudden-burst,
+  alternating-burst, mixed short/long, degradation/recovery and link-loss
+  scenarios.
+- `experiments/tcp_echo.py`: TCP request/echo application RTT probe. Its p99 is
+  distinct from ICMP p99 and kernel smoothed RTT.
+- `controller/event_ledger.py` and `experiments/network_sampling.py`:
+  structured decision, FlowMod, OpenFlow telemetry, qdisc and OVS event records.
+- `experiments/impairments.py` and `experiments/scenario_traffic.py`: scheduled
+  link impairments and concurrent TCP/UDP traffic execution.
+- `experiments/run_final_scenario_trial.py`: one complete controller/Mininet
+  scenario trial.
+- `experiments/final_campaign.py`, `run_final_campaign.py`, and
+  `audit_final_campaign.py`: frozen campaign manifest, resumable execution and
+  strict post-run integrity audit.
+
+The campaign is not yet cleared for execution. Live end-to-end rehearsal,
+measurement validation, full analysis/report generation and CI must pass first.
+The default balanced fractional design is 2,000 trials: full telemetry
+impairment coverage for sudden/alternating bursts, with baseline+combined
+conditions for steady, mixed-flow and recovery scenarios. Both initial paths,
+all five policies and ten matched repetitions remain represented. The manifest
+estimates runtime; use development workloads for tuning and keep them separate
+from the final test split. Install `iperf3` on the Ubuntu host and inside Mininet hosts
+before the scenario runner is used.
+
+Create a manifest (does not start Mininet):
+
+```bash
+python -m experiments.final_campaign --output results/final_campaign_manifest.json
+python -m experiments.run_final_campaign --manifest results/final_campaign_manifest.json --dry-run
+```
+Create a development-only manifest for tuning (must use a separate output directory):
+
+```bash
+python -m experiments.final_campaign --development --output results/development_manifest.json
+sudo env PYTHONPATH="$PWD" EVENTLET_NO_GREENDNS=yes \
+  /usr/bin/python3 -m experiments.run_final_campaign \
+  --manifest results/development_manifest.json \
+  --output-root results/development_campaign --allow-development
+```
+
+Development results are never accepted by the final-test auditor.
+
+A single trial can be rehearsed only after the implementation is validated:
+
+```bash
+sudo env PYTHONPATH="$PWD" EVENTLET_NO_GREENDNS=yes \
+  /usr/bin/python3 -m experiments.run_final_scenario_trial \
+  --policy least_loaded --scenario steady_low --condition baseline \
+  --initial-path s1-s2-s4 --output-dir results/final_harness_rehearsal
+```
+
+Do not use the final campaign command until the rehearsal and integrity audit
+are green. A successful full campaign automatically writes the integrity audit,
+condition-stratified CSVs, paired policy comparisons, an analysis report and SVG
+plots. Existing historical results are preserved and are not inputs to this new
+campaign.

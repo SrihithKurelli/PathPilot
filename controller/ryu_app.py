@@ -1,5 +1,4 @@
 """Ryu OpenFlow 1.3 controller for the PathPilot two-path teaching topology."""
-import json
 import os
 import random
 import time
@@ -18,8 +17,12 @@ from ryu.lib.packet import packet, ethernet, ipv4, tcp, udp
 from ryu.lib.packet import ether_types
 from ryu.ofproto import ofproto_v1_3
 
+from controller.event_ledger import EventLedger
 from controller.live_telemetry import PortRateTracker
-from controller.policies import Telemetry, choose_path
+from controller.policies import (
+    Telemetry, choose_path, confidence, choose_uncertain_fallback,
+)
+from controller.telemetry_loader import load_static_telemetry, conservative_telemetry
 from experiments.path_pinning import pinned_experiment_path
 
 
@@ -56,10 +59,15 @@ class PathPilotController(app_manager.RyuApp):
             self.experiment_initial_path, self.experiment_first_flow_port,
             self.experiment_first_flow_port,
         )
+        self.event_ledger = EventLedger(os.getenv("PATHPILOT_EVENT_LOG"))
         self.reverse_paths = {}
         self.last_selected_path = None
         self.datapaths = {}
-        self.port_rate_tracker = PortRateTracker()
+        configured_link_mbps = float(os.getenv("PATHPILOT_LINK_BW_MBPS", "100"))
+        link_capacity_bps = float(os.getenv(
+            "PATHPILOT_LINK_CAPACITY_BPS", str(configured_link_mbps * 1_000_000)
+        ))
+        self.port_rate_tracker = PortRateTracker(capacity_bps=link_capacity_bps)
         self._stats_reply_switches = set()
         self._logged_live_ready = False
         self.monitor_thread = hub.spawn(self._monitor)
@@ -89,7 +97,13 @@ class PathPilotController(app_manager.RyuApp):
                     dp, 0, dp.ofproto.OFPP_ANY
                 )
                 try:
+                    request.serialize()
+                    request_bytes = len(request.buf or b"")
                     dp.send_msg(request)
+                    self.event_ledger.record(
+                        "telemetry_request", datapath_id=dp.id,
+                        estimated_bytes=request_bytes, message_type="OFPPortStatsRequest",
+                    )
                 except Exception as exc:
                     self.logger.debug(
                         "Could not request port stats from switch %s: %s",
@@ -101,6 +115,15 @@ class PathPilotController(app_manager.RyuApp):
     def port_stats_reply(self, ev):
         now = time.monotonic()
         dpid = ev.msg.datapath.id
+        reply_bytes = len(getattr(ev.msg, "buf", b"") or b"")
+        if not reply_bytes:
+            # OFP port-stat entries are fixed-size; this is an estimate, not wire capture.
+            reply_bytes = 24 + 112 * len(ev.msg.body)
+        self.event_ledger.record(
+            "telemetry_reply", datapath_id=dpid, entry_count=len(ev.msg.body),
+            estimated_bytes=reply_bytes,
+            byte_source=("serialized_buffer" if getattr(ev.msg, "buf", None) else "estimated_entry_size"),
+        )
         for stat in ev.msg.body:
             self.port_rate_tracker.update_port(
                 dpid, stat.port_no, stat.tx_bytes, now
@@ -109,6 +132,13 @@ class PathPilotController(app_manager.RyuApp):
             self._stats_reply_switches.add(dpid)
             self.logger.info("Received first port-stats reply from switch %s", dpid)
         live = self.port_rate_tracker.path_telemetry(now)
+        if live is not None:
+            for path, sample in live.items():
+                self.event_ledger.record(
+                    "telemetry_sample", datapath_id=dpid, path=path,
+                    utilization=sample.utilization, age_s=sample.age_s,
+                    variability=sample.variability,
+                )
         if live is not None and not self._logged_live_ready:
             self._logged_live_ready = True
             self.logger.info(
@@ -123,12 +153,18 @@ class PathPilotController(app_manager.RyuApp):
         dp = ev.msg.datapath
         p, o = dp.ofproto_parser, dp.ofproto
         actions = [p.OFPActionOutput(o.OFPP_CONTROLLER, o.OFPCML_NO_BUFFER)]
-        dp.send_msg(p.OFPFlowMod(
+        flow_mod = p.OFPFlowMod(
             datapath=dp,
             priority=0,
             match=p.OFPMatch(),
             instructions=[p.OFPInstructionActions(o.OFPIT_APPLY_ACTIONS, actions)],
-        ))
+        )
+        flow_mod.serialize()
+        dp.send_msg(flow_mod)
+        self.event_ledger.record(
+            "flow_mod", datapath_id=dp.id, command="add_table_miss",
+            estimated_bytes=len(flow_mod.buf or b""),
+        )
 
     def _impair_telemetry(self, telemetry):
         if self.telemetry_noise_std == 0:
@@ -171,18 +207,19 @@ class PathPilotController(app_manager.RyuApp):
             return live
 
         try:
-            raw = json.loads(self.telemetry_file.read_text())
-            telemetry = {key: Telemetry(**value) for key, value in raw.items()}
-            self.logger.info("Using STATIC telemetry fallback from %s", self.telemetry_file)
-            return telemetry
-        except (OSError, ValueError, TypeError) as exc:
-            self.logger.warning(
-                "Telemetry unavailable (%s); using conservative fallback", exc
+            telemetry = load_static_telemetry(self.telemetry_file)
+            self.logger.info(
+                "Using validated STATIC telemetry fallback from %s",
+                self.telemetry_file,
             )
-            return {
-                "s1-s2-s4": Telemetry(.5, 999, 1),
-                "s1-s3-s4": Telemetry(.5, 999, 1),
-            }
+            return telemetry
+        except ValueError as exc:
+            self.logger.warning(
+                "Static telemetry unavailable or invalid (%s); "
+                "using conservative fallback",
+                exc,
+            )
+            return conservative_telemetry()
 
     @staticmethod
     def flow_key(ip, transport):
@@ -200,7 +237,7 @@ class PathPilotController(app_manager.RyuApp):
 
     def install(self, dp, match, out_port):
         p, o = dp.ofproto_parser, dp.ofproto
-        dp.send_msg(p.OFPFlowMod(
+        flow_mod = p.OFPFlowMod(
             datapath=dp,
             priority=100,
             match=match,
@@ -208,7 +245,13 @@ class PathPilotController(app_manager.RyuApp):
             instructions=[p.OFPInstructionActions(
                 o.OFPIT_APPLY_ACTIONS, [p.OFPActionOutput(out_port)]
             )],
-        ))
+        )
+        flow_mod.serialize()
+        dp.send_msg(flow_mod)
+        self.event_ledger.record(
+            "flow_mod", datapath_id=dp.id, command="add_flow",
+            estimated_bytes=len(flow_mod.buf or b""),
+        )
 
     @set_ev_cls(ofp_event.EventOFPPacketIn, MAIN_DISPATCHER)
     def packet_in(self, ev):
@@ -230,6 +273,8 @@ class PathPilotController(app_manager.RyuApp):
         key = self.flow_key(ip, transport)
         if dp.id == 1:
             if in_port == 1:
+                decision_previous_path = self.last_selected_path
+                fallback_reason = "none"
                 pinned_path = pinned_experiment_path(
                     self.experiment_initial_path,
                     tcp_pkt.dst_port if tcp_pkt else None,
@@ -240,16 +285,62 @@ class PathPilotController(app_manager.RyuApp):
                     # priming flow must not bias the policy's second decision.
                     self.last_selected_path = None
                     path = pinned_path
+                    fallback_reason = "experiment_path_pin"
+                    decision_previous_path = ""
                     self.logger.info(
                         "Experiment path pin applied to TCP destination port %s: %s",
                         tcp_pkt.dst_port, path,
                     )
                 else:
                     telemetry = self.read_telemetry()
-                    path = choose_path(
-                        telemetry, self.policy, previous_path=self.last_selected_path
-                    )
+                    if self.policy == "uncertainty_aware":
+                        confident_paths = [
+                            name for name, sample in telemetry.items()
+                            if confidence(sample) >= 0.5
+                        ]
+                        if not confident_paths:
+                            previous_path = self.last_selected_path
+                            path = choose_uncertain_fallback(
+                                telemetry,
+                                previous_path=previous_path,
+                            )
+                            fallback_reason = (
+                                "all_paths_below_confidence_retain_previous"
+                                if path == previous_path
+                                else "all_paths_below_confidence_load_aware"
+                            )
+                            self.logger.warning(
+                                "Uncertainty fallback: all paths below confidence "
+                                "0.50; selected %s (previous=%s, reason=%s)",
+                                path,
+                                previous_path,
+                                fallback_reason,
+                            )
+                        else:
+                            path = choose_path(
+                                telemetry,
+                                self.policy,
+                                previous_path=self.last_selected_path,
+                                safe_fallback=self.last_selected_path,
+                            )
+                    else:
+                        path = choose_path(
+                            telemetry,
+                            self.policy,
+                            previous_path=self.last_selected_path,
+                        )
                     self.last_selected_path = path
+                self.event_ledger.record(
+                    "path_decision", datapath_id=dp.id, path=path, policy=self.policy,
+                    src=ip.src, dst=ip.dst,
+                    src_port=(transport.src_port if transport else 0),
+                    dst_port=(transport.dst_port if transport else 0),
+                    previous_path=decision_previous_path or "",
+                    fallback_reason=fallback_reason,
+                    confidence=(confidence(telemetry[path]) if "telemetry" in locals() and path in telemetry else ""),
+                    telemetry_age_s=(telemetry[path].age_s if "telemetry" in locals() and path in telemetry else ""),
+                    telemetry_variability=(telemetry[path].variability if "telemetry" in locals() and path in telemetry else ""),
+                )
                 self.logger.info(
                     "Selected path %s for new flow %s -> %s (policy=%s)",
                     path, ip.src, ip.dst, self.policy,

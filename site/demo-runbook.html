@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PathPilot demo runbook</title><link rel="stylesheet" href="styles.css"></head>
+<body>
+<header class="topbar"><a class="brand" href="index.html"><span class="brand-mark">P</span> PathPilot</a><nav><a href="index.html#results">Results</a><a href="index.html#method">Method</a><a href="index.html#demo">Demo</a></nav></header>
+<main class="doc-page">
+<p class="eyebrow">Evaluation-day procedure</p><h1>Live emulated network demo</h1>
+<p class="lede">This demonstrates the running Ryu controller with OpenFlow 1.3, Open vSwitch, and Mininet. It is a network emulation running on Linux.</p>
+<div class="result-note"><div class="result-note-mark">!</div><div><strong>Do not overlap it with another Mininet campaign.</strong><p>The campaign and demo share Mininet/OVS state. Wait for the active WSL campaign to finish before starting this demo.</p></div></div>
+<section class="info-card"><p class="eyebrow">Before starting</p><h2>Check the environment</h2><ul><li>Ubuntu 22.04 or WSL2 with Mininet, Open vSwitch, iperf3, and the project Python environment installed.</li><li>Open two terminals at the PathPilot repository root.</li><li>Confirm no campaign or other Mininet topology is running.</li><li>Keep the deployed results dashboard open for comparison with the saved campaign evidence.</li></ul></section>
+<section class="info-card"><p class="eyebrow">Terminal 1</p><h2>Start the Ryu controller</h2><p>From the repository root, activate the project environment and run:</p><pre><code>source .venv/bin/activate
+PYTHONPATH="$PWD" EVENTLET_NO_GREENDNS=yes ryu-manager controller/ryu_app.py</code></pre><p>Wait for the switches to connect and for live port telemetry to appear in the controller log.</p></section>
+<section class="info-card"><p class="eyebrow">Terminal 2</p><h2>Start Mininet and check connectivity</h2><p>From the repository root:</p><pre><code>sudo env PYTHONPATH="$PWD" /usr/bin/python3 topology/mininet_topology.py --controller 127.0.0.1 --port 6653</code></pre><p>At the Mininet prompt, inspect the topology and verify connectivity:</p><pre><code>nodes
+net
+pingall
+links</code></pre><p>Proceed only after the hosts can reach one another and the expected paths are visible.</p></section>
+<section class="info-card"><p class="eyebrow">Controlled experiment</p><h2>Show an actual path decision</h2><p>For a repeatable measured demonstration, exit Mininet and stop the manually started controller first. Then run the small balanced experiment from the repository root:</p><pre><code>source .venv/bin/activate
+sudo env PYTHONPATH="$PWD" /usr/bin/python3 experiments/run_balanced_path_matrix.py --trials 1 --conditions baseline --output-dir results/demo_smoke</code></pre><p>Open the generated CSV and controller log. Show the selected path, connectivity result, and measured throughput. This is a smoke demonstration; use the 599-trial dashboard for repeated performance comparisons.</p></section>
+<section class="info-card"><p class="eyebrow">Close cleanly</p><h2>Stop the demo</h2><ol><li>Exit Mininet with <code>exit</code>.</li><li>Stop Ryu with Ctrl+C.</li><li>Check OVS state before cleaning anything. Avoid deleting bridges or processes belonging to other work.</li></ol></section>
+<p class="doc-links"><a href="rubric-traceability.html">How this demo maps to the rubric →</a> <a href="index.html">Back to results →</a></p>
+</main>
+<footer><div class="footer-brand">PathPilot · Network Systems Project</div><p>Run from the project checkout. Do not present emulation as a physical production network.</p></footer>
+</body></html>
