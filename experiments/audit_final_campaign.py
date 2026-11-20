@@ -103,6 +103,23 @@ def audit(manifest_path, output_root):
             failures.append(f"missing OpenFlow telemetry messages: {folder}")
         if result.get("connectivity_loss_pct") != 0:
             failures.append(f"topology connectivity loss: {folder}")
+        link_outages = result.get("link_outages", [])
+        if row["scenario"] == "link_loss_recovery" and not link_outages:
+            failures.append(f"missing link outage/recovery evidence: {folder}")
+        for outage in link_outages:
+            down_time = outage.get("down_monotonic_time")
+            up_time = outage.get("up_monotonic_time")
+            if down_time in ("", None) or up_time in ("", None):
+                failures.append(f"incomplete link outage/recovery timestamps: {folder}")
+            else:
+                try:
+                    if float(up_time) <= float(down_time):
+                        failures.append(f"invalid link recovery timestamp order: {folder}")
+                    duration = outage.get("scheduled_outage_duration_s")
+                    if duration in ("", None) or float(duration) <= 0:
+                        failures.append(f"missing positive link outage duration: {folder}")
+                except (TypeError, ValueError):
+                    failures.append(f"invalid link outage/recovery timestamp: {folder}")
         if result.get("network_sampler_errors"):
             failures.append(f"network counter sampler errors: {folder}")
         if traffic.get("impairment_errors"):

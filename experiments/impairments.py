@@ -45,15 +45,48 @@ class MininetImpairments:
                 commands.append(f"ip link set dev {interface} up")
             else:
                 raise ValueError(f"unsupported impairment action: {event.action}")
+            command_results = []
             for command in commands:
-                output = node.cmd(command)
-                if output.strip():
-                    raise RuntimeError(f"impairment command failed: {command}: {output.strip()}")
+                command_results.append(self._execute(node, command))
             if self.ledger:
                 self.ledger.record(
                     "impairment_event", path=path, action=event.action,
                     value=event.value, command="; ".join(commands),
+                    command_results=command_results,
                 )
+
+    @staticmethod
+    def _execute(node, command):
+        """Run a Mininet command and judge success by its exit status.
+
+        ``Node.cmd`` returns merged command output without an exit code. Commands
+        such as ``ip link set ... up`` can print informational qdisc state while
+        succeeding, so non-empty output is not a reliable failure signal.
+        ``Node.pexec`` returns stdout, stderr, and the actual status.
+        """
+        pexec = getattr(node, "pexec", None)
+        if callable(pexec):
+            stdout, stderr, returncode = pexec(command)
+            result = {
+                "command": command,
+                "stdout": stdout,
+                "stderr": stderr,
+                "returncode": int(returncode),
+            }
+            if returncode != 0:
+                detail = "\n".join(part.strip() for part in (stdout, stderr) if part.strip())
+                raise RuntimeError(
+                    f"impairment command failed (exit {returncode}): {command}"
+                    + (f": {detail}" if detail else "")
+                )
+            return result
+
+        # Lightweight fakes used by callers may expose only Node.cmd. Keep the
+        # compatibility path, while production Mininet nodes use pexec above.
+        output = node.cmd(command)
+        if output.strip():
+            raise RuntimeError(f"impairment command failed: {command}: {output.strip()}")
+        return {"command": command, "stdout": output, "stderr": "", "returncode": None}
 
     def _netem_commands(self, path, interface):
         rate = self.rate_by_path.get(path)
