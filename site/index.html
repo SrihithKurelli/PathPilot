@@ -21,13 +21,13 @@
         <div class="hero-actions"><a class="button primary" href="#results">Explore results <span aria-hidden="true">↓</span></a><a class="button secondary" href="#demo">See the live demo plan</a></div>
       </div>
       <div class="network-card" aria-label="Illustration of alternate network paths">
-        <svg viewBox="0 0 480 250" role="img" aria-labelledby="network-title"><title id="network-title">Two alternate SDN paths between source and destination</title>
-          <path class="route route-muted" d="M42 126 H150 L238 56 H330 L432 126"/><path class="route route-active" d="M42 126 H150 L238 196 H330 L432 126"/>
-          <circle class="node endpoint" cx="42" cy="126" r="16"/><circle class="node" cx="150" cy="126" r="13"/><circle class="node" cx="238" cy="56" r="13"/><circle class="node" cx="238" cy="196" r="13"/><circle class="node" cx="330" cy="56" r="13"/><circle class="node" cx="330" cy="196" r="13"/><circle class="node endpoint" cx="432" cy="126" r="16"/>
-          <text x="24" y="164">host</text><text x="410" y="164">host</text><text x="128" y="158">s1</text><text x="216" y="35">s2</text><text x="216" y="229">s3</text><text x="307" y="35">s4</text><text x="307" y="229">s5</text>
-          <text class="path-label" x="235" y="120">alternate paths</text>
+        <svg viewBox="0 0 500 250" role="img" aria-labelledby="network-title"><title id="network-title">PathPilot Mininet topology: h1 to s1, parallel paths through s2 or s3, converging at s4 and h2</title>
+          <path class="route route-muted" d="M45 126 H145 L260 62 L375 126 H455"/><path class="route route-active" d="M45 126 H145 L260 190 L375 126 H455"/>
+          <circle class="node endpoint" cx="45" cy="126" r="16"/><circle class="node" cx="145" cy="126" r="13"/><circle class="node" cx="260" cy="62" r="13"/><circle class="node" cx="260" cy="190" r="13"/><circle class="node" cx="375" cy="126" r="13"/><circle class="node endpoint" cx="455" cy="126" r="16"/>
+          <text x="27" y="164">h1</text><text x="437" y="164">h2</text><text x="123" y="158">s1</text><text x="238" y="37">s2</text><text x="238" y="224">s3</text><text x="353" y="158">s4</text>
+          <text class="path-label" x="260" y="128">two paths</text>
         </svg>
-        <div class="network-caption"><span><i class="dot cyan"></i> selected route</span><span><i class="dot muted"></i> alternate route</span></div>
+        <div class="network-caption"><span><i class="dot cyan"></i> via s3</span><span><i class="dot muted"></i> via s2</span></div>
       </div>
     </section>
 
